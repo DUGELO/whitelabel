@@ -1,0 +1,117 @@
+<div class="home-page">
+  @if (featuredRecipe(); as featured) {
+    <section class="hero-grid" aria-label="Featured recipes">
+      <article class="feature-card">
+        <a class="feature-media" [routerLink]="['/recipes', featured.id]" [attr.aria-label]="'Open ' + featured.name">
+          <img [src]="featured.imgUrl" [alt]="featured.name" loading="lazy">
+        </a>
+
+        <div class="feature-content">
+          <p class="eyebrow">Featured Recipe</p>
+          <h1>{{ featured.name }}</h1>
+          <p>{{ featured.description }}</p>
+          <a class="view-button" [routerLink]="['/recipes', featured.id]">View Recipe</a>
+        </div>
+      </article>
+
+      <div class="side-cards">
+        @for (recipe of quickPicks(); track recipe.id) {
+          <article class="recipe-card recipe-card-compact">
+            <a class="image-wrap" [routerLink]="['/recipes', recipe.id]" [attr.aria-label]="'Open ' + recipe.name">
+              <img [src]="recipe.imgUrl" [alt]="recipe.name" loading="lazy">
+            </a>
+
+            <button
+              type="button"
+              class="favorite-button"
+              [class.active]="recipe.isFavorite"
+              [attr.aria-label]="recipe.isFavorite ? 'Remove from favorites' : 'Add to favorites'"
+              (click)="toggleFavorite($event, recipe.id)"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">favorite</span>
+            </button>
+
+            <div class="recipe-content">
+              <h2><a [routerLink]="['/recipes', recipe.id]">{{ recipe.name }}</a></h2>
+
+              <div class="meta-line">
+                <span class="meta-time">
+                  <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+                  {{ formatDuration(recipe) }}
+                </span>
+                <span
+                  class="difficulty-badge"
+                  [class.easy]="recipe.difficulty === 'Easy'"
+                  [class.medium]="recipe.difficulty === 'Medium'"
+                  [class.hard]="recipe.difficulty === 'Hard'"
+                >
+                  {{ recipe.difficulty }}
+                </span>
+              </div>
+
+              <div class="meta-line meta-rating">
+                <span class="stars" aria-hidden="true">★★★★★</span>
+                <span>{{ formatRating(recipe) }} ({{ formatReviewCount(recipe) }})</span>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+
+    @if (popularRecipes().length > 0) {
+      <section class="popular-section" aria-label="Popular recipes">
+        <h2>Popular Recipes</h2>
+
+        <div class="popular-grid">
+          @for (recipe of popularRecipes(); track recipe.id) {
+            <article class="recipe-card">
+              <a class="image-wrap" [routerLink]="['/recipes', recipe.id]" [attr.aria-label]="'Open ' + recipe.name">
+                <img [src]="recipe.imgUrl" [alt]="recipe.name" loading="lazy">
+              </a>
+
+              <button
+                type="button"
+                class="favorite-button"
+                [class.active]="recipe.isFavorite"
+                [attr.aria-label]="recipe.isFavorite ? 'Remove from favorites' : 'Add to favorites'"
+                (click)="toggleFavorite($event, recipe.id)"
+              >
+                <span class="material-symbols-outlined" aria-hidden="true">favorite</span>
+              </button>
+
+              <div class="recipe-content">
+                <h3><a [routerLink]="['/recipes', recipe.id]">{{ recipe.name }}</a></h3>
+
+                <div class="meta-line">
+                  <span class="meta-time">
+                    <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+                    {{ formatDuration(recipe) }}
+                  </span>
+                  <span
+                    class="difficulty-badge"
+                    [class.easy]="recipe.difficulty === 'Easy'"
+                    [class.medium]="recipe.difficulty === 'Medium'"
+                    [class.hard]="recipe.difficulty === 'Hard'"
+                  >
+                    {{ recipe.difficulty }}
+                  </span>
+                </div>
+
+                <div class="meta-line meta-rating">
+                  <span class="stars" aria-hidden="true">★★★★★</span>
+                  <span>{{ formatRating(recipe) }} ({{ formatReviewCount(recipe) }})</span>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    }
+  } @else {
+    <section class="empty-state" aria-live="polite">
+      <h2>No recipes found</h2>
+      <p>Try another search term to find new dishes.</p>
+    </section>
+  }
+</div>

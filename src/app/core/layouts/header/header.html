@@ -1,0 +1,66 @@
+<div class="container-header">
+    <header class="header-shell">
+        <a class="brand" routerLink="/" aria-label="Recipe Box home">
+            <img class="brand-logo" src="recipe-box-logo.svg" alt="Recipe Box">
+        </a>
+
+        <form class="search" role="search" (submit)="preventSubmit($event)">
+            <span class="material-symbols-outlined search-icon" aria-hidden="true">search</span>
+            <input
+                type="search"
+                [value]="recipeService.searchTerm()"
+                (input)="onSearchInput($event)"
+                placeholder="Search recipes, ingredients, cuisines..."
+                aria-label="Search recipes"
+            >
+            <button type="submit">Search</button>
+        </form>
+
+        <div class="actions">
+            @if (isAuthenticated()) {
+                <button type="button" class="icon-button" aria-label="Open favorites" routerLink="/favorites">
+                    <span class="material-symbols-outlined" aria-hidden="true">favorite</span>
+                </button>
+
+                <button
+                    type="button"
+                    class="profile"
+                    [matMenuTriggerFor]="profileMenu"
+                    aria-label="Open profile menu"
+                >
+                    @if (user()?.avatarUrl) {
+                        <img
+                            class="avatar-img"
+                            [src]="user()!.avatarUrl"
+                            [alt]="user()!.name + ' avatar'"
+                        >
+                    } @else {
+                        <span class="avatar" aria-hidden="true">{{ initials() }}</span>
+                    }
+                    <span class="profile-name">{{ user()!.name }}</span>
+                    <span class="material-symbols-outlined chevron" aria-hidden="true">keyboard_arrow_down</span>
+                </button>
+
+                <mat-menu #profileMenu="matMenu" class="profile-dropdown" xPosition="before">
+                    <a mat-menu-item routerLink="/profile">
+                        <mat-icon>person_outline</mat-icon>
+                        <span>Profile</span>
+                    </a>
+                    <a mat-menu-item routerLink="/favorites">
+                        <mat-icon>favorite_border</mat-icon>
+                        <span>Favorites</span>
+                    </a>
+                    <button mat-menu-item (click)="logout()">
+                        <mat-icon>logout</mat-icon>
+                        <span>Logout</span>
+                    </button>
+                </mat-menu>
+            } @else {
+                <div class="guest-actions">
+                    <button type="button" class="login-button" (click)="openLogin()">Login</button>
+                    <button type="button" class="signup-button" (click)="openRegister()">Sign up</button>
+                </div>
+            }
+        </div>
+    </header>
+</div>

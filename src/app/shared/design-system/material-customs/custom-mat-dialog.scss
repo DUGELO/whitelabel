@@ -1,0 +1,66 @@
+// Auth modal dialog panel (rendered in CDK overlay)
+// Follows the same pattern as custom-mat-menu.scss
+.cdk-overlay-container .auth-modal-panel {
+  border-radius: var(--border-radius-card);
+  box-shadow: 0 16px 48px rgba(35, 26, 22, 0.18);
+  overflow: hidden;
+
+  .mat-mdc-dialog-surface {
+    background: var(--color-surface);
+    border-radius: var(--border-radius-card);
+    padding: 0;
+  }
+
+  // Form field overrides to match design system
+  .mat-mdc-form-field {
+    --mdc-outlined-text-field-outline-color: var(--color-border);
+    --mdc-outlined-text-field-hover-outline-color: var(--color-text-muted);
+    --mdc-outlined-text-field-focus-outline-color: var(--color-primary);
+    --mdc-outlined-text-field-label-text-color: var(--color-text-muted);
+    --mdc-outlined-text-field-focus-label-text-color: var(--color-primary);
+    --mdc-outlined-text-field-input-text-color: var(--color-text-main);
+    --mdc-outlined-text-field-container-shape: var(--border-radius-sm);
+    --mat-form-field-container-text-font: var(--font-body);
+    --mat-form-field-container-text-size: 0.95rem;
+  }
+
+  // Prefix icon styling
+  .mat-mdc-form-field .mat-icon {
+    color: var(--color-text-muted);
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  // Error state
+  .mat-mdc-form-field-error {
+    font-size: 0.78rem;
+  }
+
+  // Mobile narrow + SHORT screens: bottom-sheet pattern
+  // (phones in landscape, or compact devices where content barely fits)
+  @media (max-width: 480px) and (max-height: 700px) {
+    border-radius: var(--border-radius-card) var(--border-radius-card) 0 0;
+    margin: auto 0 0;
+
+    .mat-mdc-dialog-surface {
+      border-radius: var(--border-radius-card) var(--border-radius-card) 0 0;
+    }
+  }
+
+  // Mobile narrow + TALL screens ("tela infinita"): centered, full radius
+  // On 20:9 / 21:9 phones, keep modal centered with comfortable spacing
+  @media (max-width: 480px) and (min-height: 701px) {
+    border-radius: var(--border-radius-card);
+    margin: auto;
+  }
+}
+
+// Backdrop
+
+.cdk-overlay-backdrop.cdk-overlay-dark-backdrop {
+  background: rgba(35, 26, 22, 0.5);
+  @supports (backdrop-filter: blur(4px)) {
+    backdrop-filter: blur(4px);
+  }
+}
