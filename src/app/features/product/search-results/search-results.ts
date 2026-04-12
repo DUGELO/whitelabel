@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DifficultyLevel, RecipeModel } from '../models';
-import { RecipeService, RecipeSortOption } from '../recipe-service';
+import { RecipeService, RecipeSortOption } from '../product-service';
 
 @Component({
   selector: 'app-search-results',

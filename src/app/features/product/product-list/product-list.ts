@@ -1,16 +1,16 @@
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-
 import { RecipeModel } from '../models';
-import { RecipeService } from '../recipe-service';
+import { RecipeService } from '../product-service';
+import { ProductCard } from '../../../shared/design-system/components/product-card/product-card';
 
 @Component({
-  selector: 'app-recipe-list',
-  imports: [RouterLink],
-  templateUrl: './recipe-list.html',
-  styleUrl: './recipe-list.scss',
+  selector: 'app-product-list',
+  imports: [RouterLink, ProductCard],
+  templateUrl: './product-list.html',
+  styleUrl: './product-list.scss',
 })
-export class RecipeList {
+export class ProductList {
   //SERVICES
   protected readonly recipeService = inject(RecipeService);
 

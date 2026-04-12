@@ -2,18 +2,18 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RecipeModel } from '../models';
-import { RecipeService } from '../recipe-service';
-import { RecipeNotFound } from './recipe-not-found/recipe-not-found';
-import { RecipeList } from '../recipe-list/recipe-list';
+import { RecipeService } from '../product-service';
+import { ProductList } from '../product-list/product-list';
+import { ProductNotFound } from './product-not-found/product-not-found';
 
 @Component({
-  selector: 'app-recipe-detail',
-  imports: [RouterLink, RecipeNotFound, RecipeList],
-  templateUrl: './recipe-detail.html',
-  styleUrl: './recipe-detail.scss',
+  selector: 'app-product-detail',
+  imports: [RouterLink, ProductNotFound, ProductList],
+  templateUrl: './product-detail.html',
+  styleUrl: './product-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RecipeDetail {
+export class ProductDetail {
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(RecipeService);
   private readonly params = toSignal(this.route.paramMap);

@@ -3,7 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 
-import { RecipeService } from '../../../features/recipes/recipe-service';
+import { RecipeService } from '../../../features/product/product-service';
 import { AuthService } from '../../auth/auth.service';
 import { AuthModalService } from '../../auth/auth-modal/auth-modal.service';
 

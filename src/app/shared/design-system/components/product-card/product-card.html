@@ -1,0 +1,17 @@
+<article class="product-card">
+    <a class="image-wrap" [routerLink]="['/products', product().id]" [attr.aria-label]="'Abrir ' + product().name">
+        <img [src]="product().imgUrl" [alt]="product().name" loading="lazy">
+    </a>
+
+    <div class="product-content">
+        <h3><a [routerLink]="['/products', product().id]">{{ product().name }}</a></h3>
+
+        <div class="product-description">
+            <p>{{ product().description }}</p>
+        </div>
+
+    </div>
+    <div class="product-avaliation">
+        <span class="stars" aria-hidden="true">★★★★★</span>
+    </div>
+</article>

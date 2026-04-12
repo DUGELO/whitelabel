@@ -65,45 +65,7 @@
 
         <div class="popular-grid">
           @for (recipe of popularRecipes(); track recipe.id) {
-            <article class="recipe-card">
-              <a class="image-wrap" [routerLink]="['/recipes', recipe.id]" [attr.aria-label]="'Open ' + recipe.name">
-                <img [src]="recipe.imgUrl" [alt]="recipe.name" loading="lazy">
-              </a>
-
-              <button
-                type="button"
-                class="favorite-button"
-                [class.active]="recipe.isFavorite"
-                [attr.aria-label]="recipe.isFavorite ? 'Remove from favorites' : 'Add to favorites'"
-                (click)="toggleFavorite($event, recipe.id)"
-              >
-                <span class="material-symbols-outlined" aria-hidden="true">favorite</span>
-              </button>
-
-              <div class="recipe-content">
-                <h3><a [routerLink]="['/recipes', recipe.id]">{{ recipe.name }}</a></h3>
-
-                <div class="meta-line">
-                  <span class="meta-time">
-                    <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-                    {{ formatDuration(recipe) }}
-                  </span>
-                  <span
-                    class="difficulty-badge"
-                    [class.easy]="recipe.difficulty === 'Easy'"
-                    [class.medium]="recipe.difficulty === 'Medium'"
-                    [class.hard]="recipe.difficulty === 'Hard'"
-                  >
-                    {{ recipe.difficulty }}
-                  </span>
-                </div>
-
-                <div class="meta-line meta-rating">
-                  <span class="stars" aria-hidden="true">★★★★★</span>
-                  <span>{{ formatRating(recipe) }} ({{ formatReviewCount(recipe) }})</span>
-                </div>
-              </div>
-            </article>
+            <app-product-card [product]="recipe"></app-product-card>
           }
         </div>
       </section>
