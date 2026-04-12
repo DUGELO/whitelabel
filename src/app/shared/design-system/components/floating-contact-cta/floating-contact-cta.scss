@@ -1,0 +1,75 @@
+$cta-size: 56px;
+$cta-icon-size: 28px;
+$cta-offset: var(--spacing-lg);
+
+:host {
+  display: contents;
+}
+
+.floating-cta {
+  position: fixed;
+  bottom: $cta-offset;
+  right: $cta-offset;
+  z-index: 90;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: $cta-size;
+  height: $cta-size;
+  border-radius: var(--border-radius-circle);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+
+  color: var(--color-surface);
+  box-shadow: var(--shadow-soft), 0 4px 16px color-mix(in srgb, var(--color-text-main) 18%, transparent);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+
+  svg {
+    width: $cta-icon-size;
+    height: $cta-icon-size;
+    flex-shrink: 0;
+  }
+
+  // ─── CHANNEL VARIANTS ──────────────────────────────────
+  &.whatsapp {
+    background: #25d366;
+
+    &:hover {
+      background: #20bd5a;
+    }
+  }
+
+  &.instagram {
+    background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+
+    &:hover {
+      filter: brightness(0.92);
+    }
+  }
+
+  // ─── INTERACTION STATES ────────────────────────────────
+  &:hover {
+    transform: scale(1.08);
+    box-shadow: var(--shadow-soft), 0 6px 24px color-mix(in srgb, var(--color-text-main) 24%, transparent);
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 3px;
+  }
+}
+
+// ─── MOBILE ADJUSTMENTS ──────────────────────────────────
+@media (max-width: 560px) {
+  .floating-cta {
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+  }
+}

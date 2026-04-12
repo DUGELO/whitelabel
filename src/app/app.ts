@@ -1,4 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { StorefrontConfigService } from './core/storefront/storefront-config.service';
 import { MainLayout } from "./core/layouts/main-layout/main-layout";
 
 @Component({
@@ -8,5 +9,6 @@ import { MainLayout } from "./core/layouts/main-layout/main-layout";
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('My Recipe Box');
+  private readonly storefrontConfig = inject(StorefrontConfigService).config;
+  protected readonly title = signal(this.storefrontConfig().brand.name);
 }

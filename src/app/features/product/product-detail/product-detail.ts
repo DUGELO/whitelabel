@@ -1,80 +1,87 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { StorefrontAnalyticsService } from '../../../core/observability/storefront-analytics.service';
+import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { RecipeModel } from '../models';
-import { RecipeService } from '../product-service';
-import { ProductList } from '../product-list/product-list';
+import { StorefrontConfigService } from '../../../core/storefront/storefront-config.service';
+import { Product } from '../models';
+import { ProductCatalogService } from '../product-service';
 import { ProductNotFound } from './product-not-found/product-not-found';
+import { ProductCard } from '../../../shared/design-system/components/product-card/product-card';
+import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
   selector: 'app-product-detail',
-  imports: [RouterLink, ProductNotFound, ProductList],
+  imports: [ProductNotFound, ProductCard, MatChipsModule],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductDetail {
   private readonly route = inject(ActivatedRoute);
-  private readonly service = inject(RecipeService);
+  private readonly service = inject(ProductCatalogService);
   private readonly params = toSignal(this.route.paramMap);
+  private readonly analyticsService = inject(StorefrontAnalyticsService);
+  protected readonly storefrontConfig = inject(StorefrontConfigService).config;
 
   protected readonly id = computed(() => Number(this.params()?.get('id')));
-  protected readonly recipeById = computed(() => this.service.recipes().find(r => r.id === this.id()));
-  protected readonly servings = this.service.servings;
+  protected readonly productById = computed(() => this.service.products().find((product) => product.id === this.id()));
 
-  protected readonly adjustedIngredients = computed(() => {
-    const r = this.recipeById();
-    const s = this.servings();
-    return r?.ingredients.map(ing => ({
-      ...ing,
-      quantity: Math.round(ing.quantity * s * 100) / 100,
-    })) ?? [];
-  });
-
-  protected readonly relatedRecipes = computed(() => {
-    const current = this.recipeById();
+  protected readonly relatedProducts = computed(() => {
+    const current = this.productById();
     if (!current) return [];
-    return this.service.recipes()
-      .filter(r => r.id !== current.id)
-      .slice(0, 4);
+    return this.service.products()
+      .filter((product) => product.id !== current.id)
+      .slice(0, 6);
   });
 
-  protected formatDuration(recipe: RecipeModel): string {
-    return `${recipe.durationMinutes} mins`;
+  protected formatPrice(product: Product): string {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: product.price.currencyCode,
+    }).format(product.price.amount);
   }
 
-  protected formatRating(recipe: RecipeModel): string {
-    return recipe.rating.toFixed(1);
+  protected formatRating(product: Product): string {
+    return product.rating.toFixed(1);
   }
 
-  protected formatReviewCount(recipe: RecipeModel): string {
-    return recipe.reviewCount >= 1000
-      ? `${(recipe.reviewCount / 1000).toFixed(1)}k`
-      : `${recipe.reviewCount}`;
+  protected formatReviewCount(product: Product): string {
+    return product.reviewCount >= 1000
+      ? `${(product.reviewCount / 1000).toFixed(1)}k`
+      : `${product.reviewCount}`;
   }
 
-  protected formatIngredient(ing: { quantity: number; unit: string; name: string }): string {
-    return ing.unit === 'each'
-      ? `${ing.quantity} ${ing.name}`
-      : `${ing.quantity} ${ing.unit} ${ing.name}`;
+  protected trackPrimaryCta(product: Product): void {
+    this.analyticsService.track('primary_cta_clicked', {
+      productId: product.id,
+      productSlug: product.slug,
+      productTitle: product.title,
+      brandName: this.storefrontConfig().brand.name,
+      channel: 'whatsapp',
+    });
+    this.analyticsService.track('whatsapp_clicked', {
+      productId: product.id,
+      productSlug: product.slug,
+      productTitle: product.title,
+      brandName: this.storefrontConfig().brand.name,
+      channel: 'whatsapp',
+    });
   }
 
-  protected increaseServings(): void {
-    this.service.increaseServings();
-  }
-
-  protected decreaseServings(): void {
-    this.service.decreaseServings();
-  }
-
-  protected toggleFavorite(): void {
-    const id = this.id();
-    if (id) this.service.toggleFavorite(id);
-  }
-
-  protected toggleRelatedFavorite(event: Event, recipeId: number): void {
-    event.preventDefault();
-    event.stopPropagation();
-    this.service.toggleFavorite(recipeId);
+  protected trackSecondaryCta(product: Product): void {
+    this.analyticsService.track('secondary_cta_clicked', {
+      productId: product.id,
+      productSlug: product.slug,
+      productTitle: product.title,
+      brandName: this.storefrontConfig().brand.name,
+      channel: 'instagram',
+    });
+    this.analyticsService.track('instagram_clicked', {
+      productId: product.id,
+      productSlug: product.slug,
+      productTitle: product.title,
+      brandName: this.storefrontConfig().brand.name,
+      channel: 'instagram',
+    });
   }
 }

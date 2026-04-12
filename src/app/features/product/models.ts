@@ -1,39 +1,39 @@
-export type DifficultyLevel = 'Easy' | 'Medium' | 'Hard';
+export type ProductCategory = string;
 
-export type RecipeCategory = 'Main Course' | 'Salad' | 'Bowl' | 'Pasta' | 'Curry' | 'Steak' | 'Stir-Fry';
-
-export type Cuisine = 'Italian' | 'Mediterranean' | 'American' | 'Thai' | 'Asian' | 'Fusion';
-
-export interface Ingredient {
-  id: number;
-  name: string;
-  quantity: number;
-  unit: string;
+export interface ProductMedia {
+  src: string;
+  alt: string;
+  kind: 'image';
 }
 
-export interface RecipeModel {
+export interface ProductPrice {
+  amount: number;
+  currencyCode: string;
+  compareAtAmount?: number;
+}
+
+export interface ProductActionLinks {
+  productUrl?: string;
+  whatsappUrl: string;
+  instagramUrl?: string;
+}
+
+export interface Product {
   id: number;
   slug: string;
-  name: string;
-  description: string;
-  imgUrl: string;
-  imageAlt?: string;
-  isFavorite: boolean;
-  ingredients: Ingredient[];
-  durationMinutes: number;
-  prepMinutes?: number;
-  cookMinutes?: number;
-  servings?: number;
-  calories?: number;
-  difficulty: DifficultyLevel;
-  category?: RecipeCategory;
-  cuisine?: Cuisine;
-  tags?: string[];
+  title: string;
+  shortDescription: string;
+  longDescription: string;
+  imageUrl: string;
+  imageAlt: string;
+  category?: ProductCategory;
+  tags: string[];
   rating: number;
   reviewCount: number;
-  steps?: string[];
-  tips?: string;
-  featured?: boolean;
+  highlights: string[];
+  media: ProductMedia[];
+  price: ProductPrice;
+  actionLinks: ProductActionLinks;
 }
 
-export type Recipe = RecipeModel;
+export type ProductSortOption = 'popular' | 'lowest-price' | 'highest-rated';

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { RecipeDetail } from './recipe-detail';
+import { ProductDetail } from './product-detail';
 
-describe('RecipeDetail', () => {
-  let component: RecipeDetail;
-  let fixture: ComponentFixture<RecipeDetail>;
+describe('ProductDetail', () => {
+  let component: ProductDetail;
+  let fixture: ComponentFixture<ProductDetail>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RecipeDetail],
+      imports: [ProductDetail],
       providers: [provideRouter([])],
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(RecipeDetail);
+    fixture = TestBed.createComponent(ProductDetail);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

@@ -1,7 +1,9 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
+import { StorefrontAnalyticsService } from '../../../core/observability/storefront-analytics.service';
 import { RouterLink } from '@angular/router';
-import { RecipeModel } from '../models';
-import { RecipeService } from '../product-service';
+import { StorefrontConfigService } from '../../../core/storefront/storefront-config.service';
+import { Product } from '../models';
+import { ProductCatalogService } from '../product-service';
 import { ProductCard } from '../../../shared/design-system/components/product-card/product-card';
 
 @Component({
@@ -11,66 +13,62 @@ import { ProductCard } from '../../../shared/design-system/components/product-ca
   styleUrl: './product-list.scss',
 })
 export class ProductList {
-  //SERVICES
-  protected readonly recipeService = inject(RecipeService);
+  protected readonly storefrontConfig = inject(StorefrontConfigService).config;
+  protected readonly catalogService = inject(ProductCatalogService);
+  private readonly analyticsService = inject(StorefrontAnalyticsService);
+  private hasTrackedCatalogLoad = false;
 
-  // VIEW MODEL
-  protected readonly featuredRecipe = computed(() => {
-    const recipes = this.recipeService.recipes();
-    return recipes[7] ?? null;
+  constructor() {
+    effect(() => {
+      if (!this.hasTrackedCatalogLoad && this.catalogService.products().length > 0) {
+        this.hasTrackedCatalogLoad = true;
+        this.catalogService.trackCatalogLoaded();
+      }
+    });
+  }
+
+  protected readonly heroProduct = computed(() => {
+    return this.catalogService.products()[0] ?? null;
   });
 
   protected readonly quickPicks = computed(() => {
-    const featured = this.featuredRecipe();
-    return this.selectRecipes(this.recipeService.recipes(), 2, featured ? [featured.id] : []);
+    const hero = this.heroProduct();
+    return this.selectProducts(this.catalogService.products(), 2, hero ? [hero.id] : []);
   });
 
-  protected readonly popularRecipes = computed(() => {
-    const featured = this.featuredRecipe();
+  protected readonly popularProducts = computed(() => {
+    const hero = this.heroProduct();
     const excludeIds = new Set<number>();
-    if (featured) {
-      excludeIds.add(featured.id);
+    if (hero) {
+      excludeIds.add(hero.id);
     }
 
-    this.quickPicks().forEach((recipe) => excludeIds.add(recipe.id));
-    return this.selectRecipes(this.recipeService.recipes(), 6, Array.from(excludeIds));
+    this.quickPicks().forEach((product) => excludeIds.add(product.id));
+    return this.selectProducts(this.catalogService.products(), 6, Array.from(excludeIds));
   });
 
-  // HANDLERS
-  protected toggleFavorite(event: Event, recipeId: number): void {
-    event.preventDefault();
-    event.stopPropagation();
-    this.recipeService.toggleFavorite(recipeId);
+  protected trackProductClick(product: Product, channel: 'hero' | 'quick-pick' | 'popular'): void {
+    this.analyticsService.track('product_clicked', {
+      productId: product.id,
+      productSlug: product.slug,
+      productTitle: product.title,
+      brandName: this.storefrontConfig().brand.name,
+      channel,
+    });
   }
 
-  protected formatDuration(recipe: RecipeModel): string {
-    return `${recipe.durationMinutes} mins`;
-  }
-
-  protected formatRating(recipe: RecipeModel): string {
-    return recipe.rating.toFixed(1);
-  }
-
-  protected formatReviewCount(recipe: RecipeModel): string {
-    if (recipe.reviewCount >= 1000) {
-      return `${(recipe.reviewCount / 1000).toFixed(1)}k`;
-    }
-
-    return `${recipe.reviewCount}`;
-  }
-
-  private selectRecipes(recipes: RecipeModel[], amount: number, excludedIds: number[] = []): RecipeModel[] {
-    const selected: RecipeModel[] = [];
+  private selectProducts(products: Product[], amount: number, excludedIds: number[] = []): Product[] {
+    const selected: Product[] = [];
     const seenIds = new Set<number>(excludedIds);
-    const pool = [...recipes];
+    const pool = [...products];
 
-    for (const recipe of pool) {
-      if (seenIds.has(recipe.id)) {
+    for (const product of pool) {
+      if (seenIds.has(product.id)) {
         continue;
       }
 
-      seenIds.add(recipe.id);
-      selected.push(recipe);
+      seenIds.add(product.id);
+      selected.push(product);
 
       if (selected.length === amount) {
         break;

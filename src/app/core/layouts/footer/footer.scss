@@ -1,15 +1,16 @@
 .footer-shell {
-    background: #f1efeb;
-    border-top: 1px solid rgba(35, 26, 22, 0.08);
+    background: var(--color-footer-bg);
+    border-top: 1px solid color-mix(in srgb, var(--color-text-main) 8%, transparent);
     color: var(--color-text-main);
 
     .footer-inner {
         max-width: 1260px;
         margin: 0 auto;
         padding: 58px var(--spacing-lg) 34px;
-        display: grid;
-        grid-template-columns: 1.35fr 1fr 1fr 1.25fr;
         gap: var(--spacing-lg);
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
     }
 
     .brand-block {
@@ -18,8 +19,8 @@
         max-width: 260px;
 
         .brand-mark {
-            width: 46px;
-            height: 46px;
+            width: auto;
+            height: auto;
             display: grid;
             place-items: center;
             color: var(--color-primary);
@@ -108,9 +109,9 @@
             margin-top: var(--spacing-sm-md);
             width: min(320px, 100%);
             min-height: 52px;
-            border: 1px solid #d4cdc5;
+            border: 1px solid var(--color-input-border);
             border-radius: var(--border-radius-pill);
-            background: #f7f6f3;
+            background: var(--color-input-bg);
             padding: 5px 6px 5px var(--spacing-md);
             display: flex;
             align-items: center;
@@ -125,7 +126,7 @@
                 font-size: 1.08rem;
 
                 &::placeholder {
-                    color: #9f958c;
+                    color: var(--color-text-placeholder);
                 }
             }
 
@@ -137,7 +138,7 @@
                 display: grid;
                 place-items: center;
                 background: var(--color-primary);
-                color: #fff;
+                color: var(--color-surface);
                 cursor: pointer;
                 transition: background-color 180ms ease;
 
@@ -155,7 +156,7 @@
     .footer-bottom {
         max-width: 1260px;
         margin: 0 auto;
-        border-top: 1px solid rgba(35, 26, 22, 0.11);
+        border-top: 1px solid color-mix(in srgb, var(--color-text-main) 11%, transparent);
         padding: var(--spacing-lg) var(--spacing-lg) 30px;
 
         p {

@@ -1,79 +1,43 @@
 <div class="home-page">
-  @if (featuredRecipe(); as featured) {
-    <section class="hero-grid" aria-label="Featured recipes">
+  @if (heroProduct(); as hero) {
+    <section class="hero-grid" aria-label="Hero products">
       <article class="feature-card">
-        <a class="feature-media" [routerLink]="['/recipes', featured.id]" [attr.aria-label]="'Open ' + featured.name">
-          <img [src]="featured.imgUrl" [alt]="featured.name" loading="lazy">
+        <a class="feature-media" [routerLink]="['/products', hero.id]" [attr.aria-label]="storefrontConfig().content.productAriaPrefix + ' ' + hero.title" (click)="trackProductClick(hero, 'hero')">
+          <img [src]="hero.imageUrl" [alt]="hero.imageAlt" loading="lazy">
         </a>
 
         <div class="feature-content">
-          <p class="eyebrow">Featured Recipe</p>
-          <h1>{{ featured.name }}</h1>
-          <p>{{ featured.description }}</p>
-          <a class="view-button" [routerLink]="['/recipes', featured.id]">View Recipe</a>
+          <p class="eyebrow">{{ storefrontConfig().content.heroEyebrow }}</p>
+          <h1>{{ hero.title }}</h1>
+          <p>{{ hero.shortDescription }}</p>
+          <a class="view-button" [routerLink]="['/products', hero.id]" (click)="trackProductClick(hero, 'hero')">{{ storefrontConfig().content.heroCtaLabel }}</a>
         </div>
       </article>
 
       <div class="side-cards">
-        @for (recipe of quickPicks(); track recipe.id) {
-          <article class="recipe-card recipe-card-compact">
-            <a class="image-wrap" [routerLink]="['/recipes', recipe.id]" [attr.aria-label]="'Open ' + recipe.name">
-              <img [src]="recipe.imgUrl" [alt]="recipe.name" loading="lazy">
-            </a>
-
-            <button
-              type="button"
-              class="favorite-button"
-              [class.active]="recipe.isFavorite"
-              [attr.aria-label]="recipe.isFavorite ? 'Remove from favorites' : 'Add to favorites'"
-              (click)="toggleFavorite($event, recipe.id)"
-            >
-              <span class="material-symbols-outlined" aria-hidden="true">favorite</span>
-            </button>
-
-            <div class="recipe-content">
-              <h2><a [routerLink]="['/recipes', recipe.id]">{{ recipe.name }}</a></h2>
-
-              <div class="meta-line">
-                <span class="meta-time">
-                  <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-                  {{ formatDuration(recipe) }}
-                </span>
-                <span
-                  class="difficulty-badge"
-                  [class.easy]="recipe.difficulty === 'Easy'"
-                  [class.medium]="recipe.difficulty === 'Medium'"
-                  [class.hard]="recipe.difficulty === 'Hard'"
-                >
-                  {{ recipe.difficulty }}
-                </span>
-              </div>
-
-              <div class="meta-line meta-rating">
-                <span class="stars" aria-hidden="true">★★★★★</span>
-                <span>{{ formatRating(recipe) }} ({{ formatReviewCount(recipe) }})</span>
-              </div>
-            </div>
+        @for (product of quickPicks(); track product.id) {
+          <article class="product-card-shell product-card-shell-side">
+            <app-product-card [product]="product" variant="side"></app-product-card>
           </article>
         }
       </div>
     </section>
 
-    @if (popularRecipes().length > 0) {
-      <section class="popular-section" aria-label="Popular recipes">
-        <h2>Popular Recipes</h2>
+    @if (popularProducts().length > 0) {
+      <section class="popular-section" aria-label="Popular products">
+        <h2>{{ storefrontConfig().content.popularSectionTitle }}</h2>
 
         <div class="popular-grid">
-          @for (recipe of popularRecipes(); track recipe.id) {
-            <app-product-card [product]="recipe"></app-product-card>
+          @for (product of popularProducts(); track product.id) {
+            <app-product-card [product]="product"></app-product-card>
           }
         </div>
       </section>
     }
   } @else {
     <section class="empty-state" aria-live="polite">
-      <h2>No recipes found</h2>
-      <p>Try another search term to find new dishes.</p>
+      <h2>{{ storefrontConfig().content.emptyCatalogTitle }}</h2>
+      <p>{{ storefrontConfig().content.emptyCatalogDescription }}</p>
     </section>
   }
 </div>

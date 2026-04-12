@@ -1,17 +1,53 @@
-<article class="product-card">
-    <a class="image-wrap" [routerLink]="['/products', product().id]" [attr.aria-label]="'Abrir ' + product().name">
-        <img [src]="product().imgUrl" [alt]="product().name" loading="lazy">
+<article
+    class="product-card"
+    [class.product-card--compact]="variant() === 'compact'"
+    [class.product-card--side]="variant() === 'side'"
+>
+    <a class="image-wrap" [routerLink]="['/products', product().id]" [attr.aria-label]="storefrontConfig().content.productAriaPrefix + ' ' + product().title"
+        (click)="trackProductClick(product())">
+        <img [src]="product().imageUrl" [alt]="product().imageAlt" loading="lazy">
     </a>
 
     <div class="product-content">
-        <h3><a [routerLink]="['/products', product().id]">{{ product().name }}</a></h3>
+        <h3><a [routerLink]="['/products', product().id]" (click)="trackProductClick(product())">{{ product().title
+                }}</a></h3>
 
         <div class="product-description">
-            <p>{{ product().description }}</p>
+            <p>{{ product().shortDescription }}</p>
         </div>
-
     </div>
     <div class="product-avaliation">
+        <div class="pricing-group">
+            <div class="price-chip-row" aria-label="Pricing information">
+                @if (!product().price.compareAtAmount) {
+                <span class="price-chip current-price">
+                    <span class="material-symbols-outlined" aria-hidden="true">local_offer</span>
+                    {{ formatPrice(product()) }}
+                </span>
+
+                @if (product().price.compareAtAmount) {
+                <span class="price-chip compare-price">
+                    <span class="material-symbols-outlined" aria-hidden="true">sell</span>
+                    {{ formatCompareAtPrice(product()) }}
+                </span>
+                }
+                }
+                @else {
+                <div class="prices">
+                    <span class="price-chip current-price">
+                        <span class="material-symbols-outlined" aria-hidden="true">local_offer</span>
+                        {{ formatPrice(product()) }}
+                    </span>
+ 
+                    <span class="price-chip compare-price">
+                        <span class="material-symbols-outlined" aria-hidden="true">sell</span>
+                        {{ formatCompareAtPrice(product()) }}
+                    </span>
+                </div>
+                }
+            </div>
+        </div>
+
         <span class="stars" aria-hidden="true">★★★★★</span>
     </div>
 </article>

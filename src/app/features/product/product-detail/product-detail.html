@@ -1,192 +1,90 @@
-@if (recipeById(); as recipe) {
-<article class="recipe-detail-page">
-
-  <div class="full-height">
-    <!-- Hero: image + step preview -->
-    <section class="hero">
-      <div class="hero-image">
-        <img [src]="recipe.imgUrl" [alt]="recipe.name">
-      </div>
-      <aside class="hero-aside" aria-label="Steps preview">
-        @if (recipe.steps?.length) {
-        <div class="hero-steps">
-          <h2>Step-by-Step Instructions</h2>
-          <ol>
-            @for (step of recipe.steps; track $index) {
-            <li>
-              <span class="step-num" aria-hidden="true">{{ $index + 1 }}</span>
-              <p>{{ step }}</p>
-            </li>
-            }
-          </ol>
-        </div>
-        }
-        @if (recipe.tips) {
-        <div class="hero-tips">
-          <h3>Tips &amp; Notes</h3>
-          <p>{{ recipe.tips }}</p>
-        </div>
-        }
-      </aside>
-    </section>
-
-    <!-- Title + Meta + Actions -->
-    <section class="info-bar">
-      <h1>{{ recipe.name }}</h1>
-      <div class="meta-actions-row">
-        <div class="meta-group">
-          <span class="stars" [attr.aria-label]="'Rating ' + formatRating(recipe) + ' out of 5'">★★★★★</span>
-          <span class="rating-text">{{ formatRating(recipe) }} ({{ formatReviewCount(recipe) }})</span>
-          <span class="meta-time">
-            <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-            {{ formatDuration(recipe) }}
-          </span>
-          <span class="difficulty-badge" [class.easy]="recipe.difficulty === 'Easy'"
-            [class.medium]="recipe.difficulty === 'Medium'" [class.hard]="recipe.difficulty === 'Hard'">{{
-            recipe.difficulty }}</span>
-        </div>
-        <div class="actions-group">
-          <button type="button" class="action-btn" [class.active]="recipe.isFavorite" (click)="toggleFavorite()">
-            <span class="material-symbols-outlined" aria-hidden="true">favorite</span>
-            Save
-          </button>
-          <button type="button" class="action-btn">
-            <span class="material-symbols-outlined" aria-hidden="true">ios_share</span>
-            Share
-          </button>
-          <button type="button" class="cta-btn">Start Cooking</button>
-        </div>
+@if (productById(); as product) {
+<article class="product-detail-page">
+  <div class="product-layout">
+    <!-- Product Image -->
+    <section class="product-gallery">
+      <div class="gallery-frame">
+        <img [src]="product.imageUrl" [alt]="product.imageAlt">
       </div>
     </section>
-  </div>
 
-  <hr class="divider">
+    <!-- Product Info -->
+    <section class="product-info">
+      <h1 class="product-title">{{ product.title }}</h1>
+      <h2 class="product-price">{{ formatPrice(product) }}</h2>
 
-  <!-- 3-column content -->
-  <section class="content-columns">
-    <!-- Ingredients -->
-    <div class="col-ingredients">
-      <div class="col-heading-row">
-        <h2>Ingredients</h2>
-        <div class="servings-control">
-          <button type="button" aria-label="Decrease servings" (click)="decreaseServings()">−</button>
-          <span>{{ servings() }}</span>
-          <button type="button" aria-label="Increase servings" (click)="increaseServings()">+</button>
-        </div>
-      </div>
-      <ul class="ingredient-checklist">
-        @for (ing of adjustedIngredients(); track ing.id) {
-        <li>
-          <label>
-            <input type="checkbox">
-            <span>{{ formatIngredient(ing) }}</span>
-          </label>
-        </li>
-        }
-      </ul>
-    </div>
-
-    <!-- Recipe Details -->
-    <div class="col-details">
-      <h2>About This Recipe</h2>
-      <p class="recipe-description">{{ recipe.description }}</p>
-
-      <div class="quick-facts">
-        @if (recipe.prepMinutes) {
-        <div class="fact-item">
-          <span class="material-symbols-outlined" aria-hidden="true">cooking</span>
-          <span class="fact-label">Prep</span>
-          <span class="fact-value">{{ recipe.prepMinutes }} min</span>
-        </div>
-        }
-        @if (recipe.cookMinutes) {
-        <div class="fact-item">
-          <span class="material-symbols-outlined" aria-hidden="true">oven_gen</span>
-          <span class="fact-label">Cook</span>
-          <span class="fact-value">{{ recipe.cookMinutes }} min</span>
-        </div>
-        }
-        @if (recipe.servings) {
-        <div class="fact-item">
-          <span class="material-symbols-outlined" aria-hidden="true">group</span>
-          <span class="fact-label">Servings</span>
-          <span class="fact-value">{{ recipe.servings }}</span>
-        </div>
-        }
-        @if (recipe.calories) {
-        <div class="fact-item">
-          <span class="material-symbols-outlined" aria-hidden="true">local_fire_department</span>
-          <span class="fact-label">Calories</span>
-          <span class="fact-value">{{ recipe.calories }} kcal</span>
-        </div>
-        }
-        @if (recipe.cuisine) {
-        <div class="fact-item">
-          <span class="material-symbols-outlined" aria-hidden="true">public</span>
-          <span class="fact-label">Cuisine</span>
-          <span class="fact-value">{{ recipe.cuisine }}</span>
-        </div>
-        }
-        @if (recipe.category) {
-        <div class="fact-item">
-          <span class="material-symbols-outlined" aria-hidden="true">restaurant_menu</span>
-          <span class="fact-label">Category</span>
-          <span class="fact-value">{{ recipe.category }}</span>
-        </div>
-        }
-      </div>
-
-      @if (recipe.tags?.length) {
-      <div class="recipe-tags">
-        @for (tag of recipe.tags; track tag) {
-        <span class="tag-chip">{{ tag }}</span>
+      @if (product.highlights.length) {
+      <div class="product-highlights">
+        @for (highlight of product.highlights; track highlight) {
+        <span class="highlight-chip">{{ highlight }}</span>
         }
       </div>
       }
-    </div>
 
-    <!-- Sidebar -->
-    <div class="col-sidebar">
+      <p class="product-description">{{ product.shortDescription }}</p>
 
-      @if (relatedRecipes().length) {
-      <section class="related-section">
-        <h3>Related Recipes</h3>
-        <div class="related-scroll">
-          @for (related of relatedRecipes(); track related.id) {
-          <a class="related-card" [routerLink]="['/recipes', related.id]">
-            <div class="related-img-wrap">
-              <img [src]="related.imgUrl" [alt]="related.name" loading="lazy">
-              <button type="button" class="fav-btn" [class.active]="related.isFavorite"
-                [attr.aria-label]="related.isFavorite ? 'Remove from favorites' : 'Add to favorites'"
-                (click)="toggleRelatedFavorite($event, related.id)">
-                <span class="material-symbols-outlined" aria-hidden="true">favorite</span>
-              </button>
-            </div>
-            <h4>{{ related.name }}</h4>
-            <div class="related-meta">
-              <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-              {{ formatDuration(related) }}
-              <span class="difficulty-badge" [class.easy]="related.difficulty === 'Easy'"
-                [class.medium]="related.difficulty === 'Medium'" [class.hard]="related.difficulty === 'Hard'">{{
-                related.difficulty }}</span>
-            </div>
-            <div class="related-rating">
-              <span class="stars small" aria-hidden="true">★★★★★</span>
-              <span>{{ formatRating(related) }} ({{ formatReviewCount(related) }})</span>
-            </div>
-          </a>
+      @if (product.longDescription && product.longDescription !== product.shortDescription) {
+      <p class="product-description">{{ product.longDescription }}</p>
+      }
+
+      <div class="product-actions">
+        @if (product.actionLinks.whatsappUrl) {
+        <a class="cta-primary" [href]="product.actionLinks.whatsappUrl" target="_blank" rel="noreferrer"
+          (click)="trackPrimaryCta(product)">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path
+              d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+          </svg>
+          {{ storefrontConfig().content.primaryCtaLabel }}
+        </a>
+        }
+        @if (product.actionLinks.instagramUrl) {
+        <a class="cta-secondary" [href]="product.actionLinks.instagramUrl" target="_blank" rel="noreferrer"
+          (click)="trackSecondaryCta(product)">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path
+              d="M7.75 3h8.5A4.75 4.75 0 0 1 21 7.75v8.5A4.75 4.75 0 0 1 16.25 21h-8.5A4.75 4.75 0 0 1 3 16.25v-8.5A4.75 4.75 0 0 1 7.75 3Zm0 1.5A3.25 3.25 0 0 0 4.5 7.75v8.5a3.25 3.25 0 0 0 3.25 3.25h8.5a3.25 3.25 0 0 0 3.25-3.25v-8.5a3.25 3.25 0 0 0-3.25-3.25h-8.5Zm8.9 1.15a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2ZM12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm0 1.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z" />
+          </svg>
+          {{ storefrontConfig().content.secondaryCtaLabel }}
+        </a>
+        }
+      </div>
+
+      @if (storefrontConfig().brand.name) {
+      <section class="store-info" aria-label="Store information">
+        <h2 class="store-info-heading">{{ storefrontConfig().content.storeInfoSectionTitle }}</h2>
+        <div class="store-info-card">
+          @if (storefrontConfig().brand.logoPath) {
+          <img class="store-logo" [src]="storefrontConfig().brand.logoPath" [alt]="storefrontConfig().brand.logoAlt">
           }
+          <div class="store-meta">
+            <strong class="store-name">{{ storefrontConfig().brand.name }}</strong>
+            @if (storefrontConfig().brand.description) {
+            <span class="store-tagline">{{ storefrontConfig().brand.description }}</span>
+            }
+          </div>
         </div>
       </section>
       }
+    </section>
+  </div>
+
+  @if (relatedProducts().length) {
+  <section class="related-section">
+    <h2>{{ storefrontConfig().content.relatedSectionTitle }}</h2>
+    <div class="related-scroll">
+      @for (related of relatedProducts(); track related.id) {
+      <article class="related-card-shell">
+        <app-product-card [product]="related" variant="compact"></app-product-card>
+      </article>
+      }
     </div>
   </section>
+  }
 </article>
 } @else {
-<div class="recipe-not-found-page">
-  <div class="home-preview" aria-hidden="true">
-    <app-product-list></app-product-list>
-  </div>
+<div class="product-not-found-page">
+  <div class="home-preview" aria-hidden="true"></div>
 
   <div class="modal-layer">
     <app-product-not-found></app-product-not-found>

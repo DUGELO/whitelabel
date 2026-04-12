@@ -1,15 +1,13 @@
-<section class="not-found-modal" aria-labelledby="recipe-not-found-title" aria-describedby="recipe-not-found-description">
+<section class="not-found-modal" aria-labelledby="product-not-found-title" aria-describedby="product-not-found-description">
 	<div class="modal-visual" aria-hidden="true">
-		<img src="./recipe-not-found.png" alt="Illustration of a person looking at an empty shelf">
+		<img [src]="storefrontConfig().brand.notFoundImagePath" alt="Illustration of a person looking at an empty storefront shelf">
 	</div>
 
 	<div class="modal-copy">
-		<p class="eyebrow">Recipe not found</p>
-		<h1 id="recipe-not-found-title">This recipe slipped off the shelf.</h1>
-		<p id="recipe-not-found-description">
-			We couldn&apos;t find the recipe you were looking for. Browse the home page and pick another dish from the collection.
-		</p>
+		<p class="eyebrow">{{ storefrontConfig().content.productNotFoundEyebrow }}</p>
+		<h1 id="product-not-found-title">{{ storefrontConfig().content.notFoundTitle }}</h1>
+		<p id="product-not-found-description">{{ storefrontConfig().content.notFoundDescription }}</p>
 
-		<a class="primary-action" routerLink="/">Back to home</a>
+		<a class="primary-action" routerLink="/">{{ storefrontConfig().content.notFoundBrowseLabel }}</a>
 	</div>
 </section>

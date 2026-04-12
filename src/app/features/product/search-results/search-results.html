@@ -1,149 +1,125 @@
-<section class="search-results-page" aria-label="Search results page">
-  <aside class="filters-sidebar" aria-label="Recipe filters">
+<section class="search-results-page">
+  <!-- MOBILE: results header + filter toggle -->
+  <div class="mobile-results-bar">
+    <h2 class="mobile-results-count">{{ totalResultsLabel() }}</h2>
+    <button type="button" class="mobile-filter-toggle" (click)="toggleMobileFilters()">
+      <span class="material-symbols-outlined" aria-hidden="true">tune</span>
+      {{ storefrontConfig().content.mobileFilterButtonLabel }}
+      <span class="material-symbols-outlined chevron" aria-hidden="true">expand_more</span>
+    </button>
+  </div>
+
+  <!-- BACKDROP for mobile drawer -->
+  @if (mobileFiltersOpen()) {
+    <div class="drawer-backdrop" (click)="toggleMobileFilters()"></div>
+  }
+
+  <!-- SIDEBAR (desktop) / DRAWER (mobile) -->
+  <aside
+    class="filters-sidebar"
+    [class.open]="mobileFiltersOpen()"
+    [attr.aria-label]="storefrontConfig().content.filtersTitle"
+  >
     <div class="filters-header">
-      <h1>Filters</h1>
-      <button type="button" class="reset-button" (click)="resetSearchExperience()">Reset</button>
+      <h2>{{ storefrontConfig().content.filtersTitle }}</h2>
     </div>
 
     <div class="filter-group">
       <input
         type="search"
-        [value]="recipeService.searchTerm()"
-        (input)="recipeService.setSearchTerm(($any($event.target)).value)"
-        placeholder="Search within results..."
-        aria-label="Search within results"
+        [value]="productService.searchTerm()"
+        (input)="productService.setSearchTerm(($any($event.target)).value)"
+        [placeholder]="storefrontConfig().content.filterSearchPlaceholder"
+        [attr.aria-label]="storefrontConfig().content.filterSearchPlaceholder"
       >
     </div>
 
     <div class="filter-group">
-      <h2>Cooking time</h2>
+      <h3>{{ storefrontConfig().content.priceRangeTitle }}</h3>
 
-      <div class="range-labels">
-        <div class="range-label-pair"><span class="range-value">0</span><span class="range-unit">min</span></div>
-        <div class="range-label-pair"><span class="range-value">120</span><span class="range-unit">min</span></div>
+      <div class="price-current-value" aria-live="polite">
+        <span class="price-label">{{ storefrontConfig().content.priceRangeCurrentPrefix }}</span>
+        <span class="price-value">{{ formattedMinPrice() }}</span>
       </div>
 
-      <input
-        class="time-range"
-        type="range"
-        min="0"
-        max="120"
-        step="5"
-        [value]="maxCookTime()"
-        (input)="setMaxCookTime($event)"
-        aria-label="Maximum cooking time"
-      >
+      <div class="range-track-wrapper">
+        <input
+          class="price-range"
+          type="range"
+          [min]="priceRangeMin()"
+          [max]="priceRangeMax()"
+          step="10"
+          [value]="minPrice()"
+          (input)="setMinPrice($event)"
+          [attr.aria-label]="storefrontConfig().content.priceRangeAriaLabel"
+          [attr.aria-valuetext]="formattedMinPrice()"
+          [style.--range-percent.%]="priceRangePercent()"
+        >
+        <div class="range-labels">
+          <span>{{ formattedPriceRangeMinLabel() }}</span>
+          <span>{{ formattedPriceRangeMaxLabel() }}</span>
+        </div>
+      </div>
 
-      <div class="time-preset-list">
-        <button type="button" [class.active]="maxCookTime() === 30" (click)="applyCookTimePreset(30)">&lt; 30 min</button>
-        <button type="button" [class.active]="maxCookTime() === 60" (click)="applyCookTimePreset(60)">30-60 min</button>
-        <button type="button" [class.active]="maxCookTime() === 120" (click)="applyCookTimePreset(120)">&lt; 2 hrs</button>
+      <div class="preset-chips">
+        <button type="button" class="preset-chip" [class.active]="minPrice() === priceRangeMin()" (click)="applyPricePreset(priceRangeMin())">{{ storefrontConfig().content.pricePresetAllLabel }}</button>
+        <button type="button" class="preset-chip" [class.active]="minPrice() === pricePresetMidValue()" (click)="applyPricePreset(pricePresetMidValue())">{{ storefrontConfig().content.pricePresetMidLabel }}</button>
+        <button type="button" class="preset-chip" [class.active]="minPrice() === pricePresetHighValue()" (click)="applyPricePreset(pricePresetHighValue())">{{ storefrontConfig().content.pricePresetHighLabel }}</button>
       </div>
     </div>
 
     <div class="filter-group">
-      <h2>Difficulty</h2>
-      <div class="difficulty-filter-list">
-        @for (difficulty of difficultyOptions; track difficulty) {
+      <h3>{{ storefrontConfig().content.categoriesTitle }}</h3>
+      <div class="category-chips">
+        @for (category of categoryOptions(); track category) {
           <button
             type="button"
-            [class.active]="isDifficultySelected(difficulty)"
-            [class.easy]="difficulty === 'Easy'"
-            [class.medium]="difficulty === 'Medium'"
-            [class.hard]="difficulty === 'Hard'"
-            (click)="toggleDifficulty(difficulty)"
+            class="category-chip"
+            [class.active]="isCategorySelected(category)"
+            (click)="toggleCategory(category)"
           >
-            {{ difficulty }}
+            {{ category }}
           </button>
         }
       </div>
     </div>
 
-    <div class="filter-group">
-      <h2>Ingredients</h2>
-      <input
-        list="ingredient-options"
-        type="text"
-        [value]="ingredientInput()"
-        (input)="updateIngredientInput($event)"
-        (keydown)="handleIngredientKeydown($event)"
-        placeholder="Tags..."
-      >
-      <datalist id="ingredient-options">
-        @for (ingredient of availableIngredients(); track ingredient) {
-          <option [value]="ingredient"></option>
-        }
-      </datalist>
 
-      @if (selectedIngredients().length > 0) {
-        <div class="ingredient-chip-list">
-          @for (ingredient of selectedIngredients(); track ingredient) {
-            <button type="button" class="ingredient-chip" (click)="removeIngredient(ingredient)">
-              {{ ingredient }}
-              <span aria-hidden="true">×</span>
-            </button>
-          }
-        </div>
-      }
-    </div>
+    <button type="button" class="clear-filters-link" (click)="resetSearchExperience()">
+      {{ storefrontConfig().content.filtersResetLabel }}
+    </button>
+
+    <button type="button" class="mobile-apply-btn" (click)="toggleMobileFilters()">
+      {{ storefrontConfig().content.mobileFilterApplyLabel }}
+    </button>
   </aside>
 
-  <section class="results-panel" aria-label="Filtered recipes">
+  <!-- RESULTS -->
+  <section class="results-panel" aria-label="Filtered products">
     <div class="results-toolbar">
       <h2>{{ totalResultsLabel() }}</h2>
-
       <label class="sort-control">
-        <span>Sort by:</span>
+        <span>{{ storefrontConfig().content.sortByLabel }}</span>
         <select [value]="selectedSort()" (change)="setSortOption($event)">
-          @for (option of sortOptions; track option.value) {
+          @for (option of sortOptions(); track option.value) {
             <option [value]="option.value">{{ option.label }}</option>
           }
         </select>
       </label>
     </div>
 
-    <div class="search-results-grid">
-      @for (recipe of results(); track recipe.id) {
-        <article class="recipe-card search-result-card">
-          <a class="image-wrap" [routerLink]="['/recipes', recipe.id]" [attr.aria-label]="'Open ' + recipe.name">
-            <img [src]="recipe.imgUrl" [alt]="recipe.name" loading="lazy">
-          </a>
-
-          <button
-            type="button"
-            class="favorite-button"
-            [class.active]="recipe.isFavorite"
-            [attr.aria-label]="recipe.isFavorite ? 'Remove from favorites' : 'Add to favorites'"
-            (click)="toggleFavorite($event, recipe.id)"
-          >
-            <span class="material-symbols-outlined" aria-hidden="true">favorite</span>
-          </button>
-
-          <div class="recipe-content">
-            <h3><a [routerLink]="['/recipes', recipe.id]">{{ recipe.name }}</a></h3>
-
-            <div class="meta-line">
-              <span class="meta-time">
-                <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-                {{ formatDuration(recipe) }}
-              </span>
-              <span
-                class="difficulty-badge"
-                [class.easy]="recipe.difficulty === 'Easy'"
-                [class.medium]="recipe.difficulty === 'Medium'"
-                [class.hard]="recipe.difficulty === 'Hard'"
-              >
-                {{ recipe.difficulty }}
-              </span>
-            </div>
-
-            <div class="meta-line meta-rating">
-              <span class="stars" aria-hidden="true">★★★★★</span>
-              <span>{{ formatRating(recipe) }} ({{ formatReviewCount(recipe) }})</span>
-            </div>
-          </div>
-        </article>
-      }
-    </div>
+    @if (results().length > 0) {
+      <div class="search-results-grid">
+        @for (product of results(); track product.id) {
+          <app-product-card [product]="product" variant="compact"></app-product-card>
+        }
+      </div>
+    } @else {
+      <div class="empty-results" role="status">
+        <span class="material-symbols-outlined empty-icon" aria-hidden="true">search_off</span>
+        <h3>{{ storefrontConfig().content.emptyCatalogTitle }}</h3>
+        <p>{{ storefrontConfig().content.emptyCatalogDescription }}</p>
+      </div>
+    }
   </section>
 </section>

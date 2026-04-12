@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+
+import { StorefrontConfigService } from '../../../core/storefront/storefront-config.service';
 
 @Component({
   selector: 'app-not-found-page',
@@ -8,4 +10,6 @@ import { RouterLink } from '@angular/router';
   styleUrl: './not-found-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NotFoundPage {}
+export class NotFoundPage {
+  protected readonly storefrontConfig = inject(StorefrontConfigService).config;
+}

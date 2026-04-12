@@ -1,8 +1,8 @@
 .container-app {
     min-height: 100%;
     background:
-        radial-gradient(circle at 0% 0%, #fff9f2 0, #fff9f2 24%, transparent 25%),
-        linear-gradient(180deg, #ffffff 0, #ffffff 88px, var(--color-background) 88px, var(--color-background) 100%);
+        radial-gradient(circle at 0% 0%, var(--color-surface-warm) 0, var(--color-surface-warm) 24%, transparent 25%),
+        linear-gradient(180deg, var(--color-surface) 0, var(--color-surface) 88px, var(--color-background) 88px, var(--color-background) 100%);
 
     .container-main {
         max-width: 1260px;
