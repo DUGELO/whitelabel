@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 140" role="img" aria-labelledby="title desc">
+  <title id="title">Atelier Aurea logo</title>
+  <desc id="desc">Logo tipografico do Atelier Aurea com monograma circular dourado</desc>
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f3ddb4"/>
+      <stop offset="45%" stop-color="#c79b42"/>
+      <stop offset="100%" stop-color="#876321"/>
+    </linearGradient>
+  </defs>
+  <rect width="420" height="140" rx="28" fill="#fffaf2"/>
+  <circle cx="70" cy="70" r="42" fill="none" stroke="url(#gold)" stroke-width="4"/>
+  <path d="M56 92 70 46l14 46" fill="none" stroke="#7a5a1f" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+  <path d="M61 78h18" fill="none" stroke="#c79b42" stroke-linecap="round" stroke-width="4"/>
+  <text x="128" y="63" fill="#2a2015" font-family="Georgia, serif" font-size="34" letter-spacing="5">ATELIER</text>
+  <text x="128" y="98" fill="#8a6a2d" font-family="Georgia, serif" font-size="34" letter-spacing="7">AUREA</text>
+  <text x="129" y="118" fill="#7b6a55" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="12" letter-spacing="4">JOALHERIA DE CURADORIA</text>
+</svg>

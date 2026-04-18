@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Anel solitario</title>
+  <desc id="desc">Card ilustrado de anel solitario com pedra central</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff8ee"/>
+      <stop offset="100%" stop-color="#efe0c8"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0d6a4"/>
+      <stop offset="55%" stop-color="#cb9a40"/>
+      <stop offset="100%" stop-color="#8d6722"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <circle cx="600" cy="420" r="250" fill="#fffdf8" opacity=".85"/>
+  <circle cx="600" cy="590" r="178" fill="none" stroke="url(#gold)" stroke-width="26"/>
+  <path d="M520 470h160" fill="none" stroke="url(#gold)" stroke-linecap="round" stroke-width="18"/>
+  <path d="m600 280 54 72-54 72-54-72z" fill="#ffffff" stroke="#d8c08a" stroke-width="14"/>
+  <path d="m600 280 0 144" fill="none" stroke="#d8c08a" stroke-width="10"/>
+  <path d="m546 352 108 0" fill="none" stroke="#d8c08a" stroke-width="10"/>
+  <text x="600" y="935" text-anchor="middle" fill="#6f531e" font-family="Georgia, serif" font-size="64" letter-spacing="6">ANEL SOLITARIO</text>
+  <text x="600" y="996" text-anchor="middle" fill="#897867" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="28" letter-spacing="8">OURO 18K</text>
+</svg>

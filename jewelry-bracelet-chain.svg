@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Pulseira delicada</title>
+  <desc id="desc">Card ilustrado de pulseira delicada de elos</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff9f0"/>
+      <stop offset="100%" stop-color="#eadbc0"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f2ddb6"/>
+      <stop offset="50%" stop-color="#cb9a3f"/>
+      <stop offset="100%" stop-color="#8c6623"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <circle cx="600" cy="420" r="250" fill="#fffdf8" opacity=".82"/>
+  <path d="M340 530h520" fill="none" stroke="url(#gold)" stroke-linecap="round" stroke-width="14"/>
+  <ellipse cx="400" cy="530" rx="26" ry="18" fill="none" stroke="url(#gold)" stroke-width="10"/>
+  <ellipse cx="490" cy="530" rx="26" ry="18" fill="none" stroke="url(#gold)" stroke-width="10"/>
+  <ellipse cx="580" cy="530" rx="26" ry="18" fill="none" stroke="url(#gold)" stroke-width="10"/>
+  <ellipse cx="670" cy="530" rx="26" ry="18" fill="none" stroke="url(#gold)" stroke-width="10"/>
+  <ellipse cx="760" cy="530" rx="26" ry="18" fill="none" stroke="url(#gold)" stroke-width="10"/>
+  <text x="600" y="935" text-anchor="middle" fill="#6f531e" font-family="Georgia, serif" font-size="64" letter-spacing="5">PULSEIRA DELICADA</text>
+  <text x="600" y="996" text-anchor="middle" fill="#897867" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="28" letter-spacing="8">ELOS POLIDOS</text>
+</svg>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Conjunto de joias</title>
+  <desc id="desc">Card ilustrado de conjunto com colar e brincos coordenados</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff8ef"/>
+      <stop offset="100%" stop-color="#ebdcc5"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f2ddb6"/>
+      <stop offset="50%" stop-color="#cb9a41"/>
+      <stop offset="100%" stop-color="#8d6725"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <circle cx="600" cy="420" r="250" fill="#fffdf8" opacity=".82"/>
+  <path d="M390 410c80-120 340-120 420 0" fill="none" stroke="url(#gold)" stroke-linecap="round" stroke-width="16"/>
+  <path d="M600 390v88" fill="none" stroke="url(#gold)" stroke-linecap="round" stroke-width="10"/>
+  <path d="m600 478 38 56c0 34-28 58-38 66-10-8-38-32-38-66z" fill="#ffffff" stroke="#caa85f" stroke-width="10"/>
+  <circle cx="430" cy="420" r="18" fill="#ffffff" stroke="#d7b874" stroke-width="8"/>
+  <circle cx="770" cy="420" r="18" fill="#ffffff" stroke="#d7b874" stroke-width="8"/>
+  <path d="M430 438v34" fill="none" stroke="url(#gold)" stroke-linecap="round" stroke-width="8"/>
+  <path d="M770 438v34" fill="none" stroke="url(#gold)" stroke-linecap="round" stroke-width="8"/>
+  <path d="m430 470 22 36c0 22-16 38-22 44-6-6-22-22-22-44z" fill="#ffffff" stroke="#caa85f" stroke-width="8"/>
+  <path d="m770 470 22 36c0 22-16 38-22 44-6-6-22-22-22-44z" fill="#ffffff" stroke="#caa85f" stroke-width="8"/>
+  <text x="600" y="935" text-anchor="middle" fill="#6f531e" font-family="Georgia, serif" font-size="72" letter-spacing="10">CONJUNTO</text>
+  <text x="600" y="996" text-anchor="middle" fill="#897867" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="28" letter-spacing="8">COLAR + BRINCOS</text>
+</svg>
