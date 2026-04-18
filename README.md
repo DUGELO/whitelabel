@@ -1,59 +1,78 @@
-# AngularIaCourse
+# White Label Docs
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.4.
+Esta pasta concentra a documentacao operacional do sistema white label da vitrine.
 
-## Development server
+## Objetivo
 
-To start a local development server, run:
+O projeto foi estruturado para operar como uma vitrine frontend-only por loja, com configuracao manual por codigo.
 
-```bash
-ng serve
+Na pratica, uma nova loja e configurada por:
+
+1. branding e textos em `src/app/core/storefront/storefront-config.ts`
+2. catalogo em `src/app/features/product/catalog-seed-data.ts`
+3. assets visuais em `public/`
+
+## Fonte de verdade
+
+O centro da configuracao e o `STOREFRONT_CONFIG` em `src/app/core/storefront/storefront-config.ts`.
+
+Ele define:
+
+- identidade da marca
+- tema visual
+- textos da interface
+- canais de contato
+- links sociais
+- configuracao de navegacao
+- faixa e presets de preco do filtro
+- referencia para o catalogo da loja
+
+O catalogo entra no storefront por este fluxo:
+
+```text
+CATALOG_SEED_DATA
+  -> LOCAL_PRODUCT_CATALOG
+    -> STOREFRONT_CONFIG.productCatalog
+      -> mapCatalogSeedToProducts()
+        -> ProductCatalogService
+          -> UI
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Documentos disponiveis
 
-## Code scaffolding
+### [WHITE_LABEL_SETUP.md](WHITE_LABEL_SETUP.md)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Manual operacional completo para subir uma nova loja, cobrindo:
 
-```bash
-ng generate component component-name
-```
+- diagnostico da arquitetura atual
+- arquivos reais que precisam ser editados
+- classificacao de campos obrigatorios, opcionais e com fallback
+- passo a passo de configuracao
+- exemplo completo de loja ficticia
+- checklist final de publicacao
+- riscos, hardcodes e melhorias recomendadas
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### [logo-usage.md](logo-usage.md)
 
-```bash
-ng generate --help
-```
+Guia de uso dos arquivos de logo e suas variacoes visuais.
 
-## Building
+## Fluxo recomendado para nova loja
 
-To build the project run:
+1. Adicionar os assets em `public/`
+2. Preencher `STOREFRONT_CONFIG`
+3. Ajustar `CATALOG_SEED_DATA`
+4. Rodar `ng build`
+5. Rodar `ng test`
+6. Validar no browser com `ng serve`
 
-```bash
-ng build
-```
+## Observacoes importantes
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+- O hero da home usa o primeiro item do catalogo.
+- Os filtros de categoria dependem do campo `category` do catalogo.
+- A busca textual usa `name`, `description` e `tags`.
+- Os presets do filtro usam valores numericos em `catalog.pricePresetMidValue` e `catalog.pricePresetHighValue`, mas os labels continuam em `content.pricePresetMidLabel` e `content.pricePresetHighLabel`.
+- Fonts e tema base do Angular Material ainda nao sao controlados pelo `storefront`.
 
-## Running unit tests
+## Leitura sugerida
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Se voce precisa operar uma nova loja agora, comece por [WHITE_LABEL_SETUP.md](WHITE_LABEL_SETUP.md).
