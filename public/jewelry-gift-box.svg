@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Presente premium</title>
+  <desc id="desc">Card ilustrado de caixa de presente premium com joias</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff8ef"/>
+      <stop offset="100%" stop-color="#ead9bd"/>
+    </linearGradient>
+    <linearGradient id="box" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2b2117"/>
+      <stop offset="100%" stop-color="#5b4320"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f2ddb6"/>
+      <stop offset="50%" stop-color="#cb9a41"/>
+      <stop offset="100%" stop-color="#8d6725"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <circle cx="600" cy="420" r="250" fill="#fffdf8" opacity=".82"/>
+  <rect x="360" y="390" width="480" height="280" rx="28" fill="url(#box)"/>
+  <rect x="390" y="420" width="420" height="220" rx="18" fill="#1c1611"/>
+  <path d="M600 390v280" fill="none" stroke="url(#gold)" stroke-width="18"/>
+  <path d="M360 510h480" fill="none" stroke="url(#gold)" stroke-width="18"/>
+  <path d="M600 390c-24-54-106-62-106 0 0 40 58 66 106 120 48-54 106-80 106-120 0-62-82-54-106 0Z" fill="none" stroke="url(#gold)" stroke-width="18"/>
+  <text x="600" y="935" text-anchor="middle" fill="#6f531e" font-family="Georgia, serif" font-size="72" letter-spacing="8">PRESENTE</text>
+  <text x="600" y="996" text-anchor="middle" fill="#897867" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="28" letter-spacing="8">BOX PREMIUM</text>
+</svg>

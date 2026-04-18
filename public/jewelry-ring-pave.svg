@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Anel pave</title>
+  <desc id="desc">Card ilustrado de anel pave com aro fino</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff8ef"/>
+      <stop offset="100%" stop-color="#ead8bd"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f1ddb7"/>
+      <stop offset="50%" stop-color="#ca9d49"/>
+      <stop offset="100%" stop-color="#8c6727"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <circle cx="600" cy="420" r="250" fill="#fffdf8" opacity=".82"/>
+  <circle cx="600" cy="580" r="178" fill="none" stroke="url(#gold)" stroke-width="20"/>
+  <circle cx="446" cy="506" r="15" fill="#fffdfb" stroke="#d8c08a" stroke-width="8"/>
+  <circle cx="494" cy="455" r="15" fill="#fffdfb" stroke="#d8c08a" stroke-width="8"/>
+  <circle cx="557" cy="420" r="15" fill="#fffdfb" stroke="#d8c08a" stroke-width="8"/>
+  <circle cx="643" cy="420" r="15" fill="#fffdfb" stroke="#d8c08a" stroke-width="8"/>
+  <circle cx="706" cy="455" r="15" fill="#fffdfb" stroke="#d8c08a" stroke-width="8"/>
+  <circle cx="754" cy="506" r="15" fill="#fffdfb" stroke="#d8c08a" stroke-width="8"/>
+  <text x="600" y="935" text-anchor="middle" fill="#6f531e" font-family="Georgia, serif" font-size="64" letter-spacing="8">ANEL PAVE</text>
+  <text x="600" y="996" text-anchor="middle" fill="#897867" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="28" letter-spacing="8">BRILHO DELICADO</text>
+</svg>

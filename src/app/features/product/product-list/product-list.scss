@@ -170,7 +170,7 @@ $card-transition: 180ms ease;
     .home-page {
         .popular-section {
             .popular-grid {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             }
         }
     }
@@ -202,7 +202,7 @@ $card-transition: 180ms ease;
 
         .popular-section {
             .popular-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             }
         }
     }

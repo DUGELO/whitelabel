@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Brinco ponto de luz</title>
+  <desc id="desc">Card ilustrado de brincos pequenos de brilho</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff9f0"/>
+      <stop offset="100%" stop-color="#ebdbc4"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <circle cx="600" cy="420" r="250" fill="#fffdf8" opacity=".82"/>
+  <circle cx="480" cy="490" r="82" fill="#ffffff" stroke="#d7b874" stroke-width="16"/>
+  <circle cx="720" cy="490" r="82" fill="#ffffff" stroke="#d7b874" stroke-width="16"/>
+  <circle cx="480" cy="490" r="28" fill="#f7f9ff"/>
+  <circle cx="720" cy="490" r="28" fill="#f7f9ff"/>
+  <text x="600" y="935" text-anchor="middle" fill="#6f531e" font-family="Georgia, serif" font-size="62" letter-spacing="5">PONTO DE LUZ</text>
+  <text x="600" y="996" text-anchor="middle" fill="#897867" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="28" letter-spacing="8">BRINCO DELICADO</text>
+</svg>

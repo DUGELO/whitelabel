@@ -44,7 +44,7 @@ export class ProductList {
     }
 
     this.quickPicks().forEach((product) => excludeIds.add(product.id));
-    return this.selectProducts(this.catalogService.products(), 6, Array.from(excludeIds));
+    return this.selectProducts(this.catalogService.products(), 5, Array.from(excludeIds));
   });
 
   protected trackProductClick(product: Product, channel: 'hero' | 'quick-pick' | 'popular'): void {

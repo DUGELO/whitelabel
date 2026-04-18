@@ -11,7 +11,7 @@ describe('StorefrontConfigService', () => {
   });
 
   it('should expose the storefront configuration', () => {
-    expect(service.config().brand.name).toBe('Catalog Flow');
+    expect(service.config().brand.name).toBe('Atelier Aurea');
     expect(service.config().content.primaryCtaLabel).toBe('Comprar no WhatsApp');
     expect(service.config().contactChannels.length).toBeGreaterThan(0);
   });
