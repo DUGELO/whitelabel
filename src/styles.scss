@@ -34,16 +34,4 @@ body {
   // Reset the user agent margin.
   margin: 0;
   height: 100%;
-
-  /*** Custom styles for the lightbox component */
-  .lightbox-panel {
-    background: transparent;
-    box-shadow: none;
-    padding: 0;
-  }
-
-  .lightbox-backdrop {
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(6px);
-  }
 }

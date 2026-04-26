@@ -1,0 +1,60 @@
+<div class="lightbox" (click)="close()" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+
+    <!-- IMAGEM PRINCIPAL -->
+    <!-- @if (activeImage(); as img) {
+    <img [src]="img.url" (click)="$event.stopPropagation()" />
+    } -->
+
+    <!-- ZOOM Lens -->
+    @if (isDesktopPointer) {
+    <div class="lens-container" (mousemove)="onLensMove($event)" (mouseleave)="hideLens()">
+
+        <!-- IMAGEM PRINCIPAL -->
+        @if (activeImage(); as img) {
+        <img [src]="img.url" />
+
+        @if (showLens()) {
+        <div class="lens" [style.left.px]="lensPosition().x" [style.top.px]="lensPosition().y"></div>
+
+        <div class="lens-result" [style.background-image]="'url(' + img.url + ')'"
+            [style.background-position]="backgroundPosition()"></div>
+        }
+        }
+
+    </div>
+    } @else {
+        <div class="lens-container">
+            <!-- IMAGEM PRINCIPAL -->
+            @if (activeImage(); as img) {
+            <img [src]="img.url" (click)="$event.stopPropagation()" />
+            }
+        </div>
+    }
+
+    <!-- preview (fora) -->
+    @if (showLens()) {
+    <div class="lens-result" [style.background-image]="'url(' + activeImage()?.url + ')'"
+        [style.background-position]="backgroundPosition()">
+    </div>
+    }
+
+
+    <!-- BOTÃO FECHAR -->
+    <button class="close-btn" (click)="close()">✕</button>
+
+    <!-- SETAS -->
+    @if (images.length > 1) {
+    <button class="nav prev" (click)="prev(); $event.stopPropagation()">‹</button>
+    <button class="nav next" (click)="next(); $event.stopPropagation()">›</button>
+    }
+
+    <!-- DOTS -->
+    @if (images.length > 1) {
+    <div class="dots">
+        @for (img of images; track img.url; let i = $index) {
+        <span [class.active]="i === activeIndex()" (click)="activeIndex.set(i); $event.stopPropagation()"></span>
+        }
+    </div>
+    }
+
+</div>
