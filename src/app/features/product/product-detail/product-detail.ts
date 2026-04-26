@@ -8,10 +8,11 @@ import { ProductCatalogService } from '../product-service';
 import { ProductNotFound } from './product-not-found/product-not-found';
 import { ProductCard } from '../../../shared/design-system/components/product-card/product-card';
 import { MatChipsModule } from '@angular/material/chips';
+import { ProductGallery } from "../../../shared/design-system/components/product-gallery/product-gallery";
 
 @Component({
   selector: 'app-product-detail',
-  imports: [ProductNotFound, ProductCard, MatChipsModule],
+  imports: [ProductNotFound, ProductCard, MatChipsModule, ProductGallery],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,6 +27,8 @@ export class ProductDetail {
   protected readonly id = computed(() => Number(this.params()?.get('id')));
   protected readonly productById = computed(() => this.service.products().find((product) => product.id === this.id()));
 
+
+
   protected readonly relatedProducts = computed(() => {
     const current = this.productById();
     if (!current) return [];
@@ -33,6 +36,15 @@ export class ProductDetail {
       .filter((product) => product.id !== current.id)
       .slice(0, 6);
   });
+
+  protected getProductImages(product: Product) {
+    return product.media
+      .filter(m => m.kind === 'image')
+      .map(m => ({
+        url: m.src,
+        alt: m.alt
+      }));
+  }
 
   protected formatPrice(product: Product): string {
     return new Intl.NumberFormat('pt-BR', {

@@ -9,6 +9,12 @@ export const CATALOG_SEED_DATA: CatalogSeedItem[] = [
     longDescription: 'Peca de presenca elegante para pedido, presente marcante ou uso diario sofisticado. O desenho solitario valoriza a pedra central e combina com aparadores finos da mesma colecao.',
     imgUrl: 'jewelry-ring-solitaire.svg',
     imageAlt: 'Anel solitario dourado com pedra oval central e aro delicado',
+    gallery: [
+      { url: 'https://picsum.photos/600/600?lux1' },
+      { url: 'https://picsum.photos/600/600?lux2' },
+      { url: 'https://picsum.photos/600/600?lux3' },
+      { url: 'https://picsum.photos/600/600?lux4' }
+    ],
     price: 3890,
     compareAtPrice: 4290,
     category: 'Aneis',

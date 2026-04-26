@@ -6,6 +6,10 @@ export interface CatalogSeedItem {
   longDescription?: string;
   imgUrl: string;
   imageAlt?: string;
+  gallery?: {
+    url: string;
+    alt?: string;
+  }[];
   price: number;
   compareAtPrice?: number;
   category?: string;

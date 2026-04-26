@@ -23,8 +23,13 @@ export function mapCatalogSeedToProducts(source: CatalogSeedItem[], config: Stor
         {
           src: item.imgUrl,
           alt: item.imageAlt ?? item.name,
-          kind: 'image',
+          kind: 'image' as const,
         },
+        ...(item.gallery ?? []).map(img => ({
+          src: img.url,
+          alt: img.alt ?? item.name,
+          kind: 'image' as const
+        }))
       ],
       price: {
         amount: item.price,

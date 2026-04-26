@@ -1,0 +1,19 @@
+<div class="gallery">
+
+    <!-- MAIN -->
+    <div class="main" (click)="openLightbox()" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+        @if (activeImage(); as img) {
+        <img [src]="img.url" [alt]="img.alt" />
+        }
+    </div>
+
+    <!-- THUMBS -->
+    @if (resolvedImages().length > 1) {
+    <div class="thumbs">
+        @for (img of resolvedImages(); track img.url; let i = $index) {
+        <img [src]="img.url" [class.active]="i === activeIndex()" (mouseenter)="select(i)" />
+        }
+    </div>
+    }
+
+</div>

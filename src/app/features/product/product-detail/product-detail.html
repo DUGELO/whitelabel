@@ -4,7 +4,10 @@
     <!-- Product Image -->
     <section class="product-gallery">
       <div class="gallery-frame">
-        <img [src]="product.imageUrl" [alt]="product.imageAlt">
+        <!-- <img [src]="product.imageUrl" [alt]="product.imageAlt"> -->
+
+        <app-product-gallery [images]="getProductImages(product)">
+        </app-product-gallery>
       </div>
     </section>
 
