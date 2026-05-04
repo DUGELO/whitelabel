@@ -1,6 +1,3 @@
-import { CatalogSeedItem } from '../../features/product/catalog-seed-item.model';
-import { LOCAL_PRODUCT_CATALOG } from '../../features/product/local-product-catalog.seed';
-
 export interface StorefrontBrandingConfig {
   name: string;
   logoPath: string;
@@ -102,7 +99,6 @@ export interface StorefrontConfig {
   brand: StorefrontBrandingConfig;
   theme: BrandThemeTokens;
   content: StorefrontContentConfig;
-  productCatalog: CatalogSeedItem[];
   contactChannels: ContactChannel[];
   navigationLinks: StorefrontNavigationLink[];
   socialLinks: StorefrontSocialLinksConfig;
@@ -177,7 +173,6 @@ export const STOREFRONT_CONFIG: StorefrontConfig = {
     productNotFoundEyebrow: 'Joia nao encontrada',
     productAriaPrefix: 'Abrir',
   },
-  productCatalog: LOCAL_PRODUCT_CATALOG,
   contactChannels: [
     {
       type: 'whatsapp',

@@ -24,10 +24,8 @@ export class ProductDetail {
   private readonly analyticsService = inject(StorefrontAnalyticsService);
   protected readonly storefrontConfig = inject(StorefrontConfigService).config;
 
-  protected readonly id = computed(() => Number(this.params()?.get('id')));
+  protected readonly id = computed(() => this.params()?.get('id'));
   protected readonly productById = computed(() => this.service.products().find((product) => product.id === this.id()));
-
-
 
   protected readonly relatedProducts = computed(() => {
     const current = this.productById();

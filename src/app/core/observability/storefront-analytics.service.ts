@@ -11,7 +11,7 @@ type AnalyticsEventName =
   | 'search_no_results';
 
 export interface AnalyticsEventPayload {
-  productId?: number;
+  productId?: string;
   productSlug?: string;
   productTitle?: string;
   searchTerm?: string;

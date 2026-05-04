@@ -18,7 +18,7 @@
 
       @if (product.highlights.length) {
       <div class="product-highlights">
-        @for (highlight of product.highlights; track highlight) {
+        @for (highlight of product.highlights; track $index) {
         <span class="highlight-chip">{{ highlight }}</span>
         }
       </div>

@@ -19,7 +19,7 @@ export interface ProductActionLinks {
 }
 
 export interface Product {
-  id: number;
+  id: string;
   slug: string;
   title: string;
   shortDescription: string;
