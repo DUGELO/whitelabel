@@ -19,6 +19,8 @@ export class ProductList {
   private hasTrackedCatalogLoad = false;
 
   constructor() {
+    this.catalogService.loadProducts('whitelabel');
+
     effect(() => {
       if (!this.hasTrackedCatalogLoad && this.catalogService.products().length > 0) {
         this.hasTrackedCatalogLoad = true;
@@ -38,7 +40,7 @@ export class ProductList {
 
   protected readonly popularProducts = computed(() => {
     const hero = this.heroProduct();
-    const excludeIds = new Set<number>();
+    const excludeIds = new Set<string>();
     if (hero) {
       excludeIds.add(hero.id);
     }
@@ -57,9 +59,9 @@ export class ProductList {
     });
   }
 
-  private selectProducts(products: Product[], amount: number, excludedIds: number[] = []): Product[] {
+  private selectProducts(products: Product[], amount: number, excludedIds: string[] = []): Product[] {
     const selected: Product[] = [];
-    const seenIds = new Set<number>(excludedIds);
+    const seenIds = new Set<string>(excludedIds);
     const pool = [...products];
 
     for (const product of pool) {

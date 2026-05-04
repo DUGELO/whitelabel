@@ -1,8 +1,9 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { StorefrontAnalyticsService } from '../../core/observability/storefront-analytics.service';
 import { StorefrontConfigService } from '../../core/storefront/storefront-config.service';
-import { mapCatalogSeedToProducts } from './product-catalog.mapper';
+import { mapToProduct } from './mapToProduct';
 import { Product, ProductSortOption } from './models';
+import { ProductFirestoreService } from '../../core/firebase/product-firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -12,9 +13,18 @@ export class ProductCatalogService {
   private readonly analyticsService = inject(StorefrontAnalyticsService);
   private readonly storefrontConfig = this.storefrontConfigService.config;
   private readonly defaultMinPrice = this.storefrontConfig().catalog.priceRangeMin;
+  private firebaseProductService = inject(ProductFirestoreService);
 
   // STATE
-  readonly products = signal<Product[]>(mapCatalogSeedToProducts(this.storefrontConfig().productCatalog, this.storefrontConfig()));
+  readonly products = signal<Product[]>([]);
+
+  async loadProducts(tenantId: string) {
+    const raw = await this.firebaseProductService.getProducts(tenantId);
+
+    const mapped = raw.map((p) => mapToProduct(p));
+
+    this.products.set(mapped);
+  }
 
   readonly searchTerm = signal('');
   readonly minPrice = signal(this.defaultMinPrice);
@@ -25,15 +35,14 @@ export class ProductCatalogService {
     return Array.from(
       new Set(
         this.products()
-          .flatMap((product) => product.category ? [product.category] : [])
-          .sort((left, right) => left.localeCompare(right))
-      )
+          .flatMap((product) => (product.category ? [product.category] : []))
+          .sort((left, right) => left.localeCompare(right)),
+      ),
     );
   });
 
   readonly hasActiveFilters = computed(() => {
-    return this.minPrice() > this.defaultMinPrice
-      || this.selectedCategories().length > 0;
+    return this.minPrice() > this.defaultMinPrice || this.selectedCategories().length > 0;
   });
 
   readonly isSearchView = computed(() => {
@@ -46,14 +55,16 @@ export class ProductCatalogService {
     const selectedCategories = this.selectedCategories();
 
     return this.products().filter((product) => {
-      const matchesTerm = !term
-        || product.title.toLowerCase().includes(term)
-        || product.shortDescription.toLowerCase().includes(term)
-        || product.tags.some((tag) => tag.toLowerCase().includes(term));
+      const matchesTerm =
+        !term ||
+        product.title.toLowerCase().includes(term) ||
+        product.shortDescription.toLowerCase().includes(term) ||
+        product.tags.some((tag) => tag.toLowerCase().includes(term));
 
       const matchesPrice = product.price.amount >= minPrice;
-      const matchesCategory = selectedCategories.length === 0
-        || (product.category ? selectedCategories.includes(product.category) : false);
+      const matchesCategory =
+        selectedCategories.length === 0 ||
+        (product.category ? selectedCategories.includes(product.category) : false);
 
       return matchesTerm && matchesPrice && matchesCategory;
     });
@@ -68,12 +79,15 @@ export class ProductCatalogService {
     }
 
     if (sortOption === 'highest-rated') {
-      return products.sort((left, right) => right.rating - left.rating || right.reviewCount - left.reviewCount);
+      return products.sort(
+        (left, right) => right.rating - left.rating || right.reviewCount - left.reviewCount,
+      );
     }
 
-    return products.sort((left, right) => right.reviewCount - left.reviewCount || right.rating - left.rating);
+    return products.sort(
+      (left, right) => right.reviewCount - left.reviewCount || right.rating - left.rating,
+    );
   });
-
 
   // HANDLERS
   setSearchTerm(term: string): void {
