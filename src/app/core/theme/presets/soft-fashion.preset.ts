@@ -37,7 +37,7 @@ export const SOFT_FASHION_PRESET = {
   },
   variants: {
     hero: 'split-editorial',
-    productCard: 'boutique-clean',
+    productCard: 'soft-fashion-card',
     productGrid: 'boutique-grid',
     cta: 'soft-outline',
   },

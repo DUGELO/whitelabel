@@ -8,7 +8,12 @@ export type ThemePresetId =
   | 'modern-boutique';
 
 export type HeroVariantId = 'immersive' | 'split-editorial' | 'minimal-focus';
-export type ProductCardVariantId = 'editorial-minimal' | 'quiet-luxury' | 'boutique-clean';
+export type ProductCardVariantId =
+  | 'editorial-minimal'
+  | 'quiet-luxury'
+  | 'soft-fashion-card'
+  | 'dark-elegance-card'
+  | 'boutique-clean';
 export type ProductGridVariantId = 'editorial-grid' | 'minimal-grid' | 'boutique-grid';
 export type CtaVariantId = 'solid-premium' | 'soft-outline' | 'quiet-link';
 

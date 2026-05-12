@@ -49,7 +49,7 @@ Correct approach:
 {
   "theme": "editorial-luxury",
   "heroVariant": "immersive",
-  "productCardVariant": "minimal-premium"
+  "productCardVariant": "editorial-minimal"
 }
 ```
 

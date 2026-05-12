@@ -69,6 +69,7 @@ Referencia rapida para consulta no dia a dia:
 
 - presets disponiveis
 - variants aceitas
+- presets tipograficos aceitos
 - CSS variables semanticas
 - aliases legados temporarios
 - arquivos principais
@@ -77,6 +78,15 @@ Referencia rapida para consulta no dia a dia:
 ### [logo-usage.md](logo-usage.md)
 
 Guia de uso dos arquivos de logo e suas variacoes visuais.
+
+### [THEME_ENGINE_PHASE4_QA.md](THEME_ENGINE_PHASE4_QA.md)
+
+Checklist final da Phase 4:
+
+- campos seguros para futuro admin
+- matriz visual minima por preset
+- rotas de validacao
+- sinais de aprovacao do Theme Engine
 
 ## Fluxo recomendado para nova loja
 
@@ -93,7 +103,7 @@ Guia de uso dos arquivos de logo e suas variacoes visuais.
 - Os filtros de categoria dependem do campo `category` do catalogo.
 - A busca textual usa `name`, `description` e `tags`.
 - Os presets do filtro usam valores numericos em `catalog.pricePresetMidValue` e `catalog.pricePresetHighValue`, mas os labels continuam em `content.pricePresetMidLabel` e `content.pricePresetHighLabel`.
-- Fonts e tema base do Angular Material ainda nao sao controlados pelo `storefront`.
+- Os assets de fonte ainda sao carregados em `src/index.html`; a familia tipografica ativa e controlada por tokens em runtime.
 
 ## Leitura sugerida
 

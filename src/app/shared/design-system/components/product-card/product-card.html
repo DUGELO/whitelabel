@@ -2,6 +2,11 @@
     class="product-card"
     [class.product-card--compact]="variant() === 'compact'"
     [class.product-card--side]="variant() === 'side'"
+    [class.product-card--editorial-minimal]="themeVariant() === 'editorial-minimal'"
+    [class.product-card--quiet-luxury]="themeVariant() === 'quiet-luxury'"
+    [class.product-card--soft-fashion-card]="themeVariant() === 'soft-fashion-card'"
+    [class.product-card--dark-elegance-card]="themeVariant() === 'dark-elegance-card'"
+    [class.product-card--boutique-clean]="themeVariant() === 'boutique-clean'"
 >
     <a class="image-wrap" [routerLink]="['/products', product().id]" [attr.aria-label]="storefrontConfig().content.productAriaPrefix + ' ' + product().title"
         (click)="trackProductClick(product())">

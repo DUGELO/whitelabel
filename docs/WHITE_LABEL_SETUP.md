@@ -182,6 +182,7 @@ Campos principais:
 - `colors.brandPrimaryStrong`: opcional, variacao mais forte da cor principal.
 - `colors.brandSecondary`: opcional, cor secundaria da marca.
 - `colors.accent`: opcional, cor de apoio.
+- `typographyPreset`: opcional, preset tipografico controlado.
 - `variants`: opcional, variantes controladas para hero, card, grid e CTA.
 
 O tenant nao deve configurar cores arbitrarias de superficie, texto, borda, spacing, shadow ou motion. Esses valores pertencem aos presets para preservar consistencia visual.
@@ -435,9 +436,10 @@ theme: {
     brandSecondary: '#d195b1',
     accent: '#f3c3d6',
   },
+  typographyPreset: 'soft-serif',
   variants: {
     hero: 'split-editorial',
-    productCard: 'boutique-clean',
+    productCard: 'soft-fashion-card',
     productGrid: 'boutique-grid',
     cta: 'soft-outline',
   },

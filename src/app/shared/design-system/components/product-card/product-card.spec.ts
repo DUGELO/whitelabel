@@ -1,11 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
+import { StorefrontConfigService } from '../../../../core/storefront/storefront-config.service';
 import { ProductCard } from './product-card';
 
 describe('ProductCard', () => {
   let component: ProductCard;
   let fixture: ComponentFixture<ProductCard>;
+  let storefrontConfig: StorefrontConfigService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -16,6 +18,7 @@ describe('ProductCard', () => {
 
     fixture = TestBed.createComponent(ProductCard);
     component = fixture.componentInstance;
+    storefrontConfig = TestBed.inject(StorefrontConfigService);
     fixture.componentRef.setInput('product', {
       id: 1,
       title: 'Test product',
@@ -70,5 +73,28 @@ describe('ProductCard', () => {
 
     const card = fixture.nativeElement.querySelector('.product-card');
     expect(card.classList.contains('product-card--side')).toBe(true);
+  });
+
+  it('should apply the theme product card variant class from the active theme', async () => {
+    const card = fixture.nativeElement.querySelector('.product-card');
+    expect(card.classList.contains('product-card--editorial-minimal')).toBe(true);
+  });
+
+  it('should react to configured theme product card variant changes', async () => {
+    storefrontConfig.config.update((config) => ({
+      ...config,
+      theme: {
+        ...config.theme,
+        variants: {
+          ...config.theme.variants,
+          productCard: 'quiet-luxury',
+        },
+      },
+    }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const card = fixture.nativeElement.querySelector('.product-card');
+    expect(card.classList.contains('product-card--quiet-luxury')).toBe(true);
   });
 });

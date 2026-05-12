@@ -6,10 +6,10 @@ $card-transition: var(--motion-fast) var(--motion-easing-standard);
 }
 
 @mixin card-shell {
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-card);
-    background: var(--color-surface);
-    box-shadow: var(--shadow-soft);
+    border: var(--pc-border-width, 1px) solid var(--pc-border-color, var(--color-border));
+    border-radius: var(--pc-radius, var(--border-radius-card));
+    background: var(--pc-bg, var(--color-surface));
+    box-shadow: var(--pc-shadow, var(--shadow-soft));
     overflow: hidden;
 }
 
@@ -25,6 +25,27 @@ $card-transition: var(--motion-fast) var(--motion-easing-standard);
 .product-card {
     @include card-shell;
     @include card-hover;
+    --pc-border-width: 1px;
+    --pc-border-color: var(--color-border);
+    --pc-radius: var(--border-radius-card);
+    --pc-bg: var(--color-surface);
+    --pc-shadow: var(--shadow-soft);
+    --pc-image-size: clamp(180px, 16vw, 220px);
+    --pc-content-pad: var(--spacing-sm-md) var(--spacing-sm-md) var(--spacing-md);
+    --pc-content-gap: var(--spacing-xs);
+    --pc-title-font: var(--font-body);
+    --pc-title-size: 1rem;
+    --pc-title-weight: 700;
+    --pc-title-line: 1.2;
+    --pc-title-color: inherit;
+    --pc-title-transform: none;
+    --pc-title-spacing: 0;
+    --pc-description-display: block;
+    --pc-description-size: 0.8rem;
+    --pc-footer-min: 83px;
+    --pc-footer-pad: var(--spacing-sm-md);
+    --pc-footer-border: 1px solid var(--color-border);
+    --pc-footer-bg: color-mix(in srgb, var(--color-surface-soft) 65%, var(--color-surface));
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -34,7 +55,7 @@ $card-transition: var(--motion-fast) var(--motion-easing-standard);
         display: block;
         inline-size: 100%;
         flex-shrink: 0;
-        block-size: clamp(180px, 16vw, 220px);
+        block-size: var(--pc-image-size);
         background: var(--color-surface-soft);
 
         img {
@@ -47,20 +68,23 @@ $card-transition: var(--motion-fast) var(--motion-easing-standard);
     }
 
     .product-content {
-        padding: var(--spacing-sm-md) var(--spacing-sm-md) var(--spacing-md);
+        padding: var(--pc-content-pad);
         display: flex;
         flex-direction: column;
         align-items: stretch;
         flex: 1 1 auto;
-        gap: var(--spacing-xs);
+        gap: var(--pc-content-gap);
 
         h2,
         h3 {
             margin: 0;
-            font-family: var(--font-body);
-            font-size: 1rem;
-            line-height: 1.2;
-            font-weight: 700;
+            font-family: var(--pc-title-font);
+            font-size: var(--pc-title-size);
+            line-height: var(--pc-title-line);
+            font-weight: var(--pc-title-weight);
+            color: var(--pc-title-color);
+            letter-spacing: var(--pc-title-spacing);
+            text-transform: var(--pc-title-transform);
 
             a {
                 display: -webkit-box;
@@ -72,9 +96,9 @@ $card-transition: var(--motion-fast) var(--motion-easing-standard);
         }
 
         .product-description {
-            display: block;
+            display: var(--pc-description-display);
             color: var(--color-text-muted);
-            font-size: 0.8rem;
+            font-size: var(--pc-description-size);
             line-height: 1.45;
 
             p {
@@ -91,18 +115,18 @@ $card-transition: var(--motion-fast) var(--motion-easing-standard);
 
     .product-avaliation {
         margin-top: auto;
-        padding: var(--spacing-sm-md);
+        padding: var(--pc-footer-pad);
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: var(--spacing-sm);
         flex-wrap: wrap;
         flex-shrink: 0;
-        min-height: 83px;
+        min-height: var(--pc-footer-min);
         font-size: 0.8rem;
         color: var(--color-text-muted);
-        border-top: 1px solid var(--color-border);
-        background: color-mix(in srgb, var(--color-surface-soft) 65%, var(--color-surface));
+        border-top: var(--pc-footer-border);
+        background: var(--pc-footer-bg);
 
         .pricing-group {
             display: flex;
@@ -173,7 +197,136 @@ $card-transition: var(--motion-fast) var(--motion-easing-standard);
         }
     }
 
+    &.product-card--editorial-minimal {
+        --pc-border-width: 0;
+        --pc-radius: calc(var(--border-radius-card) + 6px);
+        --pc-shadow: var(--shadow-card);
+        --pc-image-size: clamp(220px, 22vw, 300px);
+        --pc-content-pad: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
+        --pc-title-font: var(--font-heading);
+        --pc-title-weight: var(--font-weight-heading);
+        --pc-title-size: 1.18rem;
+        --pc-title-line: var(--line-height-tight);
+        --pc-description-size: 0.88rem;
+        --pc-footer-min: 76px;
+        --pc-footer-pad: var(--spacing-md) var(--spacing-lg);
+        --pc-footer-bg: var(--color-surface);
+    }
+
+    &.product-card--quiet-luxury {
+        --pc-border-color: color-mix(in srgb, var(--color-text-main) 12%, transparent);
+        --pc-radius: var(--border-radius-sm);
+        --pc-shadow: none;
+        --pc-image-size: clamp(210px, 19vw, 260px);
+        --pc-content-gap: var(--spacing-sm-md);
+        --pc-content-pad: var(--spacing-md) var(--spacing-sm-md) var(--spacing-sm);
+        --pc-title-size: 0.96rem;
+        --pc-title-spacing: 0.02em;
+        --pc-title-transform: uppercase;
+        --pc-description-display: none;
+        --pc-footer-min: 64px;
+        --pc-footer-pad: var(--spacing-sm-md);
+        --pc-footer-border: 1px dashed var(--color-border);
+        --pc-footer-bg: transparent;
+
+        &:hover {
+            box-shadow: var(--shadow-soft);
+        }
+
+        .image-wrap {
+            background: transparent;
+        }
+
+        .price-chip {
+            background: transparent;
+        }
+    }
+
+    &.product-card--soft-fashion-card {
+        --pc-border-color: color-mix(in srgb, var(--color-accent) 62%, var(--color-border));
+        --pc-radius: calc(var(--border-radius-card) + 10px);
+        --pc-bg:
+            linear-gradient(180deg,
+                color-mix(in srgb, var(--color-background-surface) 88%, var(--color-accent)),
+                var(--color-background-surface));
+        --pc-shadow: var(--shadow-card);
+        --pc-image-size: clamp(196px, 19vw, 252px);
+        --pc-content-pad: var(--spacing-md) var(--spacing-lg) var(--spacing-sm-md);
+        --pc-title-color: var(--color-brand-primary-strong);
+        --pc-title-font: var(--font-heading);
+        --pc-title-size: 1.08rem;
+        --pc-title-line: var(--line-height-tight);
+        --pc-footer-border: 0;
+        --pc-footer-bg: color-mix(in srgb, var(--color-accent) 28%, transparent);
+
+        .image-wrap {
+            border-radius: calc(var(--border-radius-card) + 6px);
+            margin: var(--spacing-sm-md) var(--spacing-sm-md) 0;
+            inline-size: calc(100% - (var(--spacing-sm-md) * 2));
+            overflow: hidden;
+        }
+
+        .product-avaliation {
+            margin: 0 var(--spacing-sm-md) var(--spacing-sm-md);
+            border-radius: var(--border-radius-card);
+        }
+    }
+
+    &.product-card--dark-elegance-card {
+        --pc-border-color: color-mix(in srgb, var(--color-accent) 42%, var(--color-border));
+        --pc-bg:
+            linear-gradient(180deg,
+                color-mix(in srgb, var(--color-background-surface-soft) 72%, var(--color-background-surface)),
+                var(--color-background-surface));
+        --pc-shadow: var(--shadow-elevated);
+        --pc-image-size: clamp(220px, 21vw, 280px);
+        --pc-content-pad: var(--spacing-lg) var(--spacing-lg) var(--spacing-sm-md);
+        --pc-title-font: var(--font-heading);
+        --pc-title-size: 1.1rem;
+        --pc-title-line: var(--line-height-tight);
+        --pc-footer-border: 1px solid color-mix(in srgb, var(--color-accent) 38%, var(--color-border));
+        --pc-footer-bg: color-mix(in srgb, var(--color-text-main) 6%, var(--color-background-surface-soft));
+
+        .image-wrap {
+            background: var(--color-background-surface-soft);
+
+            img {
+                filter: saturate(0.9) contrast(1.08);
+            }
+        }
+
+        .current-price {
+            background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+            color: var(--color-accent);
+            border-color: color-mix(in srgb, var(--color-accent) 36%, transparent);
+        }
+    }
+
+    &.product-card--boutique-clean {
+        --pc-border-width: 2px;
+        --pc-border-color: color-mix(in srgb, var(--color-brand-secondary) 52%, var(--color-border));
+        --pc-radius: var(--border-radius-sm);
+        --pc-image-size: clamp(188px, 17vw, 232px);
+        --pc-content-pad: var(--spacing-sm-md) var(--spacing-md) var(--spacing-md);
+        --pc-title-size: 1.03rem;
+        --pc-title-weight: 800;
+        --pc-footer-min: 70px;
+        --pc-footer-bg: color-mix(in srgb, var(--color-background-warm) 58%, var(--color-surface));
+
+        .current-price {
+            background: color-mix(in srgb, var(--color-accent) 28%, var(--color-surface));
+            color: var(--color-brand-primary-strong);
+        }
+    }
+
     &.product-card--compact {
+        &.product-card--soft-fashion-card {
+            .image-wrap {
+                margin: var(--spacing-sm) var(--spacing-sm) 0;
+                inline-size: calc(100% - (var(--spacing-sm) * 2));
+            }
+        }
+
         .image-wrap {
             block-size: clamp(148px, 14vw, 176px);
         }
@@ -224,6 +377,13 @@ $card-transition: var(--motion-fast) var(--motion-easing-standard);
     }
 
     &.product-card--side {
+        &.product-card--soft-fashion-card {
+            .image-wrap {
+                margin: var(--spacing-xs) var(--spacing-xs) 0;
+                inline-size: calc(100% - (var(--spacing-xs) * 2));
+            }
+        }
+
         .image-wrap {
             block-size: clamp(118px, 10vw, 136px);
         }

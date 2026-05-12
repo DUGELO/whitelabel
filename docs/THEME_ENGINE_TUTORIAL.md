@@ -77,6 +77,7 @@ theme: {
     brandSecondary: '#b99668',
     accent: '#e5d3b1',
   },
+  typographyPreset: 'editorial-serif',
   variants: {
     hero: 'immersive',
     productCard: 'editorial-minimal',
@@ -90,6 +91,7 @@ Regras:
 
 - `preset` e obrigatorio.
 - `colors` e opcional e deve ser usado apenas para identidade da marca.
+- `typographyPreset` e opcional e deve usar apenas presets tipograficos controlados.
 - `variants` e opcional e deve usar apenas valores definidos nos types.
 - Nao configure cor de texto, surface, border, shadow, spacing ou motion por tenant.
 
@@ -111,12 +113,18 @@ Tipos atuais:
 
 ```ts
 type HeroVariantId = 'immersive' | 'split-editorial' | 'minimal-focus';
-type ProductCardVariantId = 'editorial-minimal' | 'quiet-luxury' | 'boutique-clean';
+type ProductCardVariantId =
+  | 'editorial-minimal'
+  | 'quiet-luxury'
+  | 'soft-fashion-card'
+  | 'dark-elegance-card'
+  | 'boutique-clean';
 type ProductGridVariantId = 'editorial-grid' | 'minimal-grid' | 'boutique-grid';
 type CtaVariantId = 'solid-premium' | 'soft-outline' | 'quiet-link';
+type TypographyPresetId = 'editorial-serif' | 'modern-sans' | 'soft-serif' | 'cinematic-serif';
 ```
 
-Os variants ainda sao fundacao arquitetural. Componentes devem passar a consumir esses valores nas proximas etapas da Phase 4.
+`productCard` ja e consumido pelo `ProductCard` para aplicar aparencias visuais controladas. `typographyPreset` ja e resolvido pelo Theme Engine e aplicado via CSS variables de fonte. Os demais variants ainda sao fundacao arquitetural e devem passar a ser consumidos nas proximas etapas.
 
 Regra importante:
 
@@ -302,7 +310,20 @@ Se uma variavel estiver vazia:
 3. confira `theme-css-vars.ts`
 4. confira se `ThemeEngineService.initializeTheme()` roda no `app.config.ts`
 
-## 11. Checklist antes de publicar uma mudanca de tema
+## 11. Admin readiness
+
+O futuro painel admin deve expor apenas escolhas controladas:
+
+| Campo | Regra |
+|---|---|
+| `theme.preset` | Lista fechada de presets da plataforma |
+| `theme.colors.*` | Apenas `brandPrimary`, `brandPrimaryStrong`, `brandSecondary`, `accent` |
+| `theme.typographyPreset` | Lista fechada de presets tipograficos |
+| `theme.variants.*` | Lista fechada de variants por componente |
+
+Nao expor `customCss`, spacing livre, shadow livre, surface livre, cor de texto livre ou fonte arbitraria.
+
+## 12. Checklist antes de publicar uma mudanca de tema
 
 - [ ] Nenhum hardcode de tenant foi criado.
 - [ ] Nenhum componente acessa Firestore por causa de tema.
@@ -314,7 +335,7 @@ Se uma variavel estiver vazia:
 - [ ] `npm test -- --watch=false` passou.
 - [ ] Documentacao foi atualizada quando houve mudanca de contrato.
 
-## 12. Anti-patterns
+## 13. Anti-patterns
 
 Nunca:
 

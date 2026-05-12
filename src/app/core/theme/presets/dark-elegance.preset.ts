@@ -39,7 +39,7 @@ export const DARK_ELEGANCE_PRESET = {
   },
   variants: {
     hero: 'immersive',
-    productCard: 'quiet-luxury',
+    productCard: 'dark-elegance-card',
     productGrid: 'editorial-grid',
     cta: 'solid-premium',
   },

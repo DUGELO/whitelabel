@@ -24,6 +24,15 @@ theme: {
 }
 ```
 
+## Config com typography preset
+
+```ts
+theme: {
+  preset: 'editorial-luxury',
+  typographyPreset: 'editorial-serif',
+}
+```
+
 ## Config com variants
 
 ```ts
@@ -63,6 +72,8 @@ Product card:
 ```txt
 editorial-minimal
 quiet-luxury
+soft-fashion-card
+dark-elegance-card
 boutique-clean
 ```
 
@@ -80,6 +91,15 @@ CTA:
 solid-premium
 soft-outline
 quiet-link
+```
+
+Typography:
+
+```txt
+editorial-serif
+modern-sans
+soft-serif
+cinematic-serif
 ```
 
 ## Semantic CSS variables
@@ -207,6 +227,7 @@ src/app/shared/design-system/tokens/
 
 - Usar `preset`.
 - Usar brand color overrides controlados.
+- Usar `typographyPreset` quando quiser mudar a voz tipografica sem fonte livre.
 - Usar semantic tokens em SCSS.
 - Usar `computed()` para estado derivado.
 - Usar `effect()` apenas para side effects inevitaveis.
@@ -219,6 +240,7 @@ src/app/shared/design-system/tokens/
 - Nao criar CSS por tenant.
 - Nao adicionar `customCss`.
 - Nao permitir spacing livre por tenant.
+- Nao permitir font family livre por tenant.
 - Nao usar cores randomicas em componente.
 - Nao duplicar componente por tema.
 - Nao acessar Firestore dentro de componente por causa de tema.

@@ -115,7 +115,6 @@ export const STOREFRONT_CONFIG: StorefrontConfig = {
     },
     variants: {
       hero: 'immersive',
-      productCard: 'editorial-minimal',
       productGrid: 'editorial-grid',
       cta: 'solid-premium',
     },

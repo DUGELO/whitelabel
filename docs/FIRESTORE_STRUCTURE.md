@@ -102,7 +102,7 @@ Example:
   "layout": {
     "heroVariant": "immersive",
     "productCardVariant": "editorial-minimal",
-    "gridVariant": "premium-grid"
+    "productGridVariant": "editorial-grid"
   },
   "catalog": {
     "currencyCode": "BRL",
