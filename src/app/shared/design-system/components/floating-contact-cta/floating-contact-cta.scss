@@ -25,7 +25,9 @@ $cta-offset: var(--spacing-lg);
 
   color: var(--color-surface);
   box-shadow: var(--shadow-soft), 0 4px 16px color-mix(in srgb, var(--color-text-main) 18%, transparent);
-  transition: transform 200ms ease, box-shadow 200ms ease;
+  transition:
+    transform var(--motion-medium) var(--motion-easing-standard),
+    box-shadow var(--motion-medium) var(--motion-easing-standard);
 
   svg {
     width: $cta-icon-size;
@@ -35,15 +37,20 @@ $cta-offset: var(--spacing-lg);
 
   // ─── CHANNEL VARIANTS ──────────────────────────────────
   &.whatsapp {
-    background: #25d366;
+    background: linear-gradient(180deg, var(--color-brand-primary), var(--color-brand-primary-strong));
 
     &:hover {
-      background: #20bd5a;
+      background: var(--color-brand-primary-strong);
     }
   }
 
   &.instagram {
-    background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    background: linear-gradient(
+      135deg,
+      var(--color-brand-primary) 0%,
+      var(--color-brand-secondary) 50%,
+      var(--color-accent) 100%
+    );
 
     &:hover {
       filter: brightness(0.92);

@@ -7,7 +7,7 @@
     }
 
     .lightbox-backdrop {
-        background: rgba(0, 0, 0, 0.85);
+        background: var(--color-overlay-backdrop);
         backdrop-filter: blur(6px);
     }
 

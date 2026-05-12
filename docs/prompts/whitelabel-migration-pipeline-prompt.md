@@ -380,9 +380,11 @@ No mínimo, a solução final deve permitir configurar facilmente:
 - brandName
 - brandLogo
 - brandDescription
-- primaryColor
-- secondaryColor
-- accentColor quando necessário
+- themePreset
+- brandPrimary
+- brandPrimaryStrong quando necessário
+- brandSecondary
+- accent quando necessário
 - favicon
 - heroBanners
 - featuredSections

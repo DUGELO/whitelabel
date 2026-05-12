@@ -91,9 +91,12 @@ Example:
   },
   "theme": {
     "preset": "editorial-luxury",
-    "primaryColor": "#7b1e3a",
-    "secondaryColor": "#000000",
-    "accentColor": "#c9a46b",
+    "colors": {
+      "brandPrimary": "#7b1e3a",
+      "brandPrimaryStrong": "#5b142b",
+      "brandSecondary": "#000000",
+      "accent": "#c9a46b"
+    },
     "typographyPreset": "editorial-serif"
   },
   "layout": {

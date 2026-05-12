@@ -173,21 +173,20 @@ Arquivos que voce normalmente nao precisa editar, mas precisa entender:
 
 ## `theme`
 
-Todos os campos abaixo sao obrigatorios e devem ser cores validas:
+O tema agora e resolvido pelo `ThemeEngineService`.
 
-- `primaryColor`
-- `primaryColorDark`
-- `secondaryColor`
-- `accentColor`
-- `backgroundColor`
-- `surfaceColor`
-- `surfaceSoftColor`
-- `textMainColor`
-- `textMutedColor`
-- `borderColor`
-- `starColor`
+Campos principais:
 
-Se vierem vazios ou invalidos, o CSS variable aplicado por `initializeBranding()` fica inconsistente e o visual da loja degrada.
+- `preset`: obrigatorio. Deve ser um preset controlado da plataforma.
+- `colors.brandPrimary`: opcional, cor principal da marca.
+- `colors.brandPrimaryStrong`: opcional, variacao mais forte da cor principal.
+- `colors.brandSecondary`: opcional, cor secundaria da marca.
+- `colors.accent`: opcional, cor de apoio.
+- `variants`: opcional, variantes controladas para hero, card, grid e CTA.
+
+O tenant nao deve configurar cores arbitrarias de superficie, texto, borda, spacing, shadow ou motion. Esses valores pertencem aos presets para preservar consistencia visual.
+
+Se `preset` vier vazio ou invalido, o engine usa `editorial-luxury` como fallback.
 
 ## `content`
 
@@ -429,17 +428,19 @@ brand: {
   notFoundImagePath: 'noite-secreta-logo.svg',
 },
 theme: {
-  primaryColor: '#8b1e54',
-  primaryColorDark: '#6a1640',
-  secondaryColor: '#d195b1',
-  accentColor: '#f3c3d6',
-  backgroundColor: '#faf5f8',
-  surfaceColor: '#ffffff',
-  surfaceSoftColor: '#f7eef3',
-  textMainColor: '#271822',
-  textMutedColor: '#6e5964',
-  borderColor: '#ead9e1',
-  starColor: '#c98aa7',
+  preset: 'soft-fashion',
+  colors: {
+    brandPrimary: '#8b1e54',
+    brandPrimaryStrong: '#6a1640',
+    brandSecondary: '#d195b1',
+    accent: '#f3c3d6',
+  },
+  variants: {
+    hero: 'split-editorial',
+    productCard: 'boutique-clean',
+    productGrid: 'boutique-grid',
+    cta: 'soft-outline',
+  },
 },
 content: {
   searchPlaceholder: 'Buscar produtos, kits e acessorios...',

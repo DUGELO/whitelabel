@@ -52,6 +52,28 @@ Manual operacional completo para subir uma nova loja, cobrindo:
 - checklist final de publicacao
 - riscos, hardcodes e melhorias recomendadas
 
+### [THEME_ENGINE_TUTORIAL.md](THEME_ENGINE_TUTORIAL.md)
+
+Tutorial pratico para usar e evoluir a fundacao do Theme Engine da Phase 4:
+
+- fluxo runtime de tema
+- configuracao por loja
+- presets e variants
+- uso de semantic tokens em SCSS
+- como adicionar presets, tokens e variants
+- checklist e anti-patterns
+
+### [THEME_ENGINE_CHEAT_SHEET.md](THEME_ENGINE_CHEAT_SHEET.md)
+
+Referencia rapida para consulta no dia a dia:
+
+- presets disponiveis
+- variants aceitas
+- CSS variables semanticas
+- aliases legados temporarios
+- arquivos principais
+- comandos de validacao
+
 ### [logo-usage.md](logo-usage.md)
 
 Guia de uso dos arquivos de logo e suas variacoes visuais.
@@ -76,3 +98,5 @@ Guia de uso dos arquivos de logo e suas variacoes visuais.
 ## Leitura sugerida
 
 Se voce precisa operar uma nova loja agora, comece por [WHITE_LABEL_SETUP.md](WHITE_LABEL_SETUP.md).
+
+Se voce precisa configurar ou evoluir temas, comece por [THEME_ENGINE_TUTORIAL.md](THEME_ENGINE_TUTORIAL.md) e use [THEME_ENGINE_CHEAT_SHEET.md](THEME_ENGINE_CHEAT_SHEET.md) como consulta rapida.

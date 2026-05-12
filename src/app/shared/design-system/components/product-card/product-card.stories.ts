@@ -75,7 +75,7 @@ export const AlternateBranding: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <div style="--color-primary:#14532d;--color-primary-dark:#0f3f22;--color-secondary:#0f766e;--color-surface:#fffdf7;--color-surface-soft:#f4f1e8;--color-text-main:#1f2937;--color-text-muted:#4b5563;--color-border:#d6d3d1;--color-star:#f59e0b;padding:24px;max-width:360px;">
+      <div style="padding:var(--spacing-lg);max-width:360px;background:color-mix(in srgb, var(--color-background-surface-soft) 40%, transparent);">
         <app-product-card [product]="product"></app-product-card>
       </div>
     `,
@@ -91,10 +91,10 @@ export const AlternateBranding: Story = {
 export const Loading: Story = {
   render: () => ({
     template: `
-      <div style="max-width:360px;padding:24px;border:1px solid var(--color-border);border-radius:20px;background:var(--color-surface);">
-        <div style="aspect-ratio:4/3;background:var(--color-surface-soft);border-radius:16px;"></div>
-        <div style="height:24px;background:var(--color-surface-soft);margin-top:16px;border-radius:8px;"></div>
-        <div style="height:16px;background:var(--color-surface-soft);margin-top:12px;border-radius:8px;width:70%;"></div>
+      <div style="max-width:360px;padding:var(--spacing-lg);border:1px solid var(--color-border);border-radius:var(--border-radius-card);background:var(--color-surface);">
+        <div style="aspect-ratio:4/3;background:var(--color-surface-soft);border-radius:var(--border-radius-card);"></div>
+        <div style="height:var(--spacing-lg);background:var(--color-surface-soft);margin-top:var(--spacing-md);border-radius:var(--border-radius-sm);"></div>
+        <div style="height:var(--spacing-md);background:var(--color-surface-soft);margin-top:var(--spacing-sm-md);border-radius:var(--border-radius-sm);width:70%;"></div>
       </div>
     `,
   }),
@@ -103,8 +103,8 @@ export const Loading: Story = {
 export const Empty: Story = {
   render: () => ({
     template: `
-      <div style="max-width:360px;padding:24px;border:1px dashed var(--color-border);border-radius:20px;background:var(--color-surface);text-align:center;">
-        <h3 style="margin:0 0 12px;">Nenhum produto na vitrine</h3>
+      <div style="max-width:360px;padding:var(--spacing-lg);border:1px dashed var(--color-border);border-radius:var(--border-radius-card);background:var(--color-surface);text-align:center;">
+        <h3 style="margin:0 0 var(--spacing-sm-md);">Nenhum produto na vitrine</h3>
         <p style="margin:0;color:var(--color-text-muted);">Use esta variante para validar estados vazios da vitrine.</p>
       </div>
     `,

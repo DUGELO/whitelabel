@@ -384,3 +384,68 @@ Forbidden:
 ## 20. North Star
 
 The theming system succeeds when storefronts feel visually unique in identity while remaining consistently premium, elegant and scalable.
+
+---
+
+# 21. Current Implementation Foundation
+
+The Phase 4 foundation uses a dedicated Angular theme layer:
+
+```txt
+src/app/core/theme/
+  models/
+  tokens/
+  presets/
+  resolvers/
+  services/
+```
+
+## Runtime flow
+
+```txt
+StorefrontConfig.theme
+  -> ThemeEngineService
+  -> resolveThemeTokens()
+  -> CssVariableThemeWriterService
+  -> CSS variables on document.documentElement
+```
+
+`StorefrontConfigService` owns storefront configuration, title and favicon.
+
+`ThemeEngineService` owns theme resolution and runtime token application.
+
+## Tenant theme configuration
+
+Tenants select platform-owned presets and may only override controlled brand color tokens:
+
+```ts
+theme: {
+  preset: 'editorial-luxury',
+  colors: {
+    brandPrimary: '#8a6a2d',
+    brandPrimaryStrong: '#5f4617',
+    brandSecondary: '#b99668',
+    accent: '#e5d3b1',
+  },
+}
+```
+
+Tenants must not define arbitrary component styles, spacing systems or isolated CSS.
+
+## Runtime tokens
+
+The theme engine emits semantic CSS variables such as:
+
+- `--color-brand-primary`
+- `--color-background-canvas`
+- `--color-background-surface`
+- `--color-text-primary`
+- `--color-border-subtle`
+- `--color-overlay-backdrop`
+- `--font-heading`
+- `--spacing-md`
+- `--radius-card`
+- `--shadow-card`
+- `--motion-medium`
+
+Temporary legacy aliases such as `--color-primary`, `--color-surface` and `--color-text-main` remain available so existing components can migrate incrementally.

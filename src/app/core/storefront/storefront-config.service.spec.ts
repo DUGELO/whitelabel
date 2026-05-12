@@ -16,10 +16,9 @@ describe('StorefrontConfigService', () => {
     expect(service.config().contactChannels.length).toBeGreaterThan(0);
   });
 
-  it('should apply branding tokens to the document', () => {
+  it('should apply document branding', () => {
     service.initializeBranding();
 
-    expect(document.documentElement.style.getPropertyValue('--color-primary')).toBe(service.config().theme.primaryColor);
     expect(document.title).toBe(service.config().brand.name);
 
     const favicon = document.querySelector("link[rel*='icon']") as HTMLLinkElement | null;

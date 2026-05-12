@@ -11,11 +11,11 @@ describe('StorefrontAnalyticsService', () => {
   });
 
   it('should record generic analytics events', () => {
-    service.track('product_clicked', { productId: 1, productTitle: 'Produto teste' });
+    service.track('product_clicked', { productId: '1', productTitle: 'Produto teste' });
 
     expect(service.events().length).toBe(1);
     expect(service.events()[0].name).toBe('product_clicked');
-    expect(service.events()[0].payload.productId).toBe(1);
+    expect(service.events()[0].payload.productId).toBe('1');
   });
 
   it('should deduplicate repeated search no results events', () => {

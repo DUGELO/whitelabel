@@ -1,4 +1,4 @@
-$card-transition: 180ms ease;
+$card-transition: var(--motion-fast) var(--motion-easing-standard);
 
 :host {
     display: block;
@@ -135,7 +135,7 @@ $card-transition: 180ms ease;
             align-items: center;
             gap: 6px;
             padding: 0.38rem 0.58rem;
-            border-radius: 999px;
+            border-radius: var(--border-radius-pill);
             font-size: 0.72rem;
             font-weight: 700;
             line-height: 1;

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { StorefrontConfigService } from './core/storefront/storefront-config.service';
 import { MainLayout } from "./core/layouts/main-layout/main-layout";
 
@@ -10,5 +10,5 @@ import { MainLayout } from "./core/layouts/main-layout/main-layout";
 })
 export class App {
   private readonly storefrontConfig = inject(StorefrontConfigService).config;
-  protected readonly title = signal(this.storefrontConfig().brand.name);
+  protected readonly title = computed(() => this.storefrontConfig().brand.name);
 }

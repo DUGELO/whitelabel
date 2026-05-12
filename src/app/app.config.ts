@@ -2,6 +2,7 @@ import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalE
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { StorefrontConfigService } from './core/storefront/storefront-config.service';
+import { ThemeEngineService } from './core/theme/services/theme-engine.service';
 
 
 export const appConfig: ApplicationConfig = {
@@ -10,7 +11,10 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAppInitializer(() => {
       const storefrontConfig = inject(StorefrontConfigService);
+      const themeEngine = inject(ThemeEngineService);
+
       storefrontConfig.initializeBranding();
+      themeEngine.initializeTheme();
     })
   ]
 };

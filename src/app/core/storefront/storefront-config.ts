@@ -1,3 +1,5 @@
+import { StorefrontThemeConfig } from '../theme/models/theme-config.types';
+
 export interface StorefrontBrandingConfig {
   name: string;
   logoPath: string;
@@ -7,20 +9,6 @@ export interface StorefrontBrandingConfig {
   tagline: string;
   description: string;
   notFoundImagePath: string;
-}
-
-export interface BrandThemeTokens {
-  primaryColor: string;
-  primaryColorDark: string;
-  secondaryColor: string;
-  accentColor: string;
-  backgroundColor: string;
-  surfaceColor: string;
-  surfaceSoftColor: string;
-  textMainColor: string;
-  textMutedColor: string;
-  borderColor: string;
-  starColor: string;
 }
 
 export interface ContactChannel {
@@ -97,7 +85,7 @@ export interface StorefrontCatalogConfig {
 
 export interface StorefrontConfig {
   brand: StorefrontBrandingConfig;
-  theme: BrandThemeTokens;
+  theme: StorefrontThemeConfig;
   content: StorefrontContentConfig;
   contactChannels: ContactChannel[];
   navigationLinks: StorefrontNavigationLink[];
@@ -118,17 +106,19 @@ export const STOREFRONT_CONFIG: StorefrontConfig = {
     notFoundImagePath: 'atelier-aurea-logo.svg',
   },
   theme: {
-    primaryColor: '#8a6a2d',
-    primaryColorDark: '#5f4617',
-    secondaryColor: '#b99668',
-    accentColor: '#e5d3b1',
-    backgroundColor: '#f7f2e9',
-    surfaceColor: '#fffdf9',
-    surfaceSoftColor: '#f1e7d8',
-    textMainColor: '#241b12',
-    textMutedColor: '#6b6157',
-    borderColor: '#dacbb3',
-    starColor: '#c89a3c',
+    preset: 'editorial-luxury',
+    colors: {
+      brandPrimary: '#8a6a2d',
+      brandPrimaryStrong: '#5f4617',
+      brandSecondary: '#b99668',
+      accent: '#e5d3b1',
+    },
+    variants: {
+      hero: 'immersive',
+      productCard: 'editorial-minimal',
+      productGrid: 'editorial-grid',
+      cta: 'solid-premium',
+    },
   },
   content: {
     searchPlaceholder: 'Buscar aneis, colares, pulseiras e presentes...',
@@ -177,7 +167,7 @@ export const STOREFRONT_CONFIG: StorefrontConfig = {
     {
       type: 'whatsapp',
       label: 'Atendimento no WhatsApp',
-      url: 'https://wa.me/5511988001122',
+      url: 'https://wa.me/5598984655819',
     },
     {
       type: 'instagram',
@@ -196,7 +186,7 @@ export const STOREFRONT_CONFIG: StorefrontConfig = {
   ],
   socialLinks: {
     instagramUrl: 'https://instagram.com/atelieraurea',
-    whatsappUrl: 'https://wa.me/5511988001122',
+    whatsappUrl: 'https://wa.me/5598984655819',
   },
   catalog: {
     currencyCode: 'BRL',

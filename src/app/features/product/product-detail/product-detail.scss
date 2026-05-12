@@ -107,7 +107,7 @@
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
-  transition: filter 150ms;
+  transition: filter var(--motion-fast) var(--motion-easing-standard);
 
   svg {
     flex-shrink: 0;
@@ -131,7 +131,9 @@
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 150ms, border-color 150ms;
+  transition:
+    background-color var(--motion-fast) var(--motion-easing-standard),
+    border-color var(--motion-fast) var(--motion-easing-standard);
 
   &:hover {
     background: var(--color-surface-soft);
@@ -210,7 +212,7 @@
 
   &::-webkit-scrollbar-thumb {
     background: var(--color-border);
-    border-radius: 4px;
+    border-radius: var(--border-radius-sm);
   }
 }
 
@@ -266,22 +268,26 @@
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 28px;
+    border-radius: var(--border-radius-card);
     background:
-      radial-gradient(circle at top right, rgba(244, 187, 70, 0.28), transparent 20%),
-      radial-gradient(circle at 12% 50%, rgba(217, 91, 67, 0.14), transparent 24%),
-      radial-gradient(circle at 50% 100%, rgba(47, 125, 90, 0.08), transparent 28%),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(246, 239, 232, 0.8));
+      radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent) 34%, transparent), transparent 20%),
+      radial-gradient(circle at 12% 50%, color-mix(in srgb, var(--color-brand-primary) 18%, transparent), transparent 24%),
+      radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--color-feedback-positive) 10%, transparent), transparent 28%),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-background-surface) 42%, transparent),
+        color-mix(in srgb, var(--color-background-warm) 82%, transparent)
+      );
     z-index: 0;
-    animation: overlayGlow 700ms ease-out both;
+    animation: overlayGlow var(--motion-slow) var(--motion-easing-standard) both;
   }
 
   &::after {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 28px;
-    background: radial-gradient(circle at center, transparent 42%, rgba(35, 26, 22, 0.08) 100%);
+    border-radius: var(--border-radius-card);
+    background: radial-gradient(circle at center, transparent 42%, color-mix(in srgb, var(--color-text-primary) 8%, transparent) 100%);
     z-index: 0;
     pointer-events: none;
   }
@@ -295,7 +301,7 @@
     opacity: 0.48;
     transform: translateY(22px) scale(0.955) rotateX(8deg);
     transform-origin: top center;
-    animation: backgroundSettle 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: backgroundSettle var(--motion-slow) var(--motion-easing-emphasized) both;
   }
 
   .modal-layer {
@@ -305,9 +311,13 @@
     display: grid;
     place-items: center;
     padding: clamp(20px, 3vw, 36px);
-    background: linear-gradient(180deg, rgba(246, 239, 232, 0.14), rgba(246, 239, 232, 0.22));
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-background-warm) 14%, transparent),
+      color-mix(in srgb, var(--color-background-warm) 22%, transparent)
+    );
     backdrop-filter: blur(9px);
-    animation: layerFadeIn 520ms ease-out both;
+    animation: layerFadeIn var(--motion-medium) var(--motion-easing-standard) both;
   }
 }
 

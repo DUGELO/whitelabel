@@ -1,5 +1,5 @@
 $sidebar-width: 280px;
-$transition: 280ms ease;
+$transition: var(--motion-medium) var(--motion-easing-standard);
 
 :host {
   display: block;
@@ -70,7 +70,7 @@ $transition: 280ms ease;
   font-size: 0.95rem;
   color: var(--color-text-main);
   outline: 0;
-  transition: border-color 180ms ease;
+  transition: border-color var(--motion-fast) var(--motion-easing-standard);
 
   &::placeholder {
     color: var(--color-text-placeholder);
@@ -110,7 +110,7 @@ $transition: 280ms ease;
   width: 100%;
   height: 6px;
   appearance: none;
-  border-radius: 3px;
+  border-radius: var(--border-radius-pill);
   background: transparent;
   outline: none;
   cursor: pointer;
@@ -118,7 +118,7 @@ $transition: 280ms ease;
 
   &::-webkit-slider-runnable-track {
     height: 6px;
-    border-radius: 3px;
+    border-radius: var(--border-radius-pill);
     background: linear-gradient(
       to right,
       var(--color-secondary) 0%,
@@ -130,13 +130,13 @@ $transition: 280ms ease;
 
   &::-moz-range-track {
     height: 6px;
-    border-radius: 3px;
+    border-radius: var(--border-radius-pill);
     background: var(--color-border);
   }
 
   &::-moz-range-progress {
     height: 6px;
-    border-radius: 3px;
+    border-radius: var(--border-radius-pill);
     background: var(--color-secondary);
   }
 
@@ -150,7 +150,7 @@ $transition: 280ms ease;
     border: 3px solid var(--color-surface);
     box-shadow: var(--shadow-soft);
     cursor: grab;
-    transition: transform 120ms ease;
+  transition: transform var(--motion-fast) var(--motion-easing-standard);
   }
 
   &::-moz-range-thumb {
@@ -192,7 +192,10 @@ $transition: 280ms ease;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 180ms ease;
+  transition:
+    background-color var(--motion-fast) var(--motion-easing-standard),
+    border-color var(--motion-fast) var(--motion-easing-standard),
+    color var(--motion-fast) var(--motion-easing-standard);
   white-space: nowrap;
 
   &:hover {
@@ -223,7 +226,10 @@ $transition: 280ms ease;
   font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 180ms ease;
+  transition:
+    background-color var(--motion-fast) var(--motion-easing-standard),
+    border-color var(--motion-fast) var(--motion-easing-standard),
+    color var(--motion-fast) var(--motion-easing-standard);
   white-space: nowrap;
 
   &:hover {
@@ -406,7 +412,7 @@ app-product-card {
       font-size: 0.92rem;
       font-weight: 700;
       cursor: pointer;
-      transition: background-color 180ms ease;
+      transition: background-color var(--motion-fast) var(--motion-easing-standard);
 
       .material-symbols-outlined {
         font-size: 20px;
@@ -418,7 +424,7 @@ app-product-card {
       }
 
       &:hover {
-        background: color-mix(in srgb, var(--color-secondary) 85%, #000);
+        background: color-mix(in srgb, var(--color-secondary) 85%, var(--color-brand-primary-strong));
       }
     }
   }
@@ -464,10 +470,10 @@ app-product-card {
     font-weight: 700;
     cursor: pointer;
     margin-top: var(--spacing-sm);
-    transition: background-color 180ms ease;
+    transition: background-color var(--motion-fast) var(--motion-easing-standard);
 
     &:hover {
-      background: color-mix(in srgb, var(--color-secondary) 85%, #000);
+      background: color-mix(in srgb, var(--color-secondary) 85%, var(--color-brand-primary-strong));
     }
   }
 

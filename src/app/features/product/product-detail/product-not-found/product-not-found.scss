@@ -15,7 +15,7 @@
 	backdrop-filter: none;
 	overflow: visible;
 	transform-origin: center center;
-	animation: modalEnter 720ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+	animation: modalEnter var(--motion-slow) var(--motion-easing-emphasized) both;
 
 	&::before,
 	&::after {
@@ -30,7 +30,7 @@
 		left: 12%;
 		width: 220px;
 		height: 220px;
-		background: radial-gradient(circle, rgba(244, 187, 70, 0.18), rgba(244, 187, 70, 0));
+		background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 22%, transparent), transparent);
 		filter: blur(6px);
 	}
 
@@ -39,7 +39,7 @@
 		bottom: 6%;
 		width: 240px;
 		height: 240px;
-		background: radial-gradient(circle, rgba(217, 91, 67, 0.14), rgba(217, 91, 67, 0));
+		background: radial-gradient(circle, color-mix(in srgb, var(--color-brand-primary) 18%, transparent), transparent);
 		filter: blur(10px);
 	}
 
@@ -53,9 +53,9 @@
 		display: grid;
 		place-items: center;
 		padding: var(--spacing-md);
-		filter: drop-shadow(0 34px 34px rgba(35, 26, 22, 0.16));
+		filter: drop-shadow(0 34px 34px color-mix(in srgb, var(--color-text-primary) 16%, transparent));
 		transform: translate3d(0, -6px, 0) rotate(-5deg);
-		animation: visualFloatIn 860ms cubic-bezier(0.2, 0.8, 0.2, 1) 100ms both;
+		animation: visualFloatIn var(--motion-slow) var(--motion-easing-emphasized) var(--motion-fast) both;
 
 		img {
 			width: 100%;
@@ -71,7 +71,7 @@
 		max-width: 420px;
 		padding: clamp(8px, 1vw, 12px) 0;
 		transform: translate3d(0, 10px, 0);
-		animation: copyReveal 640ms ease-out 180ms both;
+		animation: copyReveal var(--motion-medium) var(--motion-easing-standard) var(--motion-fast) both;
 
 		> * {
 			position: relative;
@@ -88,8 +88,8 @@
 		width: fit-content;
 		padding: 10px 14px;
 		border-radius: var(--border-radius-pill);
-		background: rgba(255, 255, 255, 0.56);
-		box-shadow: 0 14px 28px rgba(35, 26, 22, 0.08);
+		background: color-mix(in srgb, var(--color-background-surface) 56%, transparent);
+		box-shadow: 0 14px 28px color-mix(in srgb, var(--color-text-primary) 8%, transparent);
 		backdrop-filter: blur(8px);
 	}
 
@@ -98,7 +98,7 @@
 		line-height: 0.98;
 		max-width: 11ch;
 		text-wrap: balance;
-		text-shadow: 0 10px 30px rgba(255, 255, 255, 0.24);
+		text-shadow: 0 10px 30px color-mix(in srgb, var(--color-background-surface) 24%, transparent);
 	}
 
 	p:not(.eyebrow) {
@@ -108,9 +108,9 @@
 		line-height: 1.65;
 		max-width: 35ch;
 		padding: 14px 18px;
-		border-radius: 22px;
-		background: rgba(255, 255, 255, 0.42);
-		box-shadow: 0 18px 38px rgba(35, 26, 22, 0.08);
+		border-radius: var(--border-radius-card);
+		background: color-mix(in srgb, var(--color-background-surface) 42%, transparent);
+		box-shadow: 0 18px 38px color-mix(in srgb, var(--color-text-primary) 8%, transparent);
 		backdrop-filter: blur(10px);
 	}
 
@@ -128,20 +128,23 @@
 		font-size: 0.98rem;
 		font-weight: 700;
 		box-shadow:
-			0 20px 36px rgba(217, 91, 67, 0.26),
-			0 8px 14px rgba(217, 91, 67, 0.14);
-		transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+			0 20px 36px color-mix(in srgb, var(--color-brand-primary) 26%, transparent),
+			0 8px 14px color-mix(in srgb, var(--color-brand-primary) 14%, transparent);
+		transition:
+			transform var(--motion-fast) var(--motion-easing-standard),
+			box-shadow var(--motion-fast) var(--motion-easing-standard),
+			filter var(--motion-fast) var(--motion-easing-standard);
 
 		&:hover {
 			transform: translate3d(0, -3px, 0);
 			box-shadow:
-				0 24px 42px rgba(217, 91, 67, 0.3),
-				0 10px 18px rgba(217, 91, 67, 0.16);
+				0 24px 42px color-mix(in srgb, var(--color-brand-primary) 30%, transparent),
+				0 10px 18px color-mix(in srgb, var(--color-brand-primary) 16%, transparent);
 			filter: saturate(1.04);
 		}
 
 		&:focus-visible {
-			outline: 2px solid rgba(217, 91, 67, 0.45);
+			outline: 2px solid var(--color-focus-ring);
 			outline-offset: 3px;
 		}
 	}
@@ -204,7 +207,7 @@
 		.modal-visual {
 			transform: translate3d(0, -6px, 0) rotate(-2deg);
 			animation: none;
-			filter: drop-shadow(0 16px 20px rgba(35, 26, 22, 0.12));
+			filter: drop-shadow(0 16px 20px color-mix(in srgb, var(--color-text-primary) 12%, transparent));
 			padding: var(--spacing-sm);
 
 			img {
@@ -233,7 +236,7 @@
 @media (max-width: 480px) {
 	.not-found-modal {
 		gap: var(--spacing-md);
-		animation-duration: 400ms;
+		animation-duration: var(--motion-slow);
 
 		&::before,
 		&::after {
@@ -242,7 +245,7 @@
 
 		.modal-visual {
 			transform: translate3d(0, -4px, 0) rotate(-1.5deg);
-			filter: drop-shadow(0 10px 14px rgba(35, 26, 22, 0.1));
+			filter: drop-shadow(0 10px 14px color-mix(in srgb, var(--color-text-primary) 10%, transparent));
 
 			img {
 				max-width: 200px;

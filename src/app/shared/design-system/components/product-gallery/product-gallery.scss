@@ -1,20 +1,20 @@
 .gallery {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--spacing-sm-md);
 
 
     .main img {
         width: 100%;
-        border-radius: 16px;
+        border-radius: var(--border-radius-card);
         object-fit: cover;
-        transition: 0.3s ease;
+        transition: transform var(--motion-medium) var(--motion-easing-standard);
     }
 
     .lightbox {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.85);
+        background: var(--color-overlay-backdrop);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -23,21 +23,21 @@
         img {
             max-width: 90%;
             max-height: 90%;
-            border-radius: 12px;
+            border-radius: var(--border-radius-card);
         }
     }
 
     .thumbs {
         display: flex;
-        gap: 8px;
+        gap: var(--spacing-sm);
 
         img {
             width: 64px;
             height: 64px;
-            border-radius: 10px;
+            border-radius: var(--border-radius-sm);
             cursor: pointer;
             opacity: 0.5;
-            transition: 0.2s;
+            transition: opacity var(--motion-fast) var(--motion-easing-standard);
 
             &.active {
                 opacity: 1;

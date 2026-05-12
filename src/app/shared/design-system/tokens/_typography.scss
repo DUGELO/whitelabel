@@ -1,5 +1,10 @@
 :root {
   --font-brand: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
   --font-title: 'DM Serif Display', Georgia, serif;
+  --font-heading: var(--font-title);
   --font-body: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+  --font-weight-heading: 400;
+  --font-weight-body: 400;
+  --line-height-tight: 1.08;
+  --line-height-body: 1.6;
 }
