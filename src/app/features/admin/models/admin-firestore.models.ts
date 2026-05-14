@@ -69,6 +69,11 @@ export interface AdminProductDocument {
   updatedAt?: unknown;
 }
 
+export type AdminProductWriteInput = Omit<
+  AdminProductDocument,
+  'id' | 'tenantId' | 'createdAt' | 'updatedAt'
+>;
+
 export interface AdminBrandSettings {
   name: string;
   slug: string;

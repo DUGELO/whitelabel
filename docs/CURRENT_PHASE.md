@@ -43,25 +43,26 @@ The system will NOT use:
 
 # Current Sprint
 
-## Sprint 5.2 - Auth + Tenant Access
+## Sprint 5.4 - Product CRUD
 
 Goal:
 
-- integrate Firebase Auth with the admin
-- protect `/admin` with tenant-scoped access validation
-- validate `tenants/{tenantId}/users/{uid}` before admin data reads
-- prepare role-aware admin behavior for future settings and CRUD writes
+- allow tenant users to manage real Firestore products
+- persist product changes in `tenants/{tenantId}/products`
+- keep `tenantId` mandatory for all admin product reads and writes
+- preserve compatibility with the current storefront product mapper
 
 Deliverables:
 
-- Firebase Auth export
-- `AdminAuthService` using Angular Signals
-- `/admin/login` sign-in foundation
-- `/admin` guard
-- tenant membership validation
-- allowed roles: `admin`, `owner`, `editor`, `viewer`
-- blocked states for anonymous users and users without tenant access
-- no settings form or Product CRUD yet
+- products area inside `/admin`
+- product list for `tenants/{tenantId}/products`
+- create product
+- edit product
+- activate and deactivate product
+- simple validation for required product fields
+- role-aware write behavior
+- documentation for product CRUD
+- no media upload yet
 
 ---
 
@@ -70,28 +71,31 @@ Deliverables:
 Must preserve:
 
 - tenant isolation
-- controlled Theme Engine configuration
-- minimal healthy component/service/model separation
 - Firebase-first architecture
+- Firestore access through admin services
+- Angular Signals state model
+- current product document compatibility
 - low operational complexity
 
 Must avoid:
 
 - hardcoded tenant logic
 - overengineered abstractions
-- large migrations before they are needed
-- visual customization outside Theme Engine
-- CRUD-heavy admin work before settings and role permissions are ready
+- direct Firestore access inside components
+- Product Storage upload before Sprint 5.5
+- visual customization outside Theme Engine tokens
+- hard deletes as the default product workflow
 
 ---
 
 # Current Success Criteria
 
-Sprint 5.2 succeeds when:
+Sprint 5.4 succeeds when:
 
-- unauthenticated users cannot access `/admin`
-- authenticated users need a tenant membership document
-- `tenantId` stays mandatory
-- roles are represented in the admin access model
-- settings/product reads run only after tenant access is validated
-- future settings/Product CRUD can reuse the same auth contract
+- products load from `tenants/{tenantId}/products`
+- `owner`, `admin` and `editor` can create and edit products
+- `viewer` users remain read-only
+- created products include the active `tenantId`
+- product activation is controlled through `active`
+- products remain compatible with the storefront mapper
+- future media upload can build on top of the image URL fields

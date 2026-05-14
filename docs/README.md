@@ -106,6 +106,28 @@ Contrato da Sprint 5.2:
 - blocked states de acesso
 - handoff para Storefront Settings
 
+### [ADMIN_STOREFRONT_SETTINGS.md](ADMIN_STOREFRONT_SETTINGS.md)
+
+Contrato da Sprint 5.3:
+
+- tela de configuracoes no admin
+- escrita em `tenants/{tenantId}/settings/main`
+- fallback legacy para criacao de settings
+- campos controlados do Theme Engine
+- roles de escrita
+- handoff para Product CRUD
+
+### [ADMIN_PRODUCT_CRUD.md](ADMIN_PRODUCT_CRUD.md)
+
+Contrato da Sprint 5.4:
+
+- lista de produtos no admin
+- criacao e edicao em `tenants/{tenantId}/products`
+- ativar/desativar produto
+- campos atuais do catalogo
+- roles de escrita
+- handoff para Media Management
+
 ### [logo-usage.md](logo-usage.md)
 
 Guia de uso dos arquivos de logo e suas variacoes visuais.

@@ -283,3 +283,93 @@ The sign-in route is:
 `tenantId` remains mandatory. Remembered tenant context can prefill admin flows, but it never authorizes access by itself.
 
 Sprint 5.2 does not add writes. Settings writes remain Sprint 5.3 and product writes remain Sprint 5.4.
+
+## 12. Sprint 5.3 Settings Write Contract
+
+Sprint 5.3 adds the first admin write:
+
+```txt
+tenants/{tenantId}/settings/main
+```
+
+The write is handled by:
+
+```txt
+AdminFirestoreService.saveStorefrontSettings(tenantId, settings)
+```
+
+The admin settings UI can create `settings/main` from the legacy tenant fallback returned by `getStorefrontSettings(tenantId)`.
+
+Editable settings are intentionally controlled:
+
+- brand name and slug
+- WhatsApp and Instagram URLs
+- primary contact channel
+- theme preset
+- brand color overrides
+- typography preset
+- allowed variants
+
+No arbitrary CSS, custom fonts or freeform layout configuration is allowed.
+
+Settings write roles:
+
+```txt
+admin
+owner
+editor
+```
+
+`viewer` remains read-only.
+
+WhatsApp is stored as a URL:
+
+```txt
+socialLinks.whatsappUrl = https://wa.me/5598984655819
+```
+
+## 13. Sprint 5.4 Product CRUD Contract
+
+Sprint 5.4 adds product writes for:
+
+```txt
+tenants/{tenantId}/products/{productId}
+```
+
+The admin writes through:
+
+```txt
+AdminFirestoreService.createProduct(tenantId, product)
+AdminFirestoreService.updateProduct(tenantId, productId, product)
+AdminFirestoreService.setProductActive(tenantId, productId, active)
+```
+
+Create uses Firestore auto-id. The admin service owns `tenantId`, `createdAt` and `updatedAt`.
+
+Editable product fields:
+
+- title
+- slug
+- description
+- longDescription
+- price
+- compareAtPrice
+- category
+- tags
+- highlights
+- images
+- active
+
+`rating` and `reviewCount` remain preserved or default to `0`.
+
+Product write roles:
+
+```txt
+admin
+owner
+editor
+```
+
+`viewer` remains read-only.
+
+Media upload remains deferred to Sprint 5.5. Sprint 5.4 only stores image URLs already available to the admin.

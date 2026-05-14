@@ -1,0 +1,236 @@
+<section class="admin-products" aria-labelledby="admin-products-title">
+  <header class="products-header">
+    <div>
+      <p class="eyebrow">Produtos</p>
+      <h2 id="admin-products-title">Catalogo</h2>
+    </div>
+
+    <dl aria-label="Resumo de produtos">
+      <div>
+        <dt>Total</dt>
+        <dd>{{ products().length }}</dd>
+      </div>
+      <div>
+        <dt>Ativos</dt>
+        <dd>{{ activeProductsCount() }}</dd>
+      </div>
+    </dl>
+  </header>
+
+  @if (errorMessage(); as error) {
+    <p class="form-message form-message-error" aria-live="assertive">{{ error }}</p>
+  }
+
+  @if (successMessage(); as success) {
+    <p class="form-message" aria-live="polite">{{ success }}</p>
+  }
+
+  @if (isReadOnly()) {
+    <p class="form-message" aria-live="polite">Seu role atual permite apenas leitura.</p>
+  }
+
+  <div class="products-layout">
+    <section class="products-list" aria-labelledby="products-list-title">
+      <header class="section-heading">
+        <div>
+          <p class="eyebrow">Lista</p>
+          <h3 id="products-list-title">Produtos do tenant</h3>
+        </div>
+
+        <button type="button" (click)="startCreate()" [disabled]="isReadOnly() || isSaving()">
+          Novo produto
+        </button>
+      </header>
+
+      @if (sortedProducts().length > 0) {
+        <div class="product-rows">
+          @for (product of sortedProducts(); track product.id) {
+            <article class="product-row" [class.is-selected]="selectedProductId() === product.id">
+              <button
+                type="button"
+                class="product-main"
+                [attr.data-product-edit]="product.id"
+                (click)="editProduct(product)"
+              >
+                <span>{{ product.title }}</span>
+                <small>{{ product.slug }}</small>
+              </button>
+
+              <span class="product-status" [class.is-active]="product.active">
+                {{ product.active ? 'Ativo' : 'Inativo' }}
+              </span>
+
+              <strong>{{ formatPrice(product.price) }}</strong>
+
+              <button
+                type="button"
+                class="ghost-button"
+                [attr.data-product-toggle]="product.id"
+                [disabled]="isReadOnly() || isSaving() || pendingProductId() === product.id"
+                (click)="handleToggleActive(product)"
+              >
+                {{ product.active ? 'Desativar' : 'Ativar' }}
+              </button>
+            </article>
+          }
+        </div>
+      } @else {
+        <p class="empty-state">Nenhum produto cadastrado.</p>
+      }
+    </section>
+
+    <form class="product-form" (submit)="handleSubmit($event)">
+      <section class="form-section" aria-labelledby="product-editor-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Editor</p>
+            <h3 id="product-editor-title">
+              {{ isEditing() ? 'Editar produto' : 'Novo produto' }}
+            </h3>
+          </div>
+
+          @if (isEditing()) {
+            <button type="button" class="ghost-button" (click)="startCreate()" [disabled]="isSaving()">
+              Cancelar edicao
+            </button>
+          }
+        </div>
+
+        <div class="field-grid">
+          <label>
+            <span>Titulo</span>
+            <input
+              name="title"
+              type="text"
+              [value]="form().title"
+              (input)="updateTextField('title', $event)"
+              [disabled]="isReadOnly() || isSaving()"
+            >
+          </label>
+
+          <label>
+            <span>Slug</span>
+            <input
+              name="slug"
+              type="text"
+              [value]="form().slug"
+              (input)="updateTextField('slug', $event)"
+              [disabled]="isReadOnly() || isSaving()"
+            >
+          </label>
+        </div>
+
+        <label>
+          <span>Descricao curta</span>
+          <textarea
+            name="description"
+            rows="3"
+            [value]="form().description"
+            (input)="updateTextField('description', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          ></textarea>
+        </label>
+
+        <label>
+          <span>Descricao longa</span>
+          <textarea
+            name="longDescription"
+            rows="5"
+            [value]="form().longDescription"
+            (input)="updateTextField('longDescription', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          ></textarea>
+        </label>
+
+        <div class="field-grid">
+          <label>
+            <span>Preco</span>
+            <input
+              name="price"
+              type="number"
+              min="0"
+              step="0.01"
+              [value]="form().price"
+              (input)="updateTextField('price', $event)"
+              [disabled]="isReadOnly() || isSaving()"
+            >
+          </label>
+
+          <label>
+            <span>Preco comparativo</span>
+            <input
+              name="compareAtPrice"
+              type="number"
+              min="0"
+              step="0.01"
+              [value]="form().compareAtPrice"
+              (input)="updateTextField('compareAtPrice', $event)"
+              [disabled]="isReadOnly() || isSaving()"
+            >
+          </label>
+        </div>
+
+        <label>
+          <span>Categoria</span>
+          <input
+            name="category"
+            type="text"
+            [value]="form().category"
+            (input)="updateTextField('category', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+        </label>
+
+        <label>
+          <span>Tags</span>
+          <textarea
+            name="tagsText"
+            rows="3"
+            [value]="form().tagsText"
+            (input)="updateTextField('tagsText', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          ></textarea>
+        </label>
+
+        <label>
+          <span>Destaques</span>
+          <textarea
+            name="highlightsText"
+            rows="3"
+            [value]="form().highlightsText"
+            (input)="updateTextField('highlightsText', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          ></textarea>
+        </label>
+
+        <label>
+          <span>Imagens</span>
+          <textarea
+            name="imagesText"
+            rows="4"
+            [value]="form().imagesText"
+            (input)="updateTextField('imagesText', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          ></textarea>
+        </label>
+
+        <label class="checkbox-field">
+          <input
+            name="active"
+            type="checkbox"
+            [checked]="form().active"
+            (change)="updateActive($event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+          <span>Produto ativo</span>
+        </label>
+
+        <footer class="form-actions">
+          <button type="submit" [disabled]="isReadOnly() || isSaving()">
+            {{ isSaving() ? 'Salvando' : isEditing() ? 'Salvar produto' : 'Criar produto' }}
+          </button>
+        </footer>
+      </section>
+    </form>
+  </div>
+</section>

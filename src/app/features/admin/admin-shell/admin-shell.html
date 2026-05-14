@@ -10,7 +10,12 @@
 
     <nav>
       @for (item of navItems; track item.label) {
-        <button type="button" [class.is-active]="item.state === 'active'" [disabled]="item.state !== 'active'">
+        <button
+          type="button"
+          [class.is-active]="activeSection() === item.id"
+          [disabled]="item.disabled"
+          (click)="setActiveSection(item.id)"
+        >
           {{ item.label }}
         </button>
       }
@@ -63,11 +68,27 @@
           <p>Confira o tenantId, sua sessao e o vinculo do usuario no Firestore.</p>
         </section>
       } @else if (settingsResult(); as result) {
-        <app-admin-dashboard
-          [tenantId]="tenantId() ?? result.tenant.id"
-          [settingsResult]="result"
-          [productsCount]="productsCount()"
-        />
+        @if (activeSection() === 'settings') {
+          <app-admin-settings
+            [tenantId]="tenantId() ?? result.tenant.id"
+            [settingsResult]="result"
+            [canEditSettings]="canManageTenantContent()"
+            (settingsSaved)="handleSettingsSaved($event)"
+          />
+        } @else if (activeSection() === 'products') {
+          <app-admin-products
+            [tenantId]="tenantId() ?? result.tenant.id"
+            [products]="products()"
+            [canEditProducts]="canManageTenantContent()"
+            (productChanged)="handleProductChanged($event)"
+          />
+        } @else {
+          <app-admin-dashboard
+            [tenantId]="tenantId() ?? result.tenant.id"
+            [settingsResult]="result"
+            [productsCount]="productsCount()"
+          />
+        }
       } @else {
         <section class="state-panel" aria-live="polite">
           <p class="eyebrow">Tenant</p>

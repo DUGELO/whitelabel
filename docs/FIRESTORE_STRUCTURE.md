@@ -82,13 +82,13 @@ Example:
 
 ```json
 {
-  "brand": {
-    "name": "Alma Sexy",
-    "logoUrl": "",
-    "description": "",
-    "instagramUrl": "",
-    "whatsappUrl": ""
-  },
+    "brand": {
+      "name": "Alma Sexy",
+      "logoUrl": "",
+      "description": "",
+      "instagramUrl": "",
+      "whatsappUrl": "https://wa.me/5598984655819"
+    },
   "theme": {
     "preset": "editorial-luxury",
     "colors": {
@@ -117,6 +117,8 @@ Purpose:
 - controls storefront identity
 - drives theme engine
 - avoids tenant-specific code
+
+WhatsApp values should be stored as `wa.me` URLs for CTA and social link reuse.
 
 ## 5. Products
 

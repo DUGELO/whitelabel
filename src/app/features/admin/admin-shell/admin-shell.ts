@@ -2,14 +2,22 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AdminDashboard } from '../admin-dashboard/admin-dashboard';
-import { AdminSettingsReadResult, AdminTenantId } from '../models/admin-firestore.models';
+import { AdminProducts } from '../admin-products/admin-products';
+import { AdminSettings } from '../admin-settings/admin-settings';
+import {
+  AdminProductDocument,
+  AdminSettingsReadResult,
+  AdminTenantId,
+} from '../models/admin-firestore.models';
 import { AdminAuthService } from '../services/admin-auth.service';
 import { AdminFirestoreService } from '../services/admin-firestore.service';
 import { AdminTenantContextService } from '../services/admin-tenant-context.service';
 
+type AdminSectionId = 'dashboard' | 'settings' | 'products' | 'media';
+
 @Component({
   selector: 'app-admin-shell',
-  imports: [AdminDashboard],
+  imports: [AdminDashboard, AdminProducts, AdminSettings],
   templateUrl: './admin-shell.html',
   styleUrl: './admin-shell.scss',
 })
@@ -22,9 +30,10 @@ export class AdminShell {
 
   protected readonly tenantInput = signal('');
   protected readonly settingsResult = signal<AdminSettingsReadResult | null>(null);
-  protected readonly productsCount = signal(0);
+  protected readonly products = signal<AdminProductDocument[]>([]);
   protected readonly isLoading = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+  protected readonly activeSection = signal<AdminSectionId>('dashboard');
 
   protected readonly tenantId = computed(() => this.tenantContext.tenantId());
   protected readonly userLabel = computed(() => {
@@ -33,15 +42,21 @@ export class AdminShell {
     return user?.email ?? user?.uid ?? 'sem sessao';
   });
   protected readonly roleLabel = computed(() => this.adminAuth.tenantAccess()?.role ?? 'sem acesso');
+  protected readonly canManageTenantContent = computed(() => {
+    const role = this.adminAuth.tenantAccess()?.role;
+
+    return role === 'admin' || role === 'owner' || role === 'editor';
+  });
+  protected readonly productsCount = computed(() => this.products().length);
   protected readonly canSubmitTenant = computed(() => {
     return this.tenantInput().trim().length > 0 && !this.isLoading();
   });
 
   protected readonly navItems = [
-    { label: 'Dashboard', state: 'active' },
-    { label: 'Configuracoes', state: 'soon' },
-    { label: 'Produtos', state: 'soon' },
-    { label: 'Midia', state: 'soon' },
+    { id: 'dashboard', label: 'Dashboard', disabled: false },
+    { id: 'settings', label: 'Configuracoes', disabled: false },
+    { id: 'products', label: 'Produtos', disabled: false },
+    { id: 'media', label: 'Midia', disabled: true },
   ] as const;
 
   constructor() {
@@ -56,6 +71,26 @@ export class AdminShell {
   protected handleTenantSubmit(event: Event): void {
     event.preventDefault();
     void this.loadTenant(this.tenantInput());
+  }
+
+  protected setActiveSection(section: AdminSectionId): void {
+    this.activeSection.set(section);
+  }
+
+  protected handleSettingsSaved(settingsResult: AdminSettingsReadResult): void {
+    this.settingsResult.set(settingsResult);
+  }
+
+  protected handleProductChanged(product: AdminProductDocument): void {
+    this.products.update((products) => {
+      const existingIndex = products.findIndex((item) => item.id === product.id);
+
+      if (existingIndex === -1) {
+        return [...products, product];
+      }
+
+      return products.map((item) => (item.id === product.id ? product : item));
+    });
   }
 
   protected async handleSignOut(): Promise<void> {
@@ -79,7 +114,7 @@ export class AdminShell {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     this.settingsResult.set(null);
-    this.productsCount.set(0);
+    this.products.set([]);
 
     try {
       const access = await this.adminAuth.ensureTenantAccess(normalizedTenantId);
@@ -104,7 +139,7 @@ export class AdminShell {
       }
 
       this.settingsResult.set(settingsResult);
-      this.productsCount.set(products.length);
+      this.products.set(products);
       this.tenantContext.storeTenantId(normalizedTenantId);
     } catch (error) {
       this.tenantContext.clearTenantId();

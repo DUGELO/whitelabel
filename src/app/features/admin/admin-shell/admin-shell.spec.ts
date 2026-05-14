@@ -15,6 +15,9 @@ describe('AdminShell', () => {
   let firestoreService: {
     getStorefrontSettings: ReturnType<typeof vi.fn>;
     getProducts: ReturnType<typeof vi.fn>;
+    createProduct: ReturnType<typeof vi.fn>;
+    updateProduct: ReturnType<typeof vi.fn>;
+    setProductActive: ReturnType<typeof vi.fn>;
   };
   let authService: {
     user: ReturnType<typeof signal<AdminAuthenticatedUser | null>>;
@@ -95,6 +98,9 @@ describe('AdminShell', () => {
           reviewCount: 1,
         },
       ]),
+      createProduct: vi.fn(),
+      updateProduct: vi.fn(),
+      setProductActive: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -169,4 +175,35 @@ describe('AdminShell', () => {
     expect(firestoreService.getStorefrontSettings).not.toHaveBeenCalled();
     expect(fixture.nativeElement.textContent).toContain('Seu usuario nao tem acesso');
   });
+
+  it('should render product management after tenant bootstrap', async () => {
+    TestBed.overrideProvider(ActivatedRoute, {
+      useValue: {
+        snapshot: {
+          queryParamMap: convertToParamMap({ tenantId: 'atelier-aurea' }),
+        },
+      },
+    });
+
+    fixture = TestBed.createComponent(AdminShell);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    await Promise.resolve();
+    await Promise.resolve();
+    fixture.detectChanges();
+
+    clickNavButton('Produtos');
+
+    expect(fixture.nativeElement.textContent).toContain('Produtos do tenant');
+    expect(fixture.nativeElement.textContent).toContain('Produto');
+  });
+
+  function clickNavButton(label: string): void {
+    const button = Array.from(fixture.nativeElement.querySelectorAll('nav button')).find((item) =>
+      (item as HTMLButtonElement).textContent?.includes(label),
+    ) as HTMLButtonElement;
+
+    button.click();
+    fixture.detectChanges();
+  }
 });

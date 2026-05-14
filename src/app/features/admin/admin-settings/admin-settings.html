@@ -1,0 +1,241 @@
+<section class="admin-settings" aria-labelledby="admin-settings-title">
+  <header class="settings-header">
+    <div>
+      <p class="eyebrow">Configuracoes</p>
+      <h2 id="admin-settings-title">{{ form().brandName || 'Storefront' }}</h2>
+    </div>
+
+    <dl aria-label="Settings source">
+      <div>
+        <dt>Fonte</dt>
+        <dd>{{ sourceLabel() }}</dd>
+      </div>
+      <div>
+        <dt>Tenant</dt>
+        <dd>{{ tenantId() }}</dd>
+      </div>
+    </dl>
+  </header>
+
+  @if (errorMessage(); as error) {
+    <p class="form-message form-message-error" aria-live="assertive">{{ error }}</p>
+  }
+
+  @if (successMessage(); as success) {
+    <p class="form-message" aria-live="polite">{{ success }}</p>
+  }
+
+  @if (isReadOnly()) {
+    <p class="form-message" aria-live="polite">Seu role atual permite apenas leitura.</p>
+  }
+
+  <form class="settings-form" (submit)="handleSubmit($event)">
+    <section class="form-section" aria-labelledby="brand-settings-title">
+      <div class="section-heading">
+        <p class="eyebrow">Loja</p>
+        <h3 id="brand-settings-title">Identidade</h3>
+      </div>
+
+      <div class="field-grid">
+        <label>
+          <span>Nome</span>
+          <input
+            type="text"
+            [value]="form().brandName"
+            (input)="updateTextField('brandName', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+        </label>
+
+        <label>
+          <span>Slug</span>
+          <input
+            type="text"
+            [value]="form().slug"
+            (input)="updateTextField('slug', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+        </label>
+      </div>
+    </section>
+
+    <section class="form-section" aria-labelledby="contact-settings-title">
+      <div class="section-heading">
+        <p class="eyebrow">Canais</p>
+        <h3 id="contact-settings-title">Contato e social</h3>
+      </div>
+
+      <div class="field-grid">
+        <label>
+          <span>WhatsApp URL</span>
+          <input
+            type="url"
+            [value]="form().whatsappUrl"
+            (input)="updateTextField('whatsappUrl', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+        </label>
+
+        <label>
+          <span>Instagram URL</span>
+          <input
+            type="url"
+            [value]="form().instagramUrl"
+            (input)="updateTextField('instagramUrl', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+        </label>
+
+        <label>
+          <span>Contato principal</span>
+          <select
+            [value]="form().primaryContactChannel"
+            (change)="updatePrimaryContactChannel($event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+            <option value="">Sem preferencia</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="instagram">Instagram</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section class="form-section" aria-labelledby="theme-settings-title">
+      <div class="section-heading">
+        <p class="eyebrow">Theme Engine</p>
+        <h3 id="theme-settings-title">Tema controlado</h3>
+      </div>
+
+      <div class="field-grid">
+        <label>
+          <span>Preset</span>
+          <select
+            [value]="form().themePreset"
+            (change)="updateThemePreset($event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+            @for (option of themePresetOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>Tipografia</span>
+          <select
+            [value]="form().typographyPreset"
+            (change)="updateTypographyPreset($event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+            @for (option of typographyPresetOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+      </div>
+
+      <div class="color-grid">
+        <label>
+          <span>Primary</span>
+          <input
+            type="color"
+            [value]="form().brandPrimary"
+            (input)="updateTextField('brandPrimary', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+        </label>
+
+        <label>
+          <span>Primary strong</span>
+          <input
+            type="color"
+            [value]="form().brandPrimaryStrong"
+            (input)="updateTextField('brandPrimaryStrong', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+        </label>
+
+        <label>
+          <span>Secondary</span>
+          <input
+            type="color"
+            [value]="form().brandSecondary"
+            (input)="updateTextField('brandSecondary', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+        </label>
+
+        <label>
+          <span>Accent</span>
+          <input
+            type="color"
+            [value]="form().accent"
+            (input)="updateTextField('accent', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+        </label>
+      </div>
+
+      <div class="field-grid">
+        <label>
+          <span>Hero</span>
+          <select
+            [value]="form().heroVariant"
+            (change)="updateHeroVariant($event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+            @for (option of heroVariantOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>Product card</span>
+          <select
+            [value]="form().productCardVariant"
+            (change)="updateProductCardVariant($event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+            @for (option of productCardVariantOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>Product grid</span>
+          <select
+            [value]="form().productGridVariant"
+            (change)="updateProductGridVariant($event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+            @for (option of productGridVariantOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>CTA</span>
+          <select
+            [value]="form().ctaVariant"
+            (change)="updateCtaVariant($event)"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+            @for (option of ctaVariantOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <footer class="form-actions">
+      <button type="submit" [disabled]="isReadOnly() || isSaving()">
+        {{ isSaving() ? 'Salvando' : 'Salvar configuracoes' }}
+      </button>
+    </footer>
+  </form>
+</section>
