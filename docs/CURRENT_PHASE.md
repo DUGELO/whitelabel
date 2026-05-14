@@ -1,321 +1,93 @@
 # Current Active Phase
 
- 
-
 ## Active Phase
 
- 
-
-# Phase 4 — Theme Engine
-
- 
+# Phase 5 - Admin Panel
 
 ---
-
- 
 
 # Strategic Priority
 
- 
+The storefront engine now needs an owned admin surface so white label clients can manage store settings and products without code changes.
 
-This is currently one of the most important phases of the entire product.
+The goal is to evolve from:
 
- 
+> manually edited storefront configuration
 
-The goal is to transform the storefront into:
+to:
 
- 
-
-> a scalable runtime visual engine.
-
- 
-
-This phase defines:
-
-- premium perception
-
-- branding scalability
-
-- visual differentiation
-
-- onboarding scalability
-
-- long-term maintainability
-
- 
+> Firebase-first tenant administration with controlled customization.
 
 ---
-
- 
 
 # Current Technical Direction
 
- 
-
 The platform will use:
 
- 
-
-- CSS Variables
-
-- runtime theme tokens
-
-- semantic theming
-
-- controlled presets
-
-- variant-driven UI
-
- 
+- Angular admin panel
+- Firebase Auth
+- Firestore
+- Firebase Storage later in Phase 5
+- tenant-scoped services
+- controlled theme configuration
 
 The system will NOT use:
 
-- hardcoded tenant styling
-
-- isolated themes
-
+- Strapi for now
 - tenant forks
-
-- unrestricted customization
-
- 
-
----
-
- 
-
-# Current Main Objectives
-
- 
-
-## Theme Token System
-
- 
-
-Build:
-
-- spacing tokens
-
-- typography tokens
-
-- color tokens
-
-- motion tokens
-
-- radius tokens
-
-- shadow tokens
-
- 
+- unrestricted visual customization
+- CSS edited freely by clients
+- enterprise admin complexity
 
 ---
 
- 
+# Current Sprint
 
-## Runtime Theme Engine
+## Sprint 5.0 - Firestore Admin Contract
 
- 
+Goal:
 
-Build:
+- define the minimum Firestore contract for admin
+- keep compatibility with the current tenant/product structure
+- prepare tenant-scoped admin services
+- document current vs target database structure
 
-- runtime CSS variable injection
+Deliverables:
 
-- theme service
-
-- semantic token resolution
-
-- tenant-driven branding
-
- 
-
----
-
- 
-
-## Theme Presets
-
- 
-
-Build initial presets:
-
-- Editorial Luxury
-
-- Minimal Premium
-
-- Soft Fashion
-
-- Dark Elegance
-
-- Modern Boutique
-
- 
+- admin models for tenant, tenant user, product and settings
+- basic tenant context
+- Firestore read service for admin foundation
+- legacy tenant fallback for settings
+- short operational documentation
 
 ---
 
- 
-
-## Component Variant System
-
- 
-
-Build:
-
-- hero variants
-
-- product card variants
-
-- grid variants
-
-- CTA variants
-
- 
-
-Variants must remain:
-
-- reusable
-
-- scalable
-
-- curated
-
- 
-
----
-
- 
-
-# Current Architectural Constraints
-
- 
+# Current Constraints
 
 Must preserve:
 
-- scalability
-
-- maintainability
-
-- premium consistency
-
-- mobile-first UX
-
-- performance
-
- 
+- tenant isolation
+- controlled Theme Engine configuration
+- minimal healthy component/service/model separation
+- Firebase-first architecture
+- low operational complexity
 
 Must avoid:
 
-- tenant-specific code
-
-- arbitrary styling
-
-- visual inconsistency
-
-- excessive complexity
-
- 
+- hardcoded tenant logic
+- overengineered abstractions
+- large migrations before they are needed
+- visual customization outside Theme Engine
+- UI-heavy admin work before the admin contract is stable
 
 ---
-
- 
-
-# Current UX Direction
-
- 
-
-The storefront should feel:
-
-- editorial
-
-- elegant
-
-- premium
-
-- trustworthy
-
-- mobile-first
-
-- conversion-oriented
-
- 
-
-The storefront should help small brands feel visually established.
-
- 
-
----
-
- 
-
-# Current Development Rules
-
- 
-
-Before implementing new code:
-
- 
-
-1. read AGENTS.md
-
-2. read docs/
-
-3. preserve architecture
-
-4. preserve premium perception
-
-5. preserve scalability
-
- 
-
----
-
- 
 
 # Current Success Criteria
 
- 
+Sprint 5.0 succeeds when:
 
-This phase succeeds when:
-
- 
-
-- themes work dynamically
-
-- branding changes through configuration
-
-- storefront identity changes without forks
-
-- components remain scalable
-
-- premium perception remains consistent
-
-- runtime theming works cleanly
-
- 
-
----
-
- 
-
-# Important Reminder
-
- 
-
-The platform is:
-
- 
-
-> a premium storefront engine
-
- 
-
-It is NOT:
-
-- a generic ecommerce builder
-
-- a drag-and-drop system
-
-- a fully custom agency platform
-
- 
-
-Controlled customization is mandatory.
+- the admin has a clear Firestore contract
+- `tenantId` is mandatory for admin data access
+- current legacy tenant fields can still seed settings
+- future sprints can build UI/Auth/CRUD without reshaping the contract again
+- documentation explains the current and target structures

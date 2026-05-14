@@ -75,6 +75,16 @@ Referencia rapida para consulta no dia a dia:
 - arquivos principais
 - comandos de validacao
 
+### [ADMIN_FIRESTORE_CONTRACT.md](ADMIN_FIRESTORE_CONTRACT.md)
+
+Contrato inicial da Phase 5 Admin Panel:
+
+- banco atual vs banco alvo
+- estrategia de `tenantId`
+- fallback de `settings/main`
+- models e services admin
+- handoff para Sprint 5.1
+
 ### [logo-usage.md](logo-usage.md)
 
 Guia de uso dos arquivos de logo e suas variacoes visuais.
@@ -110,3 +120,5 @@ Checklist final da Phase 4:
 Se voce precisa operar uma nova loja agora, comece por [WHITE_LABEL_SETUP.md](WHITE_LABEL_SETUP.md).
 
 Se voce precisa configurar ou evoluir temas, comece por [THEME_ENGINE_TUTORIAL.md](THEME_ENGINE_TUTORIAL.md) e use [THEME_ENGINE_CHEAT_SHEET.md](THEME_ENGINE_CHEAT_SHEET.md) como consulta rapida.
+
+Se voce precisa evoluir o admin, leia [ADMIN_FIRESTORE_CONTRACT.md](ADMIN_FIRESTORE_CONTRACT.md) antes de criar telas ou CRUD.
