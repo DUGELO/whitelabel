@@ -1,0 +1,80 @@
+<div class="admin-shell">
+  <aside class="admin-sidebar" aria-label="Admin navigation">
+    <div class="admin-brand">
+      <span>WL</span>
+      <div>
+        <strong>Admin</strong>
+        <small>{{ tenantId() ?? 'sem tenant' }}</small>
+      </div>
+    </div>
+
+    <nav>
+      @for (item of navItems; track item.label) {
+        <button type="button" [class.is-active]="item.state === 'active'" [disabled]="item.state !== 'active'">
+          {{ item.label }}
+        </button>
+      }
+    </nav>
+  </aside>
+
+  <section class="admin-workspace">
+    <header class="admin-topbar">
+      <div>
+        <p class="eyebrow">Admin Panel</p>
+        <h1>Storefront</h1>
+      </div>
+
+      <form class="tenant-form" (submit)="handleTenantSubmit($event)">
+        <label for="admin-tenant-id">Tenant ID</label>
+        <div class="tenant-control">
+          <input
+            id="admin-tenant-id"
+            type="text"
+            autocomplete="off"
+            [value]="tenantInput()"
+            (input)="onTenantInput($event)"
+            [disabled]="isLoading()"
+            placeholder="tenant-id"
+          >
+          <button type="submit" [disabled]="!canSubmitTenant()">Carregar</button>
+        </div>
+      </form>
+
+      <div class="admin-session" aria-label="Sessao admin">
+        <div>
+          <span>{{ roleLabel() }}</span>
+          <strong>{{ userLabel() }}</strong>
+        </div>
+        <button type="button" (click)="handleSignOut()">Sair</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      @if (isLoading()) {
+        <section class="state-panel" aria-live="polite">
+          <p class="eyebrow">Carregando</p>
+          <h2>Buscando dados do tenant</h2>
+          <p>O contexto do admin sera ativado quando a leitura inicial terminar.</p>
+        </section>
+      } @else if (errorMessage(); as error) {
+        <section class="state-panel state-panel-error" aria-live="assertive">
+          <p class="eyebrow">Erro</p>
+          <h2>{{ error }}</h2>
+          <p>Confira o tenantId, sua sessao e o vinculo do usuario no Firestore.</p>
+        </section>
+      } @else if (settingsResult(); as result) {
+        <app-admin-dashboard
+          [tenantId]="tenantId() ?? result.tenant.id"
+          [settingsResult]="result"
+          [productsCount]="productsCount()"
+        />
+      } @else {
+        <section class="state-panel" aria-live="polite">
+          <p class="eyebrow">Tenant</p>
+          <h2>Informe o tenantId para abrir o admin</h2>
+          <p>Nenhuma leitura do Firestore acontece sem contexto de tenant.</p>
+        </section>
+      }
+    </main>
+  </section>
+</div>

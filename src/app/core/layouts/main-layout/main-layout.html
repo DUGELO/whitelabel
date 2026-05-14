@@ -1,13 +1,17 @@
-<div class="container-app">
+<div class="container-app" [class.container-app-admin]="isAdminRoute()">
 
-    <app-header></app-header>
+    @if (!isAdminRoute()) {
+        <app-header></app-header>
+    }
 
-    <main class="container-main">
+    <main class="container-main" [class.container-main-admin]="isAdminRoute()">
         <router-outlet></router-outlet>
     </main>
 
-    <app-footer></app-footer>
+    @if (!isAdminRoute()) {
+        <app-footer></app-footer>
 
-    <app-floating-contact-cta />
+        <app-floating-contact-cta />
+    }
 
 </div>

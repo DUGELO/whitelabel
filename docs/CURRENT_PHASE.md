@@ -43,22 +43,25 @@ The system will NOT use:
 
 # Current Sprint
 
-## Sprint 5.0 - Firestore Admin Contract
+## Sprint 5.2 - Auth + Tenant Access
 
 Goal:
 
-- define the minimum Firestore contract for admin
-- keep compatibility with the current tenant/product structure
-- prepare tenant-scoped admin services
-- document current vs target database structure
+- integrate Firebase Auth with the admin
+- protect `/admin` with tenant-scoped access validation
+- validate `tenants/{tenantId}/users/{uid}` before admin data reads
+- prepare role-aware admin behavior for future settings and CRUD writes
 
 Deliverables:
 
-- admin models for tenant, tenant user, product and settings
-- basic tenant context
-- Firestore read service for admin foundation
-- legacy tenant fallback for settings
-- short operational documentation
+- Firebase Auth export
+- `AdminAuthService` using Angular Signals
+- `/admin/login` sign-in foundation
+- `/admin` guard
+- tenant membership validation
+- allowed roles: `admin`, `owner`, `editor`, `viewer`
+- blocked states for anonymous users and users without tenant access
+- no settings form or Product CRUD yet
 
 ---
 
@@ -78,16 +81,17 @@ Must avoid:
 - overengineered abstractions
 - large migrations before they are needed
 - visual customization outside Theme Engine
-- UI-heavy admin work before the admin contract is stable
+- CRUD-heavy admin work before settings and role permissions are ready
 
 ---
 
 # Current Success Criteria
 
-Sprint 5.0 succeeds when:
+Sprint 5.2 succeeds when:
 
-- the admin has a clear Firestore contract
-- `tenantId` is mandatory for admin data access
-- current legacy tenant fields can still seed settings
-- future sprints can build UI/Auth/CRUD without reshaping the contract again
-- documentation explains the current and target structures
+- unauthenticated users cannot access `/admin`
+- authenticated users need a tenant membership document
+- `tenantId` stays mandatory
+- roles are represented in the admin access model
+- settings/product reads run only after tenant access is validated
+- future settings/Product CRUD can reuse the same auth contract

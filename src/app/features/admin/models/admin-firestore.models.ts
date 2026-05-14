@@ -9,8 +9,13 @@ import { StorefrontThemeConfig } from '../../../core/theme/models/theme-config.t
 
 export type AdminTenantId = string;
 export type AdminTenantStatus = 'active' | 'inactive' | 'suspended';
-export type AdminTenantRole = 'admin' | 'owner' | 'editor' | 'viewer';
+export const ADMIN_TENANT_ROLES = ['admin', 'owner', 'editor', 'viewer'] as const;
+export type AdminTenantRole = (typeof ADMIN_TENANT_ROLES)[number];
 export type AdminSettingsSource = 'settings-main' | 'legacy-tenant';
+
+export function isAdminTenantRole(role: unknown): role is AdminTenantRole {
+  return ADMIN_TENANT_ROLES.includes(role as AdminTenantRole);
+}
 
 export interface AdminTenantLegacyFields {
   primaryColor?: string;

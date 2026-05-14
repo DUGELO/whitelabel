@@ -8,6 +8,16 @@
         max-width: 1260px;
         margin: 0 auto;
         padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-xl) var(--spacing-lg);
+
+        &.container-main-admin {
+            max-width: none;
+            margin: 0;
+            padding: 0;
+        }
+    }
+
+    &.container-app-admin {
+        background: var(--color-background);
     }
 }
 

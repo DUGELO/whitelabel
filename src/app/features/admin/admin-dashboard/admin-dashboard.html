@@ -1,0 +1,82 @@
+<section class="admin-dashboard" aria-labelledby="admin-dashboard-title">
+  <header class="dashboard-header">
+    <div>
+      <p class="eyebrow">Dashboard</p>
+      <h1 id="admin-dashboard-title">{{ settings().brand.name }}</h1>
+    </div>
+
+    <dl class="tenant-summary" aria-label="Tenant summary">
+      <div>
+        <dt>Tenant</dt>
+        <dd>{{ tenantId() }}</dd>
+      </div>
+      <div>
+        <dt>Status</dt>
+        <dd>{{ tenant().status ?? 'sem status' }}</dd>
+      </div>
+    </dl>
+  </header>
+
+  <div class="metric-grid" aria-label="Admin overview">
+    <article class="metric-card">
+      <span>Produtos</span>
+      <strong>{{ productsCount() }}</strong>
+    </article>
+
+    <article class="metric-card">
+      <span>Tema</span>
+      <strong>{{ settings().theme.preset }}</strong>
+    </article>
+
+    <article class="metric-card">
+      <span>Settings</span>
+      <strong>{{ settingsSourceLabel() }}</strong>
+    </article>
+
+    <article class="metric-card">
+      <span>Contato principal</span>
+      <strong>{{ primaryContactLabel() }}</strong>
+    </article>
+  </div>
+
+  <section class="foundation-panel" aria-labelledby="admin-foundation-title">
+    <div>
+      <p class="eyebrow">Phase 5.1</p>
+      <h2 id="admin-foundation-title">Base pronta para Auth e CRUD</h2>
+    </div>
+
+    <div class="foundation-grid">
+      <article>
+        <span class="status-dot status-dot-ready" aria-hidden="true"></span>
+        <div>
+          <h3>Tenant context</h3>
+          <p>Ativo para {{ tenantId() }}</p>
+        </div>
+      </article>
+
+      <article>
+        <span class="status-dot status-dot-ready" aria-hidden="true"></span>
+        <div>
+          <h3>Firestore</h3>
+          <p>Leitura inicial habilitada</p>
+        </div>
+      </article>
+
+      <article>
+        <span class="status-dot status-dot-ready" aria-hidden="true"></span>
+        <div>
+          <h3>Auth guard</h3>
+          <p>Ativo desde Sprint 5.2</p>
+        </div>
+      </article>
+
+      <article>
+        <span class="status-dot" aria-hidden="true"></span>
+        <div>
+          <h3>CRUD</h3>
+          <p>Planejado para Sprints 5.3 e 5.4</p>
+        </div>
+      </article>
+    </div>
+  </section>
+</section>

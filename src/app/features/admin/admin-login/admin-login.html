@@ -1,0 +1,64 @@
+<section class="admin-login" aria-labelledby="admin-login-title">
+  <div class="login-panel">
+    <header>
+      <p class="eyebrow">Admin Panel</p>
+      <h1 id="admin-login-title">Acesso seguro</h1>
+    </header>
+
+    @if (errorMessage(); as error) {
+      <p class="form-error" aria-live="assertive">{{ error }}</p>
+    }
+
+    @if (user(); as authenticatedUser) {
+      <div class="session-panel" aria-live="polite">
+        <span>Sessao ativa</span>
+        <strong>{{ authenticatedUser.email ?? authenticatedUser.uid }}</strong>
+      </div>
+    }
+
+    <form class="login-form" (submit)="handleSubmit($event)">
+      @if (!user()) {
+        <label for="admin-email">Email</label>
+        <input
+          id="admin-email"
+          type="email"
+          autocomplete="email"
+          [value]="emailInput()"
+          (input)="onEmailInput($event)"
+          [disabled]="isLoading()"
+        >
+
+        <label for="admin-password">Senha</label>
+        <input
+          id="admin-password"
+          type="password"
+          autocomplete="current-password"
+          [value]="passwordInput()"
+          (input)="onPasswordInput($event)"
+          [disabled]="isLoading()"
+        >
+      }
+
+      <label for="admin-login-tenant-id">Tenant ID</label>
+      <input
+        id="admin-login-tenant-id"
+        type="text"
+        autocomplete="off"
+        [value]="tenantInput()"
+        (input)="onTenantInput($event)"
+        [disabled]="isLoading()"
+        placeholder="tenant-id"
+      >
+
+      <button type="submit" [disabled]="!canSubmit()">
+        {{ user() ? 'Acessar tenant' : 'Entrar' }}
+      </button>
+    </form>
+
+    @if (user()) {
+      <button class="ghost-button" type="button" [disabled]="isLoading()" (click)="handleSignOut()">
+        Sair
+      </button>
+    }
+  </div>
+</section>

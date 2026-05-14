@@ -254,3 +254,32 @@ Sprint 5.1 should build:
 - tenant context bootstrap
 
 It should consume the Sprint 5.0 services without adding CRUD yet.
+
+## 11. Sprint 5.2 Auth Contract
+
+Sprint 5.2 protects admin access with Firebase Auth plus tenant membership.
+
+Access requires:
+
+```txt
+request Firebase user
+  -> tenants/{tenantId}/users/{uid}
+  -> active !== false
+  -> role in admin | owner | editor | viewer
+```
+
+The admin route is:
+
+```txt
+/admin?tenantId={tenantId}
+```
+
+The sign-in route is:
+
+```txt
+/admin/login
+```
+
+`tenantId` remains mandatory. Remembered tenant context can prefill admin flows, but it never authorizes access by itself.
+
+Sprint 5.2 does not add writes. Settings writes remain Sprint 5.3 and product writes remain Sprint 5.4.

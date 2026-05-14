@@ -85,6 +85,27 @@ Contrato inicial da Phase 5 Admin Panel:
 - models e services admin
 - handoff para Sprint 5.1
 
+### [ADMIN_PANEL_FOUNDATION.md](ADMIN_PANEL_FOUNDATION.md)
+
+Base estrutural da Sprint 5.1:
+
+- rota `/admin`
+- shell e dashboard inicial
+- bootstrap de `tenantId`
+- estados de loading/error
+- handoff para Auth + Tenant Access
+
+### [ADMIN_AUTH_TENANT_ACCESS.md](ADMIN_AUTH_TENANT_ACCESS.md)
+
+Contrato da Sprint 5.2:
+
+- Firebase Auth no admin
+- guard de `/admin`
+- validacao de `tenants/{tenantId}/users/{uid}`
+- roles permitidos
+- blocked states de acesso
+- handoff para Storefront Settings
+
 ### [logo-usage.md](logo-usage.md)
 
 Guia de uso dos arquivos de logo e suas variacoes visuais.

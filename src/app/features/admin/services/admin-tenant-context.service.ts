@@ -2,6 +2,8 @@ import { Injectable, computed, signal } from '@angular/core';
 
 import { AdminTenantId } from '../models/admin-firestore.models';
 
+const ADMIN_TENANT_STORAGE_KEY = 'white-label.admin.tenantId';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -23,6 +25,28 @@ export class AdminTenantContextService {
 
   clearTenantId(): void {
     this.tenantIdState.set(null);
+  }
+
+  resolveTenantId(candidateTenantId?: AdminTenantId | null): AdminTenantId | null {
+    const tenantId = candidateTenantId?.trim() || this.tenantIdState() || this.readStoredTenantId();
+
+    return tenantId?.trim() || null;
+  }
+
+  readStoredTenantId(): AdminTenantId | null {
+    try {
+      return globalThis.localStorage?.getItem(ADMIN_TENANT_STORAGE_KEY) ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  storeTenantId(tenantId: AdminTenantId): void {
+    try {
+      globalThis.localStorage?.setItem(ADMIN_TENANT_STORAGE_KEY, tenantId.trim());
+    } catch {
+      return;
+    }
   }
 
   requireTenantId(): AdminTenantId {
