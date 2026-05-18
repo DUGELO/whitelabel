@@ -28,16 +28,17 @@ Sprint 5.3 edits:
 
 - store name
 - store slug
+- slogan and store description
+- logo, favicon and product-not-found image paths
 - WhatsApp URL
 - Instagram URL
 - primary contact channel
 - theme preset
-- brand color overrides
+- brand color overrides, only after explicit color customization
 - typography preset
-- hero variant
 - product card variant
-- product grid variant
-- CTA variant
+- catalog currency
+- default WhatsApp message
 
 It does not edit:
 
@@ -46,6 +47,8 @@ It does not edit:
 - arbitrary CSS
 - custom fonts
 - unrestricted layouts
+- product base URL
+- hero, product grid or CTA variants until those controls have storefront-visible effects
 
 ## Runtime Contract
 
@@ -59,7 +62,7 @@ tenants/{tenantId}
 
 Saving that fallback creates `settings/main`.
 
-WhatsApp follows the Firestore contact contract:
+WhatsApp is normalized before save and follows the Firestore contact contract:
 
 ```txt
 socialLinks.whatsappUrl = https://wa.me/5598984655819
@@ -81,7 +84,7 @@ editor
 
 The app blocks writes in the UI, but Firestore rules must also allow settings writes only for tenant managers.
 
-Example direction:
+Current direction:
 
 ```js
 function canManageSettings(tenantId) {
@@ -90,8 +93,11 @@ function canManageSettings(tenantId) {
 }
 
 match /tenants/{tenantId}/settings/{settingsId} {
-  allow read: if isTenantMember(tenantId);
-  allow write: if canManageSettings(tenantId);
+  allow get: if isTenantMember(tenantId)
+    || (settingsId == 'main' && isPublicStorefrontSettings());
+  allow create, update: if settingsId == 'main'
+    && canManageSettings(tenantId)
+    && isValidSettingsWrite();
 }
 ```
 
@@ -107,6 +113,16 @@ The UI only exposes platform-owned values:
 
 Variants and typography presets follow the Theme Engine contract documented in `THEME_ENGINE_CHEAT_SHEET.md`.
 
+Color overrides are intentionally opt-in:
+
+- changing the theme preset saves only `theme.preset`
+- preset colors are shown in the preview but are not persisted as `theme.colors`
+- `theme.colors` is written only after the user chooses `Personalizar cores`
+- overrides equal to the selected preset are removed on save
+- `Usar cores do tema` clears color overrides
+
+Only the product card variant is editable in Sprint 5 because it has a real storefront implementation today. Hero, grid and CTA variants remain controlled Theme Engine concepts, but they are not exposed in the admin until the storefront consumes them visually.
+
 ## Sprint 5.4 Handoff
 
 Next step:
@@ -116,3 +132,30 @@ Next step:
 - create and edit product documents
 - activate and deactivate products
 - keep media uploads deferred to Sprint 5.5
+
+## Sprint 5.6 Update
+
+Settings now include a compact preview and stronger pre-save validation.
+
+Save is blocked when required identity/contact/theme data is missing or outside the controlled Theme Engine contract.
+
+WhatsApp remains stored as:
+
+```txt
+https://wa.me/5598984655819
+```
+
+## Staff Review Update
+
+The settings save now writes a canonical `settings/main` document instead of merging arbitrary existing fields.
+
+This keeps old unknown keys, `customCss` and freeform theme payloads from surviving future saves.
+
+## Staff Review Follow-up
+
+The Loja screen no longer exposes fields with no storefront effect:
+
+- `catalog.baseProductUrl` is not edited by the admin until it is used by a public/share flow.
+- `theme.variants.hero`, `theme.variants.productGrid` and `theme.variants.cta` are not edited by the admin until their variants affect rendered storefront components.
+
+Firestore settings may still contain these controlled keys for forward compatibility, but the current admin will not generate them.

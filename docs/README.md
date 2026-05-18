@@ -128,6 +128,37 @@ Contrato da Sprint 5.4:
 - roles de escrita
 - handoff para Media Management
 
+### [ADMIN_MEDIA_MANAGEMENT.md](ADMIN_MEDIA_MANAGEMENT.md)
+
+Contrato da Sprint 5.5:
+
+- upload de imagens de produto no admin
+- Firebase Storage com path por tenant
+- URL de download persistida em `products.images`
+- validacoes simples de arquivo
+- limites claros antes de uma galeria/DAM
+
+### [ADMIN_PREVIEW_VALIDATION.md](ADMIN_PREVIEW_VALIDATION.md)
+
+Contrato da Sprint 5.6:
+
+- preview simples de settings e produtos
+- validacoes antes de salvar
+- mensagens de pendencia no admin
+- estados de loading/empty/error mais claros
+- limites antes de um fluxo formal de publicacao
+
+### [ADMIN_SECURITY_RELEASE.md](ADMIN_SECURITY_RELEASE.md)
+
+Contrato da Sprint 5.7:
+
+- Firestore rules versionadas
+- Storage rules versionadas
+- isolamento por tenant
+- roles server-side
+- checklist operacional do admin
+- checklist de release da Phase 5
+
 ### [logo-usage.md](logo-usage.md)
 
 Guia de uso dos arquivos de logo e suas variacoes visuais.
@@ -140,6 +171,15 @@ Checklist final da Phase 4:
 - matriz visual minima por preset
 - rotas de validacao
 - sinais de aprovacao do Theme Engine
+
+### [STOREFRONT_RUNTIME_CONFIG.md](STOREFRONT_RUNTIME_CONFIG.md)
+
+Fluxo publico de runtime config:
+
+- Firestore `settings/main` como fonte de verdade
+- `STOREFRONT_CONFIG` como fallback
+- resolucao atual de `tenantId`
+- cuidados de Firebase rules
 
 ## Fluxo recomendado para nova loja
 

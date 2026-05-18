@@ -9,7 +9,7 @@ describe('mapLegacyTenantToAdminSettings', () => {
       primaryColor: '#8a6a2d',
       secondaryColor: '#b99668',
       instagram: 'https://instagram.com/atelieraurea',
-      whatsapp: 'https://wa.me/5598984655819',
+      whatsapp: '+55 (98) 98465-5819',
     });
 
     expect(settings.brand.name).toBe('Atelier Aurea');

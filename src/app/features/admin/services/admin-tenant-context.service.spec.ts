@@ -32,4 +32,11 @@ describe('AdminTenantContextService', () => {
 
     expect(service.resolveTenantId()).toBe('soft-fashion');
   });
+
+  it('should clear the persisted admin tenant on sign out flows', () => {
+    service.storeTenantId('soft-fashion');
+    service.clearStoredTenantId();
+
+    expect(service.readStoredTenantId()).toBeNull();
+  });
 });

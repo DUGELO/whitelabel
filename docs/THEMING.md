@@ -421,16 +421,23 @@ Tenants select platform-owned presets and may only override controlled brand col
 ```ts
 theme: {
   preset: 'editorial-luxury',
+}
+```
+
+When the tenant explicitly customizes colors, only differences from the selected preset are stored:
+
+```ts
+theme: {
+  preset: 'editorial-luxury',
   colors: {
     brandPrimary: '#8a6a2d',
-    brandPrimaryStrong: '#5f4617',
-    brandSecondary: '#b99668',
-    accent: '#e5d3b1',
   },
 }
 ```
 
 Tenants must not define arbitrary component styles, spacing systems or isolated CSS.
+
+Preset colors are inherited by default. The admin must not persist preset colors as tenant overrides unless the user explicitly chooses to personalize colors, and overrides matching the preset should be removed.
 
 ## Runtime tokens
 

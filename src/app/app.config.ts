@@ -1,7 +1,14 @@
-import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  ApplicationConfig,
+  Injector,
+  inject,
+  provideAppInitializer,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { StorefrontConfigService } from './core/storefront/storefront-config.service';
+import { StorefrontRuntimeConfigService } from './core/storefront/storefront-runtime-config.service';
 import { ThemeEngineService } from './core/theme/services/theme-engine.service';
 
 
@@ -10,11 +17,19 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideAppInitializer(() => {
+      const injector = inject(Injector);
       const storefrontConfig = inject(StorefrontConfigService);
-      const themeEngine = inject(ThemeEngineService);
+      const runtimeConfig = inject(StorefrontRuntimeConfigService);
 
-      storefrontConfig.initializeBranding();
-      themeEngine.initializeTheme();
+      return runtimeConfig.loadConfig().catch((error) => {
+        console.warn('[app-config] Storefront runtime config fallback applied.', error);
+
+        return storefrontConfig.config();
+      }).then((config) => {
+        storefrontConfig.applyRuntimeConfig(config);
+        storefrontConfig.initializeBranding();
+        injector.get(ThemeEngineService).initializeTheme();
+      });
     })
   ]
 };

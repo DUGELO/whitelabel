@@ -1,7 +1,7 @@
 <section class="admin-login" aria-labelledby="admin-login-title">
   <div class="login-panel">
     <header>
-      <p class="eyebrow">Admin Panel</p>
+      <p class="eyebrow">Painel da loja</p>
       <h1 id="admin-login-title">Acesso seguro</h1>
     </header>
 
@@ -39,7 +39,7 @@
         >
       }
 
-      <label for="admin-login-tenant-id">Tenant ID</label>
+      <label for="admin-login-tenant-id">ID da loja</label>
       <input
         id="admin-login-tenant-id"
         type="text"
@@ -51,7 +51,7 @@
       >
 
       <button type="submit" [disabled]="!canSubmit()">
-        {{ user() ? 'Acessar tenant' : 'Entrar' }}
+        {{ user() ? 'Acessar loja' : 'Entrar' }}
       </button>
     </form>
 

@@ -27,7 +27,7 @@ The platform will use:
 - Angular admin panel
 - Firebase Auth
 - Firestore
-- Firebase Storage later in Phase 5
+- Firebase Storage for tenant-scoped media
 - tenant-scoped services
 - controlled theme configuration
 
@@ -43,26 +43,25 @@ The system will NOT use:
 
 # Current Sprint
 
-## Sprint 5.4 - Product CRUD
+## Sprint 5.7 - Security + Release
 
 Goal:
 
-- allow tenant users to manage real Firestore products
-- persist product changes in `tenants/{tenantId}/products`
-- keep `tenantId` mandatory for all admin product reads and writes
-- preserve compatibility with the current storefront product mapper
+- close Phase 5 with secure Firebase rules
+- document tenant isolation and role enforcement
+- add operational release checklist for the admin
+- verify build and tests before moving to future phases
 
 Deliverables:
 
-- products area inside `/admin`
-- product list for `tenants/{tenantId}/products`
-- create product
-- edit product
-- activate and deactivate product
-- simple validation for required product fields
-- role-aware write behavior
-- documentation for product CRUD
-- no media upload yet
+- source-controlled Firestore rules
+- source-controlled Storage rules
+- Firebase rules wired through `firebase.json`
+- server-side role enforcement for admin writes
+- tenant isolation documented
+- admin operational checklist
+- Phase 5 release documentation
+- no large new admin features
 
 ---
 
@@ -73,6 +72,7 @@ Must preserve:
 - tenant isolation
 - Firebase-first architecture
 - Firestore access through admin services
+- Storage access through tenant-scoped admin services
 - Angular Signals state model
 - current product document compatibility
 - low operational complexity
@@ -82,7 +82,11 @@ Must avoid:
 - hardcoded tenant logic
 - overengineered abstractions
 - direct Firestore access inside components
-- Product Storage upload before Sprint 5.5
+- Storage paths without `tenantId`
+- asset collections before they are needed
+- publish workflow before it is explicitly designed
+- open public writes
+- tenant membership checks outside server rules
 - visual customization outside Theme Engine tokens
 - hard deletes as the default product workflow
 
@@ -90,12 +94,14 @@ Must avoid:
 
 # Current Success Criteria
 
-Sprint 5.4 succeeds when:
+Sprint 5.7 succeeds when:
 
-- products load from `tenants/{tenantId}/products`
-- `owner`, `admin` and `editor` can create and edit products
-- `viewer` users remain read-only
-- created products include the active `tenantId`
-- product activation is controlled through `active`
-- products remain compatible with the storefront mapper
-- future media upload can build on top of the image URL fields
+- Firestore rules are versioned in the repo
+- Storage rules are versioned in the repo
+- settings/product writes require `owner`, `admin` or `editor`
+- `viewer` remains read-only server-side
+- tenant users can only access their own tenant path
+- public product reads are limited to active products
+- product image uploads are tenant-scoped
+- build and tests pass
+- no tenant-specific logic or hardcoded tenant id is introduced

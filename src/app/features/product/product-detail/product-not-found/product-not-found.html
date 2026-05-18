@@ -1,7 +1,9 @@
 <section class="not-found-modal" aria-labelledby="product-not-found-title" aria-describedby="product-not-found-description">
+	@if (storefrontConfig().brand.notFoundImagePath) {
 	<div class="modal-visual" aria-hidden="true">
 		<img [src]="storefrontConfig().brand.notFoundImagePath" alt="Illustration of a person looking at an empty storefront shelf">
 	</div>
+	}
 
 	<div class="modal-copy">
 		<p class="eyebrow">{{ storefrontConfig().content.productNotFoundEyebrow }}</p>

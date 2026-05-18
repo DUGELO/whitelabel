@@ -7,6 +7,12 @@ import {
   AdminTenantId,
 } from '../models/admin-firestore.models';
 import { AdminFirestoreService } from '../services/admin-firestore.service';
+import { AdminStorageService } from '../services/admin-storage.service';
+
+const MAX_PRODUCT_IMAGE_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+const PRODUCT_SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+type ProductStatusFilter = 'all' | 'active' | 'inactive';
 
 interface AdminProductFormState {
   title: string;
@@ -22,6 +28,21 @@ interface AdminProductFormState {
   active: boolean;
 }
 
+interface AdminProductPreview {
+  title: string;
+  slug: string;
+  description: string;
+  priceLabel: string;
+  compareAtPriceLabel: string;
+  category: string;
+  statusLabel: string;
+  imageUrl: string | null;
+  imageAlt: string;
+  imagesCount: number;
+  tags: string[];
+  highlights: string[];
+}
+
 @Component({
   selector: 'app-admin-products',
   imports: [],
@@ -31,39 +52,89 @@ interface AdminProductFormState {
 export class AdminProducts {
   readonly tenantId = input.required<AdminTenantId>();
   readonly products = input.required<AdminProductDocument[]>();
+  readonly currencyCode = input('BRL');
   readonly canEditProducts = input.required<boolean>();
   readonly productChanged = output<AdminProductDocument>();
 
   private readonly adminFirestore = inject(AdminFirestoreService);
+  private readonly adminStorage = inject(AdminStorageService);
 
   protected readonly selectedProductId = signal<string | null>(null);
   protected readonly form = signal<AdminProductFormState>(this.createInitialFormState());
   protected readonly isSaving = signal(false);
+  protected readonly isUploading = signal(false);
   protected readonly pendingProductId = signal<string | null>(null);
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly successMessage = signal<string | null>(null);
+  protected readonly productStatusFilter = signal<ProductStatusFilter>('all');
 
   protected readonly isReadOnly = computed(() => !this.canEditProducts());
+  protected readonly validationIssues = computed(() => this.collectValidationIssues(this.form()));
+  protected readonly productPreview = computed(() => this.buildProductPreview(this.form()));
   protected readonly selectedProduct = computed(() => {
     const productId = this.selectedProductId();
 
-    return productId ? this.products().find((product) => product.id === productId) ?? null : null;
+    return productId ? (this.products().find((product) => product.id === productId) ?? null) : null;
   });
   protected readonly isEditing = computed(() => Boolean(this.selectedProductId()));
   protected readonly sortedProducts = computed(() =>
     [...this.products()].sort((left, right) => left.title.localeCompare(right.title)),
   );
+  protected readonly filteredProducts = computed(() => {
+    const filter = this.productStatusFilter();
+    const products = this.sortedProducts();
+
+    if (filter === 'active') {
+      return products.filter((product) => product.active);
+    }
+
+    if (filter === 'inactive') {
+      return products.filter((product) => !product.active);
+    }
+
+    return products;
+  });
   protected readonly activeProductsCount = computed(
     () => this.products().filter((product) => product.active).length,
   );
+  protected readonly inactiveProductsCount = computed(
+    () => this.products().filter((product) => !product.active).length,
+  );
+  protected readonly productFilterOptions = [
+    { value: 'all', label: 'Todos' },
+    { value: 'active', label: 'Ativos' },
+    { value: 'inactive', label: 'Inativos' },
+  ] satisfies Array<{ value: ProductStatusFilter; label: string }>;
+
+  protected productFilterCount(filter: ProductStatusFilter): number {
+    if (filter === 'active') {
+      return this.activeProductsCount();
+    }
+
+    if (filter === 'inactive') {
+      return this.inactiveProductsCount();
+    }
+
+    return this.products().length;
+  }
 
   protected startCreate(): void {
+    if (this.isUploading()) {
+      this.errorMessage.set('Aguarde o envio das imagens terminar.');
+      return;
+    }
+
     this.selectedProductId.set(null);
     this.form.set(this.createInitialFormState());
     this.clearFeedback();
   }
 
   protected editProduct(product: AdminProductDocument): void {
+    if (this.isUploading()) {
+      this.errorMessage.set('Aguarde o envio das imagens terminar.');
+      return;
+    }
+
     this.selectedProductId.set(product.id);
     this.form.set(this.createFormFromProduct(product));
     this.clearFeedback();
@@ -98,9 +169,26 @@ export class AdminProducts {
     void this.saveProduct();
   }
 
+  protected handleImageUpload(event: Event): void {
+    void this.uploadImages(event);
+  }
+
+  protected setProductStatusFilter(filter: ProductStatusFilter): void {
+    this.productStatusFilter.set(filter);
+  }
+
+  protected productThumbnail(product: AdminProductDocument): string | null {
+    return (product.images ?? []).find((image) => this.isValidUrl(image.url))?.url ?? null;
+  }
+
   protected async handleToggleActive(product: AdminProductDocument): Promise<void> {
     if (this.isReadOnly()) {
-      this.errorMessage.set('Seu role atual permite apenas leitura.');
+      this.errorMessage.set('Seu acesso atual permite apenas leitura.');
+      return;
+    }
+
+    if (this.isUploading()) {
+      this.errorMessage.set('Aguarde o envio das imagens terminar.');
       return;
     }
 
@@ -132,13 +220,18 @@ export class AdminProducts {
   protected formatPrice(value: number | undefined): string {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: 'BRL',
+      currency: this.currencyCode(),
     }).format(value ?? 0);
   }
 
   private async saveProduct(): Promise<void> {
     if (this.isReadOnly()) {
-      this.errorMessage.set('Seu role atual permite apenas leitura.');
+      this.errorMessage.set('Seu acesso atual permite apenas leitura.');
+      return;
+    }
+
+    if (this.isUploading()) {
+      this.errorMessage.set('Aguarde o envio das imagens terminar.');
       return;
     }
 
@@ -171,6 +264,64 @@ export class AdminProducts {
     }
   }
 
+  private async uploadImages(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const files = Array.from(input.files ?? []);
+
+    if (this.isReadOnly()) {
+      this.errorMessage.set('Seu acesso atual permite apenas leitura.');
+      input.value = '';
+      return;
+    }
+
+    if (files.length === 0) {
+      return;
+    }
+
+    const productSlug = this.resolveProductSlugForUpload();
+    const validationMessage =
+      this.validateImageFiles(files) ?? this.validateUploadSlug(productSlug);
+
+    if (validationMessage) {
+      this.errorMessage.set(validationMessage);
+      input.value = '';
+      return;
+    }
+
+    this.isUploading.set(true);
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
+
+    try {
+      const uploadedImages = await Promise.all(
+        files.map((file) =>
+          this.adminStorage.uploadProductImage({
+            tenantId: this.tenantId(),
+            productSlug,
+            file,
+          }),
+        ),
+      );
+
+      this.form.update((form) => ({
+        ...form,
+        slug: form.slug.trim() || productSlug,
+        imagesText: this.mergeImageUrls(
+          form.imagesText,
+          uploadedImages.map((image) => image.url),
+        ),
+      }));
+      this.successMessage.set(
+        uploadedImages.length === 1 ? 'Imagem enviada.' : 'Imagens enviadas.',
+      );
+    } catch (error) {
+      this.errorMessage.set(this.resolveErrorMessage(error));
+    } finally {
+      this.isUploading.set(false);
+      input.value = '';
+    }
+  }
+
   private buildProductPayload(): AdminProductWriteInput {
     const selectedProduct = this.selectedProduct();
     const form = this.form();
@@ -194,41 +345,111 @@ export class AdminProducts {
   }
 
   private validateForm(): string | null {
-    const form = this.form();
+    return this.validationIssues()[0] ?? null;
+  }
+
+  private collectValidationIssues(form: AdminProductFormState): string[] {
+    const issues: string[] = [];
+    const title = form.title.trim();
+    const slug = form.slug.trim();
+    const description = form.description.trim();
     const price = this.parseOptionalNumber(form.price);
     const compareAtPrice = this.parseOptionalNumber(form.compareAtPrice);
-    const images = this.parseImages(form.imagesText, form.title.trim());
+    const images = this.parseImages(form.imagesText, title);
 
-    if (!form.title.trim()) {
-      return 'Informe o titulo do produto.';
+    if (!title) {
+      issues.push('Informe o titulo do produto.');
     }
 
-    if (!form.slug.trim()) {
-      return 'Informe o slug do produto.';
+    if (!slug) {
+      issues.push('Informe o slug do produto.');
+    } else if (!PRODUCT_SLUG_PATTERN.test(slug)) {
+      issues.push('Use um slug em minusculas, numeros e hifens.');
+    } else if (this.isDuplicateSlug(slug)) {
+      issues.push('Ja existe um produto com este slug.');
     }
 
-    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(form.slug.trim())) {
-      return 'Use um slug em minusculas, numeros e hifens.';
-    }
-
-    if (!form.description.trim()) {
-      return 'Informe a descricao curta.';
+    if (!description) {
+      issues.push('Informe a descricao curta.');
     }
 
     if (price === undefined || price <= 0) {
-      return 'Informe um preco valido.';
+      issues.push('Informe um preco valido.');
     }
 
-    if (compareAtPrice !== undefined && compareAtPrice < price) {
-      return 'O preco comparativo deve ser maior ou igual ao preco.';
+    if (compareAtPrice !== undefined && price !== undefined && compareAtPrice < price) {
+      issues.push('O preco comparativo deve ser maior ou igual ao preco.');
     }
 
     if (images.length === 0) {
-      return 'Informe ao menos uma imagem.';
+      issues.push('Informe ao menos uma imagem.');
     }
 
     if (images.some((image) => !this.isValidUrl(image.url))) {
-      return 'Informe URLs validas para as imagens.';
+      issues.push('Informe URLs validas para as imagens.');
+    }
+
+    return issues;
+  }
+
+  private buildProductPreview(form: AdminProductFormState): AdminProductPreview {
+    const title = form.title.trim();
+    const description = form.description.trim();
+    const price = this.parseOptionalNumber(form.price);
+    const compareAtPrice = this.parseOptionalNumber(form.compareAtPrice);
+    const tags = this.parseTextList(form.tagsText);
+    const highlights = this.parseTextList(form.highlightsText);
+    const images = this.parseImages(form.imagesText, title);
+    const imageUrl = images.find((image) => this.isValidUrl(image.url))?.url ?? null;
+
+    return {
+      title: title || 'Produto sem titulo',
+      slug: form.slug.trim() || 'slug-pendente',
+      description: description || 'Descricao pendente',
+      priceLabel: price === undefined ? 'Preco pendente' : this.formatPrice(price),
+      compareAtPriceLabel:
+        compareAtPrice === undefined ? 'Sem preco comparativo' : this.formatPrice(compareAtPrice),
+      category: form.category.trim() || 'Sem categoria',
+      statusLabel: form.active ? 'Ativo' : 'Inativo',
+      imageUrl,
+      imageAlt: title || 'Preview do produto',
+      imagesCount: images.length,
+      tags,
+      highlights,
+    };
+  }
+
+  private isDuplicateSlug(slug: string): boolean {
+    const selectedProductId = this.selectedProductId();
+
+    return this.products().some(
+      (product) => product.slug === slug && product.id !== selectedProductId,
+    );
+  }
+
+  private validateImageFiles(files: File[]): string | null {
+    const unsupportedFile = files.find((file) => !file.type.startsWith('image/'));
+
+    if (unsupportedFile) {
+      return 'Envie apenas arquivos de imagem.';
+    }
+
+    const oversizedFile = files.find((file) => file.size > MAX_PRODUCT_IMAGE_FILE_SIZE_BYTES);
+
+    if (oversizedFile) {
+      return 'Cada imagem deve ter no maximo 5 MB.';
+    }
+
+    return null;
+  }
+
+  private validateUploadSlug(productSlug: string): string | null {
+    if (!productSlug) {
+      return 'Informe titulo ou slug antes de enviar imagens.';
+    }
+
+    if (!PRODUCT_SLUG_PATTERN.test(productSlug)) {
+      return 'Use um slug em minusculas, numeros e hifens antes do upload.';
     }
 
     return null;
@@ -286,6 +507,15 @@ export class AdminProducts {
       }));
   }
 
+  private mergeImageUrls(currentValue: string, uploadedUrls: string[]): string {
+    const currentUrls = currentValue
+      .split('\n')
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+    return [...currentUrls, ...uploadedUrls].join('\n');
+  }
+
   private parseRequiredNumber(value: string): number {
     return Number(value.replace(',', '.'));
   }
@@ -313,6 +543,12 @@ export class AdminProducts {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '');
+  }
+
+  private resolveProductSlugForUpload(): string {
+    const form = this.form();
+
+    return form.slug.trim() || this.slugify(form.title);
   }
 
   private isValidUrl(value: string): boolean {

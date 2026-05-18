@@ -13,7 +13,7 @@ import { AdminAuthService } from '../services/admin-auth.service';
 import { AdminFirestoreService } from '../services/admin-firestore.service';
 import { AdminTenantContextService } from '../services/admin-tenant-context.service';
 
-type AdminSectionId = 'dashboard' | 'settings' | 'products' | 'media';
+type AdminSectionId = 'dashboard' | 'settings' | 'products';
 
 @Component({
   selector: 'app-admin-shell',
@@ -33,9 +33,14 @@ export class AdminShell {
   protected readonly products = signal<AdminProductDocument[]>([]);
   protected readonly isLoading = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
-  protected readonly activeSection = signal<AdminSectionId>('dashboard');
+  protected readonly activeSection = signal<AdminSectionId>(
+    this.resolveSectionId(this.route.snapshot.queryParamMap.get('section')),
+  );
 
   protected readonly tenantId = computed(() => this.tenantContext.tenantId());
+  protected readonly activeStoreName = computed(
+    () => this.settingsResult()?.settings.brand.name ?? 'Painel da loja',
+  );
   protected readonly userLabel = computed(() => {
     const user = this.adminAuth.user();
 
@@ -48,15 +53,20 @@ export class AdminShell {
     return role === 'admin' || role === 'owner' || role === 'editor';
   });
   protected readonly productsCount = computed(() => this.products().length);
+  protected readonly activeProductsCount = computed(
+    () => this.products().filter((product) => product.active).length,
+  );
+  protected readonly productsCurrencyCode = computed(
+    () => this.settingsResult()?.settings.catalog.currencyCode ?? 'BRL',
+  );
   protected readonly canSubmitTenant = computed(() => {
     return this.tenantInput().trim().length > 0 && !this.isLoading();
   });
 
   protected readonly navItems = [
-    { id: 'dashboard', label: 'Dashboard', disabled: false },
-    { id: 'settings', label: 'Configuracoes', disabled: false },
+    { id: 'dashboard', label: 'Inicio', disabled: false },
+    { id: 'settings', label: 'Loja', disabled: false },
     { id: 'products', label: 'Produtos', disabled: false },
-    { id: 'media', label: 'Midia', disabled: true },
   ] as const;
 
   constructor() {
@@ -75,6 +85,12 @@ export class AdminShell {
 
   protected setActiveSection(section: AdminSectionId): void {
     this.activeSection.set(section);
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { section },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 
   protected handleSettingsSaved(settingsResult: AdminSettingsReadResult): void {
@@ -98,6 +114,7 @@ export class AdminShell {
 
     await this.adminAuth.signOutAdmin();
     this.tenantContext.clearTenantId();
+    this.tenantContext.clearStoredTenantId();
     await this.router.navigate(['/admin/login'], {
       queryParams: tenantId ? { tenantId } : undefined,
     });
@@ -107,7 +124,7 @@ export class AdminShell {
     const normalizedTenantId = tenantId.trim();
 
     if (!normalizedTenantId) {
-      this.errorMessage.set('Informe um tenantId para carregar o admin.');
+      this.errorMessage.set('Informe o ID da loja para carregar o painel.');
       return;
     }
 
@@ -121,7 +138,7 @@ export class AdminShell {
 
       if (!access) {
         this.tenantContext.clearTenantId();
-        this.errorMessage.set('Seu usuario nao tem acesso a este tenant.');
+        this.errorMessage.set('Seu usuario nao tem acesso a esta loja.');
         return;
       }
 
@@ -134,7 +151,7 @@ export class AdminShell {
 
       if (!settingsResult) {
         this.tenantContext.clearTenantId();
-        this.errorMessage.set('Tenant nao encontrado no Firestore.');
+        this.errorMessage.set('Loja nao encontrada.');
         return;
       }
 
@@ -166,6 +183,10 @@ export class AdminShell {
       return error.message;
     }
 
-    return 'Nao foi possivel carregar o tenant agora.';
+    return 'Nao foi possivel carregar a loja agora.';
+  }
+
+  private resolveSectionId(section: string | null): AdminSectionId {
+    return section === 'settings' || section === 'products' ? section : 'dashboard';
   }
 }

@@ -24,4 +24,20 @@ describe('StorefrontConfigService', () => {
     const favicon = document.querySelector("link[rel*='icon']") as HTMLLinkElement | null;
     expect(favicon?.href).toContain(service.config().brand.faviconPath);
   });
+
+  it('should accept runtime configuration before branding is applied', () => {
+    service.applyRuntimeConfig({
+      ...service.config(),
+      brand: {
+        ...service.config().brand,
+        name: 'Loja Firestore',
+        faviconPath: 'loja-firestore.svg',
+      },
+    });
+
+    service.initializeBranding();
+
+    expect(service.config().brand.name).toBe('Loja Firestore');
+    expect(document.title).toBe('Loja Firestore');
+  });
 });

@@ -49,6 +49,14 @@ export class AdminTenantContextService {
     }
   }
 
+  clearStoredTenantId(): void {
+    try {
+      globalThis.localStorage?.removeItem(ADMIN_TENANT_STORAGE_KEY);
+    } catch {
+      return;
+    }
+  }
+
   requireTenantId(): AdminTenantId {
     const tenantId = this.tenantIdState();
 

@@ -9,7 +9,7 @@ The admin is Firebase-first:
 - Angular admin panel
 - Firebase Auth
 - Firestore
-- Firebase Storage later
+- Firebase Storage
 
 The goal is not to create a CMS abstraction. The goal is a simple, tenant-scoped admin surface that can safely manage storefront settings and products.
 
@@ -89,7 +89,7 @@ tenants/
       {uid}
 ```
 
-Future Phase 5.5 may add:
+Future media workflows may add:
 
 ```txt
 tenants/
@@ -112,11 +112,11 @@ This service stores the active admin `tenantId` and throws if Firestore access i
 
 Resolution strategy by sprint:
 
-| Sprint | Tenant resolution |
-|---|---|
-| 5.0 | explicit tenant context service, no hardcoded admin tenant |
-| 5.1 | route/query/admin bootstrap may set the tenant context |
-| 5.2 | Firebase Auth + `tenants/{tenantId}/users/{uid}` validates access |
+| Sprint | Tenant resolution                                                 |
+| ------ | ----------------------------------------------------------------- |
+| 5.0    | explicit tenant context service, no hardcoded admin tenant        |
+| 5.1    | route/query/admin bootstrap may set the tenant context            |
+| 5.2    | Firebase Auth + `tenants/{tenantId}/users/{uid}` validates access |
 
 The storefront may still have legacy development assumptions, but admin services must not hardcode `whitelabel`.
 
@@ -142,13 +142,13 @@ tenant legacy fields -> AdminStorefrontSettingsDocument
 The fallback source is returned as:
 
 ```ts
-source: 'legacy-tenant'
+source: 'legacy-tenant';
 ```
 
 If `settings/main` exists, the source is:
 
 ```ts
-source: 'settings-main'
+source: 'settings-main';
 ```
 
 Sprint 5.3 can persist a generated settings document when the user saves settings.
@@ -240,7 +240,7 @@ Do not:
 - hardcode tenant-specific logic
 - allow arbitrary CSS
 - create tenant-specific collections
-- move product images to Storage before Sprint 5.5
+- create asset collections before they are needed
 - build admin UI before the contract is stable
 
 ## 10. Sprint 5.1 Handoff
@@ -303,12 +303,17 @@ The admin settings UI can create `settings/main` from the legacy tenant fallback
 Editable settings are intentionally controlled:
 
 - brand name and slug
+- slogan and store description
+- logo, favicon and product-not-found image paths
 - WhatsApp and Instagram URLs
 - primary contact channel
 - theme preset
 - brand color overrides
 - typography preset
 - allowed variants
+- catalog currency
+- product base URL
+- default WhatsApp message
 
 No arbitrary CSS, custom fonts or freeform layout configuration is allowed.
 
@@ -327,6 +332,10 @@ WhatsApp is stored as a URL:
 ```txt
 socialLinks.whatsappUrl = https://wa.me/5598984655819
 ```
+
+Phone-like input such as `+55 (98) 98465-5819` may be accepted by the admin UI, but it is normalized before persistence.
+
+Settings writes replace the controlled `settings/main` document instead of merging arbitrary unknown fields.
 
 ## 13. Sprint 5.4 Product CRUD Contract
 
@@ -372,4 +381,125 @@ editor
 
 `viewer` remains read-only.
 
-Media upload remains deferred to Sprint 5.5. Sprint 5.4 only stores image URLs already available to the admin.
+Sprint 5.5 can generate image URLs through Firebase Storage, but the product document shape remains the same.
+
+## 14. Sprint 5.5 Media Contract
+
+Sprint 5.5 adds product image uploads through Firebase Storage.
+
+Storage path:
+
+```txt
+tenants/{tenantId}/products/{productSlug}/{timestamp}-{fileName}
+```
+
+The admin writes media through:
+
+```txt
+AdminStorageService.uploadProductImage(tenantId, productSlug, file)
+```
+
+The returned download URL is saved in the existing product `images` array when the product form is saved through `AdminFirestoreService`.
+
+Validation:
+
+- `tenantId` required
+- valid product slug required
+- image files only
+- maximum 5 MB per image
+
+Storage upload roles:
+
+```txt
+admin
+owner
+editor
+```
+
+`viewer` remains read-only.
+
+Sprint 5.5 does not create `tenants/{tenantId}/assets`; an asset registry can be added later if product, logo and favicon workflows need shared media management.
+
+## 15. Sprint 5.6 Preview + Validation Contract
+
+Sprint 5.6 adds pre-save validation and compact previews to the existing admin forms.
+
+No Firestore document shape changes are introduced.
+
+Settings validation protects:
+
+- brand name
+- URL-safe store slug
+- at least one contact channel
+- WhatsApp URL in `https://wa.me/{number}` format
+- valid Instagram URL
+- controlled theme preset
+- controlled typography preset
+- controlled variants
+- valid hex brand colors
+
+Product validation protects:
+
+- title
+- URL-safe slug
+- slug uniqueness inside the active tenant product list
+- short description
+- positive price
+- compare-at price not lower than price
+- at least one image
+- valid image URLs
+
+Previews are derived from Angular Signals and do not write data.
+
+Write methods remain unchanged:
+
+```txt
+AdminFirestoreService.saveStorefrontSettings(...)
+AdminFirestoreService.createProduct(...)
+AdminFirestoreService.updateProduct(...)
+AdminFirestoreService.setProductActive(...)
+```
+
+Sprint 5.6 does not add publishing, draft review or custom tenant-specific validation.
+
+## 16. Sprint 5.7 Security + Release Contract
+
+Sprint 5.7 adds source-controlled Firebase rules:
+
+```txt
+firestore.rules
+storage.rules
+firebase.json
+```
+
+Firestore write roles:
+
+```txt
+settings: owner | admin | editor
+products: owner | admin | editor
+users: owner | admin
+```
+
+`viewer` can read admin data for its tenant but cannot write settings, products, users or media.
+
+Public product reads are restricted to:
+
+```txt
+active == true
+```
+
+The storefront product query now uses:
+
+```txt
+where('active', '==', true)
+```
+
+Storage upload writes are restricted to:
+
+```txt
+tenants/{tenantId}/products/{productSlug}/{fileName}
+```
+
+with authenticated tenant membership, manager role, image content type and 5 MB max size.
+
+Rules are documented in [ADMIN_SECURITY_RELEASE.md](ADMIN_SECURITY_RELEASE.md).

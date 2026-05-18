@@ -1,17 +1,17 @@
 <section class="admin-settings" aria-labelledby="admin-settings-title">
   <header class="settings-header">
     <div>
-      <p class="eyebrow">Configuracoes</p>
-      <h2 id="admin-settings-title">{{ form().brandName || 'Storefront' }}</h2>
+      <p class="eyebrow">Loja</p>
+      <h2 id="admin-settings-title">{{ form().brandName || 'Loja' }}</h2>
     </div>
 
-    <dl aria-label="Settings source">
+    <dl aria-label="Resumo da configuracao">
       <div>
-        <dt>Fonte</dt>
+        <dt>Estado</dt>
         <dd>{{ sourceLabel() }}</dd>
       </div>
       <div>
-        <dt>Tenant</dt>
+        <dt>Codigo da loja</dt>
         <dd>{{ tenantId() }}</dd>
       </div>
     </dl>
@@ -25,70 +25,141 @@
     <p class="form-message" aria-live="polite">{{ success }}</p>
   }
 
+  @if (isSaving()) {
+    <p class="form-message" aria-live="polite">Salvando configuracoes</p>
+  }
+
   @if (isReadOnly()) {
-    <p class="form-message" aria-live="polite">Seu role atual permite apenas leitura.</p>
+    <p class="form-message" aria-live="polite">Seu acesso atual permite apenas leitura.</p>
   }
 
   <form class="settings-form" (submit)="handleSubmit($event)">
-    <section class="form-section" aria-labelledby="brand-settings-title">
+    <div class="settings-workbench">
+      <div class="settings-editor">
+    <nav class="settings-section-nav" aria-label="Areas de configuracao da loja">
+      <a href="#identity-settings-title">Identidade</a>
+      <a href="#sales-settings-title">Vendas</a>
+      <a href="#appearance-settings-title">Aparencia</a>
+      <a href="#copy-settings-title">Textos</a>
+      <a href="#advanced-settings-title">Avancado</a>
+    </nav>
+
+    <section class="form-section" aria-labelledby="identity-settings-title">
       <div class="section-heading">
-        <p class="eyebrow">Loja</p>
-        <h3 id="brand-settings-title">Identidade</h3>
+        <p class="eyebrow">Identidade</p>
+        <h3 id="identity-settings-title">Identidade da loja</h3>
       </div>
 
       <div class="field-grid">
         <label>
-          <span>Nome</span>
+          <span>Nome da loja</span>
           <input
+            name="brandName"
             type="text"
             [value]="form().brandName"
             (input)="updateTextField('brandName', $event)"
             [disabled]="isReadOnly() || isSaving()"
-          >
+          />
         </label>
 
         <label>
-          <span>Slug</span>
+          <span>Slogan</span>
           <input
+            name="tagline"
             type="text"
-            [value]="form().slug"
-            (input)="updateTextField('slug', $event)"
+            [value]="form().tagline"
+            (input)="updateTextField('tagline', $event)"
             [disabled]="isReadOnly() || isSaving()"
-          >
+          />
+        </label>
+      </div>
+
+      <label class="full-field">
+        <span>Descricao curta</span>
+        <textarea
+          name="description"
+          rows="3"
+          [value]="form().description"
+          (input)="updateTextField('description', $event)"
+          [disabled]="isReadOnly() || isSaving()"
+        ></textarea>
+      </label>
+
+      <div class="subsection-heading">
+        <strong>Imagens da marca</strong>
+        <small>Use URLs https ou arquivos ja enviados para a loja.</small>
+      </div>
+
+      <div class="field-grid media-field-grid">
+        <label>
+          <span>Logo da loja</span>
+          <input
+            name="logoPath"
+            type="text"
+            [value]="form().logoPath"
+            (input)="updateTextField('logoPath', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          />
+        </label>
+
+        <label>
+          <span>Icone da aba</span>
+          <input
+            name="faviconPath"
+            type="text"
+            [value]="form().faviconPath"
+            (input)="updateTextField('faviconPath', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          />
+        </label>
+
+        <label>
+          <span>Imagem de produto nao encontrado</span>
+          <input
+            name="notFoundImagePath"
+            type="text"
+            [value]="form().notFoundImagePath"
+            (input)="updateTextField('notFoundImagePath', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          />
         </label>
       </div>
     </section>
 
-    <section class="form-section" aria-labelledby="contact-settings-title">
+    <section class="form-section" aria-labelledby="sales-settings-title">
       <div class="section-heading">
-        <p class="eyebrow">Canais</p>
-        <h3 id="contact-settings-title">Contato e social</h3>
+        <p class="eyebrow">Vendas</p>
+        <h3 id="sales-settings-title">Contato e vendas</h3>
       </div>
 
       <div class="field-grid">
         <label>
-          <span>WhatsApp URL</span>
+          <span>WhatsApp de atendimento</span>
           <input
-            type="url"
+            name="whatsappUrl"
+            type="text"
             [value]="form().whatsappUrl"
             (input)="updateTextField('whatsappUrl', $event)"
             [disabled]="isReadOnly() || isSaving()"
-          >
+          />
+          <small class="field-hint">Pode ser numero com DDI ou link wa.me.</small>
         </label>
 
         <label>
-          <span>Instagram URL</span>
+          <span>Instagram da loja</span>
           <input
+            name="instagramUrl"
             type="url"
             [value]="form().instagramUrl"
             (input)="updateTextField('instagramUrl', $event)"
             [disabled]="isReadOnly() || isSaving()"
-          >
+          />
         </label>
 
         <label>
           <span>Contato principal</span>
           <select
+            name="primaryContactChannel"
             [value]="form().primaryContactChannel"
             (change)="updatePrimaryContactChannel($event)"
             [disabled]="isReadOnly() || isSaving()"
@@ -101,16 +172,17 @@
       </div>
     </section>
 
-    <section class="form-section" aria-labelledby="theme-settings-title">
+    <section class="form-section" aria-labelledby="appearance-settings-title">
       <div class="section-heading">
-        <p class="eyebrow">Theme Engine</p>
-        <h3 id="theme-settings-title">Tema controlado</h3>
+        <p class="eyebrow">Aparencia</p>
+        <h3 id="appearance-settings-title">Aparencia da vitrine</h3>
       </div>
 
       <div class="field-grid">
         <label>
-          <span>Preset</span>
+          <span>Modelo visual</span>
           <select
+            name="themePreset"
             [value]="form().themePreset"
             (change)="updateThemePreset($event)"
             [disabled]="isReadOnly() || isSaving()"
@@ -122,8 +194,9 @@
         </label>
 
         <label>
-          <span>Tipografia</span>
+          <span>Estilo de fonte</span>
           <select
+            name="typographyPreset"
             [value]="form().typographyPreset"
             (change)="updateTypographyPreset($event)"
             [disabled]="isReadOnly() || isSaving()"
@@ -135,65 +208,142 @@
         </label>
       </div>
 
+      <div class="theme-actions">
+        <div>
+          <p>{{ settingsPreview().colorModeLabel }}</p>
+          <small>
+            @if (form().customColors) {
+              As cores personalizadas serao salvas como override.
+            } @else {
+              A loja usa as cores herdadas do modelo visual.
+            }
+          </small>
+        </div>
+        @if (form().customColors) {
+          <button
+            type="button"
+            class="secondary-action"
+            (click)="resetColorOverrides()"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+            Usar cores do tema
+          </button>
+        } @else {
+          <button
+            type="button"
+            class="secondary-action"
+            (click)="enableCustomColors()"
+            [disabled]="isReadOnly() || isSaving()"
+          >
+            Personalizar cores
+          </button>
+        }
+      </div>
+
       <div class="color-grid">
         <label>
-          <span>Primary</span>
+          <span>Cor principal</span>
           <input
+            name="brandPrimary"
             type="color"
             [value]="form().brandPrimary"
-            (input)="updateTextField('brandPrimary', $event)"
-            [disabled]="isReadOnly() || isSaving()"
-          >
+            (input)="updateColorField('brandPrimary', $event)"
+            [disabled]="isReadOnly() || isSaving() || !form().customColors"
+          />
         </label>
 
         <label>
-          <span>Primary strong</span>
+          <span>Cor principal forte</span>
           <input
+            name="brandPrimaryStrong"
             type="color"
             [value]="form().brandPrimaryStrong"
-            (input)="updateTextField('brandPrimaryStrong', $event)"
-            [disabled]="isReadOnly() || isSaving()"
-          >
+            (input)="updateColorField('brandPrimaryStrong', $event)"
+            [disabled]="isReadOnly() || isSaving() || !form().customColors"
+          />
         </label>
 
         <label>
-          <span>Secondary</span>
+          <span>Cor de apoio</span>
           <input
+            name="brandSecondary"
             type="color"
             [value]="form().brandSecondary"
-            (input)="updateTextField('brandSecondary', $event)"
-            [disabled]="isReadOnly() || isSaving()"
-          >
+            (input)="updateColorField('brandSecondary', $event)"
+            [disabled]="isReadOnly() || isSaving() || !form().customColors"
+          />
         </label>
 
         <label>
-          <span>Accent</span>
+          <span>Cor de destaque</span>
           <input
+            name="accent"
             type="color"
             [value]="form().accent"
-            (input)="updateTextField('accent', $event)"
-            [disabled]="isReadOnly() || isSaving()"
-          >
+            (input)="updateColorField('accent', $event)"
+            [disabled]="isReadOnly() || isSaving() || !form().customColors"
+          />
         </label>
       </div>
+    </section>
+
+    <section class="form-section" aria-labelledby="copy-settings-title">
+      <div class="section-heading">
+        <p class="eyebrow">Textos</p>
+        <h3 id="copy-settings-title">Textos de venda</h3>
+      </div>
+
+      <label>
+        <span>Mensagem enviada no WhatsApp</span>
+        <input
+          name="defaultWhatsAppMessage"
+          type="text"
+          [value]="form().defaultWhatsAppMessage"
+          (input)="updateTextField('defaultWhatsAppMessage', $event)"
+          [disabled]="isReadOnly() || isSaving()"
+        />
+        <small class="field-hint">Essa frase abre a conversa quando o cliente toca no CTA do produto.</small>
+      </label>
+    </section>
+
+    <details class="form-section advanced-section">
+      <summary>
+        <span>
+          <span class="eyebrow">Avancado</span>
+          <strong id="advanced-settings-title">Configuracoes avancadas</strong>
+          <small>Endereco interno, moeda e composicao visual menos usada.</small>
+        </span>
+      </summary>
 
       <div class="field-grid">
         <label>
-          <span>Hero</span>
-          <select
-            [value]="form().heroVariant"
-            (change)="updateHeroVariant($event)"
+          <span>Endereco interno da loja</span>
+          <input
+            name="slug"
+            type="text"
+            [value]="form().slug"
+            (input)="updateTextField('slug', $event)"
             [disabled]="isReadOnly() || isSaving()"
-          >
-            @for (option of heroVariantOptions; track option.value) {
-              <option [value]="option.value">{{ option.label }}</option>
-            }
-          </select>
+          />
+          <small class="field-hint">Use apenas minusculas, numeros e hifens.</small>
         </label>
 
         <label>
-          <span>Product card</span>
+          <span>Moeda dos precos</span>
+          <input
+            name="currencyCode"
+            type="text"
+            maxlength="3"
+            [value]="form().currencyCode"
+            (input)="updateTextField('currencyCode', $event)"
+            [disabled]="isReadOnly() || isSaving()"
+          />
+        </label>
+
+        <label>
+          <span>Visual dos cards de produto</span>
           <select
+            name="productCardVariant"
             [value]="form().productCardVariant"
             (change)="updateProductCardVariant($event)"
             [disabled]="isReadOnly() || isSaving()"
@@ -203,39 +353,105 @@
             }
           </select>
         </label>
-
-        <label>
-          <span>Product grid</span>
-          <select
-            [value]="form().productGridVariant"
-            (change)="updateProductGridVariant($event)"
-            [disabled]="isReadOnly() || isSaving()"
-          >
-            @for (option of productGridVariantOptions; track option.value) {
-              <option [value]="option.value">{{ option.label }}</option>
-            }
-          </select>
-        </label>
-
-        <label>
-          <span>CTA</span>
-          <select
-            [value]="form().ctaVariant"
-            (change)="updateCtaVariant($event)"
-            [disabled]="isReadOnly() || isSaving()"
-          >
-            @for (option of ctaVariantOptions; track option.value) {
-              <option [value]="option.value">{{ option.label }}</option>
-            }
-          </select>
-        </label>
       </div>
-    </section>
+    </details>
 
     <footer class="form-actions">
       <button type="submit" [disabled]="isReadOnly() || isSaving()">
         {{ isSaving() ? 'Salvando' : 'Salvar configuracoes' }}
       </button>
     </footer>
+      </div>
+
+      <aside class="settings-preview-panel" aria-label="Preview da loja">
+    <section class="form-section preview-section" aria-labelledby="settings-preview-title">
+      <div class="section-heading">
+        <p class="eyebrow">Previa</p>
+        <h3 id="settings-preview-title">Mini vitrine</h3>
+      </div>
+
+      <article class="mini-storefront" aria-label="Preview visual da loja">
+        <div class="mini-storefront-hero">
+          <div class="mini-brand-mark">
+            @if (settingsPreview().logoPreviewUrl) {
+              <img [src]="settingsPreview().logoPreviewUrl" [alt]="settingsPreview().brandName" />
+            } @else {
+              <span>{{ settingsPreview().brandInitials }}</span>
+            }
+          </div>
+
+          <div class="mini-storefront-copy">
+            <p class="eyebrow">{{ settingsPreview().themePresetLabel }}</p>
+            <h4>{{ settingsPreview().brandName }}</h4>
+            <strong>{{ settingsPreview().tagline }}</strong>
+            <p>{{ settingsPreview().description }}</p>
+          </div>
+        </div>
+
+        <div class="mini-storefront-footer">
+          <span>{{ settingsPreview().typographyPresetLabel }}</span>
+          <span>{{ settingsPreview().colorModeLabel }}</span>
+          <span>{{ settingsPreview().primaryContactLabel }}</span>
+        </div>
+
+        <div class="mini-contact-strip">
+          <span>WhatsApp: <strong>{{ settingsPreview().whatsappUrl }}</strong></span>
+          <span>Instagram: <strong>{{ settingsPreview().instagramUrl }}</strong></span>
+        </div>
+      </article>
+
+      <article class="mini-product-card" aria-label="Preview de card de produto">
+        <div class="mini-product-media">
+          <span>{{ settingsPreview().brandInitials }}</span>
+        </div>
+        <div class="mini-product-copy">
+          <small>{{ settingsPreview().currencyCode }} - {{ settingsPreview().productCardVariantLabel }}</small>
+          <strong>Produto em destaque</strong>
+          <p>{{ settingsPreview().defaultWhatsAppMessage }}</p>
+          <span>Comprar pelo WhatsApp</span>
+        </div>
+      </article>
+
+      <div class="preview-subheading">
+        <strong>Cores aplicadas</strong>
+        <small>{{ settingsPreview().colorModeLabel }}</small>
+      </div>
+
+      <div class="color-preview-list" aria-label="Cores do tema">
+        @for (color of settingsPreview().colors; track color.label) {
+          <div>
+            <span class="color-swatch" [style.backgroundColor]="color.value"></span>
+            <strong>{{ color.label }}</strong>
+            <small>{{ color.value }} - {{ color.sourceLabel }}</small>
+          </div>
+        }
+      </div>
+
+      <dl class="variant-preview-list" aria-label="Ajustes avancados selecionados">
+        @for (item of settingsPreview().advanced; track item.label) {
+          <div>
+            <dt>{{ item.label }}</dt>
+            <dd>{{ item.value }}</dd>
+          </div>
+        }
+      </dl>
+
+      @if (validationIssues().length > 0) {
+        <div class="validation-panel" aria-live="polite">
+          <strong>Pendencias</strong>
+          <ul>
+            @for (issue of validationIssues(); track issue) {
+              <li>{{ issue }}</li>
+            }
+          </ul>
+        </div>
+      } @else {
+        <p class="validation-panel validation-panel-ready" aria-live="polite">
+          Configuracao pronta para salvar.
+        </p>
+      }
+    </section>
+      </aside>
+    </div>
   </form>
 </section>

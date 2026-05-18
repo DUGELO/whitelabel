@@ -79,7 +79,7 @@ export class AdminFirestoreService {
       updatedAt: serverTimestamp(),
     };
 
-    await setDoc(doc(db, `tenants/${tenantId}/settings`, 'main'), payload, { merge: true });
+    await setDoc(doc(db, `tenants/${tenantId}/settings`, 'main'), payload);
 
     const savedSettings = await this.getStorefrontSettings(tenantId);
 

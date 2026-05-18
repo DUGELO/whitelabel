@@ -1,82 +1,144 @@
 <section class="admin-dashboard" aria-labelledby="admin-dashboard-title">
-  <header class="dashboard-header">
-    <div>
-      <p class="eyebrow">Dashboard</p>
+  <header class="dashboard-hero">
+    <div class="dashboard-hero-copy">
+      <p class="eyebrow">Painel da loja</p>
       <h1 id="admin-dashboard-title">{{ settings().brand.name }}</h1>
+      @if (settings().brand.tagline) {
+        <p class="dashboard-subtitle">{{ settings().brand.tagline }}</p>
+      }
+
+      <div class="hero-status" aria-label="Status de publicacao">
+        <span>{{ heroStatusLabel() }}</span>
+        <p>{{ heroStatusDescription() }}</p>
+      </div>
+
+      <div class="hero-actions">
+        <a class="preview-link" [href]="storefrontPreviewUrl()" target="_blank" rel="noopener">
+          Testar vitrine
+        </a>
+        <span class="source-pill">{{ settingsSourceLabel() }}</span>
+      </div>
     </div>
 
-    <dl class="tenant-summary" aria-label="Tenant summary">
-      <div>
-        <dt>Tenant</dt>
-        <dd>{{ tenantId() }}</dd>
+    <aside class="launch-card" aria-label="Resumo visual da publicacao">
+      <div class="launch-card-header">
+        <span>{{ brandInitials() }}</span>
+        <div>
+          <strong>{{ publishProgressValue() }}%</strong>
+          <small>{{ publishProgressLabel() }}</small>
+        </div>
       </div>
-      <div>
-        <dt>Status</dt>
-        <dd>{{ tenant().status ?? 'sem status' }}</dd>
+
+      <div class="launch-progress" aria-label="Progresso da loja">
+        <span [style.width]="publishProgressPercent()"></span>
       </div>
-    </dl>
+
+      <div class="store-preview-brand">
+        <div>
+          <strong>{{ settings().brand.name }}</strong>
+          <small>{{ tenantId() }}</small>
+        </div>
+      </div>
+
+      <p>{{ settings().brand.description || settings().brand.tagline || 'Descricao da loja pendente.' }}</p>
+
+      <dl class="store-preview-list">
+        <div>
+          <dt>Status</dt>
+          <dd>{{ tenantStatusLabel() }}</dd>
+        </div>
+        <div>
+          <dt>Tema</dt>
+          <dd>{{ themePresetLabel() }}</dd>
+        </div>
+        <div>
+          <dt>Contato</dt>
+          <dd>{{ primaryContactLabel() }}</dd>
+        </div>
+      </dl>
+    </aside>
   </header>
 
-  <div class="metric-grid" aria-label="Admin overview">
+  <div class="metric-strip" aria-label="Resumo operacional da loja">
+    <article class="metric-card metric-card-strong">
+      <span>Produtos visiveis</span>
+      <strong>{{ activeProductsCount() }}</strong>
+      <small>Itens prontos para aparecer na vitrine.</small>
+    </article>
+
     <article class="metric-card">
-      <span>Produtos</span>
+      <span>Total de produtos</span>
       <strong>{{ productsCount() }}</strong>
+      <small>Catalogo cadastrado no admin.</small>
     </article>
 
     <article class="metric-card">
-      <span>Tema</span>
-      <strong>{{ settings().theme.preset }}</strong>
-    </article>
-
-    <article class="metric-card">
-      <span>Settings</span>
-      <strong>{{ settingsSourceLabel() }}</strong>
-    </article>
-
-    <article class="metric-card">
-      <span>Contato principal</span>
+      <span>Contato de venda</span>
       <strong>{{ primaryContactLabel() }}</strong>
+      <small>Canal usado nos botoes da loja.</small>
+    </article>
+
+    <article class="metric-card">
+      <span>Publicacao</span>
+      <strong>{{ publishProgressLabel() }}</strong>
+      <small>Progresso do checklist essencial.</small>
     </article>
   </div>
 
-  <section class="foundation-panel" aria-labelledby="admin-foundation-title">
-    <div>
-      <p class="eyebrow">Phase 5.1</p>
-      <h2 id="admin-foundation-title">Base operacional do admin</h2>
+  <section class="storefront-strip" aria-label="Pontos principais da vitrine">
+    <article>
+      <span class="strip-icon">01</span>
+      <div>
+        <strong>Vitrine</strong>
+        <p>{{ themePresetLabel() }} aplicado como direcao visual.</p>
+      </div>
+    </article>
+
+    <article>
+      <span class="strip-icon">02</span>
+      <div>
+        <strong>Vendas</strong>
+        <p>{{ primaryContactLabel() }} definido para receber clientes.</p>
+      </div>
+    </article>
+
+    <article>
+      <span class="strip-icon">03</span>
+      <div>
+        <strong>Catalogo</strong>
+        <p>{{ activeProductsCount() }} de {{ productsCount() }} produto(s) visiveis.</p>
+      </div>
+    </article>
+  </section>
+
+  <section class="publication-panel" aria-labelledby="admin-foundation-title">
+    <div class="publication-heading">
+      <div>
+        <p class="eyebrow">Publicacao</p>
+        <h2 id="admin-foundation-title">Checklist de publicacao</h2>
+        <p>Revise os pontos essenciais antes de enviar a vitrine para o cliente.</p>
+      </div>
+      <strong>{{ publishProgressLabel() }}</strong>
     </div>
 
-    <div class="foundation-grid">
-      <article>
-        <span class="status-dot status-dot-ready" aria-hidden="true"></span>
-        <div>
-          <h3>Tenant context</h3>
-          <p>Ativo para {{ tenantId() }}</p>
-        </div>
-      </article>
+    <div class="progress-track" aria-label="Progresso de publicacao">
+      <span [style.width]="publishProgressPercent()"></span>
+    </div>
 
-      <article>
-        <span class="status-dot status-dot-ready" aria-hidden="true"></span>
-        <div>
-          <h3>Firestore</h3>
-          <p>Leitura inicial habilitada</p>
-        </div>
-      </article>
-
-      <article>
-        <span class="status-dot status-dot-ready" aria-hidden="true"></span>
-        <div>
-          <h3>Auth guard</h3>
-          <p>Ativo desde Sprint 5.2</p>
-        </div>
-      </article>
-
-      <article>
-        <span class="status-dot status-dot-ready" aria-hidden="true"></span>
-        <div>
-          <h3>CRUD</h3>
-          <p>Produtos habilitados</p>
-        </div>
-      </article>
+    <div class="checklist-grid">
+      @for (item of publishChecklist(); track item.label) {
+        <article>
+          <span
+            class="status-dot"
+            [class.status-dot-ready]="item.complete"
+            aria-hidden="true"
+          ></span>
+          <div>
+            <h3>{{ item.label }}</h3>
+            <p>{{ item.description }}</p>
+          </div>
+        </article>
+      }
     </div>
   </section>
 </section>

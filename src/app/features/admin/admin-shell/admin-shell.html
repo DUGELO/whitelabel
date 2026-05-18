@@ -3,8 +3,8 @@
     <div class="admin-brand">
       <span>WL</span>
       <div>
-        <strong>Admin</strong>
-        <small>{{ tenantId() ?? 'sem tenant' }}</small>
+        <strong>{{ activeStoreName() }}</strong>
+        <small>{{ tenantId() ?? 'sem loja' }}</small>
       </div>
     </div>
 
@@ -25,12 +25,12 @@
   <section class="admin-workspace">
     <header class="admin-topbar">
       <div>
-        <p class="eyebrow">Admin Panel</p>
-        <h1>Storefront</h1>
+        <p class="eyebrow">Painel da loja</p>
+        <h1>{{ activeStoreName() }}</h1>
       </div>
 
       <form class="tenant-form" (submit)="handleTenantSubmit($event)">
-        <label for="admin-tenant-id">Tenant ID</label>
+        <label for="admin-tenant-id">ID da loja</label>
         <div class="tenant-control">
           <input
             id="admin-tenant-id"
@@ -58,14 +58,14 @@
       @if (isLoading()) {
         <section class="state-panel" aria-live="polite">
           <p class="eyebrow">Carregando</p>
-          <h2>Buscando dados do tenant</h2>
-          <p>O contexto do admin sera ativado quando a leitura inicial terminar.</p>
+          <h2>Buscando dados da loja</h2>
+          <p>O painel sera liberado quando a leitura inicial terminar.</p>
         </section>
       } @else if (errorMessage(); as error) {
         <section class="state-panel state-panel-error" aria-live="assertive">
           <p class="eyebrow">Erro</p>
           <h2>{{ error }}</h2>
-          <p>Confira o tenantId, sua sessao e o vinculo do usuario no Firestore.</p>
+          <p>Confira o ID da loja, sua sessao e o acesso do usuario.</p>
         </section>
       } @else if (settingsResult(); as result) {
         @if (activeSection() === 'settings') {
@@ -79,6 +79,7 @@
           <app-admin-products
             [tenantId]="tenantId() ?? result.tenant.id"
             [products]="products()"
+            [currencyCode]="productsCurrencyCode()"
             [canEditProducts]="canManageTenantContent()"
             (productChanged)="handleProductChanged($event)"
           />
@@ -87,13 +88,14 @@
             [tenantId]="tenantId() ?? result.tenant.id"
             [settingsResult]="result"
             [productsCount]="productsCount()"
+            [activeProductsCount]="activeProductsCount()"
           />
         }
       } @else {
         <section class="state-panel" aria-live="polite">
-          <p class="eyebrow">Tenant</p>
-          <h2>Informe o tenantId para abrir o admin</h2>
-          <p>Nenhuma leitura do Firestore acontece sem contexto de tenant.</p>
+          <p class="eyebrow">Loja</p>
+          <h2>Informe o ID da loja para abrir o painel</h2>
+          <p>Nenhuma leitura acontece sem contexto de loja.</p>
         </section>
       }
     </main>

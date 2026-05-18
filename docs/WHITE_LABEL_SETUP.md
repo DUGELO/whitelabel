@@ -166,10 +166,10 @@ Arquivos que voce normalmente nao precisa editar, mas precisa entender:
 | `logoPath` | obrigatorio por tipo, opcional na pratica | header cai para texto; footer e detalhe escondem a imagem |
 | `logoAlt` | obrigatorio por tipo | se houver logo e estiver vazio, perde acessibilidade |
 | `homeAriaLabel` | obrigatorio | nao quebra runtime, mas prejudica acessibilidade |
-| `faviconPath` | obrigatorio | favicon fica incorreto ou vazio |
+| `faviconPath` | obrigatorio por tipo, opcional na pratica | se vazio, o app preserva o favicon existente |
 | `tagline` | obrigatorio por tipo, nao usado hoje | nao afeta runtime atual |
 | `description` | obrigatorio por tipo, mas com guarda na UI | footer e bloco de loja no detalhe ficam sem texto |
-| `notFoundImagePath` | obrigatorio | telas de not found exibem imagem quebrada se estiver vazio ou invalido |
+| `notFoundImagePath` | obrigatorio por tipo, opcional na pratica | telas de not found ocultam a imagem se estiver vazio |
 
 ## `theme`
 
@@ -378,7 +378,7 @@ export interface CatalogSeedItem {
 
 #### Produto nao encontrado e pagina 404
 
-- `brand.notFoundImagePath` nao tem guarda na view. Se estiver vazio, a imagem quebra.
+- `brand.notFoundImagePath` tem guarda na view. Se estiver vazio, a imagem e omitida.
 
 ### Como validar antes de publicar
 

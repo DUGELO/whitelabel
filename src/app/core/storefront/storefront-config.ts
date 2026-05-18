@@ -84,6 +84,7 @@ export interface StorefrontCatalogConfig {
 }
 
 export interface StorefrontConfig {
+  tenantId: string;
   brand: StorefrontBrandingConfig;
   theme: StorefrontThemeConfig;
   content: StorefrontContentConfig;
@@ -95,6 +96,7 @@ export interface StorefrontConfig {
 }
 
 export const STOREFRONT_CONFIG: StorefrontConfig = {
+  tenantId: 'whitelabel',
   brand: {
     name: 'Atelier Aurea',
     logoPath: 'atelier-aurea-logo.svg',
@@ -102,7 +104,8 @@ export const STOREFRONT_CONFIG: StorefrontConfig = {
     homeAriaLabel: 'Atelier Aurea home',
     faviconPath: 'atelier-aurea-favicon.svg',
     tagline: 'Joias autorais para momentos que merecem permanecer',
-    description: 'Joalheria de curadoria premium com aneis, aliancas, colares e presentes em ouro 18k, prata 925 e pedras selecionadas.',
+    description:
+      'Joalheria de curadoria premium com aneis, aliancas, colares e presentes em ouro 18k, prata 925 e pedras selecionadas.',
     notFoundImagePath: 'atelier-aurea-logo.svg',
   },
   theme: {
@@ -120,29 +123,30 @@ export const STOREFRONT_CONFIG: StorefrontConfig = {
     },
   },
   content: {
-    searchPlaceholder: 'Buscar aneis, colares, pulseiras e presentes...',
-    searchAriaLabel: 'Buscar joias',
-    heroEyebrow: 'Colecao Lumiere',
-    heroCtaLabel: 'Ver joia',
-    popularSectionTitle: 'Joias mais desejadas',
-    emptyCatalogTitle: 'Nenhuma joia encontrada',
-    emptyCatalogDescription: 'Ajuste sua busca para encontrar outras pecas da curadoria.',
-    detailTitle: 'Sobre esta joia',
+    searchPlaceholder: 'Buscar produtos, colecoes e presentes...',
+    searchAriaLabel: 'Buscar produtos',
+    heroEyebrow: 'Destaque da vitrine',
+    heroCtaLabel: 'Ver produto',
+    popularSectionTitle: 'Produtos em destaque',
+    emptyCatalogTitle: 'Nenhum produto encontrado',
+    emptyCatalogDescription: 'Ajuste sua busca para encontrar outros itens da loja.',
+    detailTitle: 'Sobre este produto',
     detailHighlightsTitle: 'Destaques',
-    relatedSectionTitle: 'Outras joias da curadoria',
+    relatedSectionTitle: 'Outros produtos da loja',
     primaryCtaLabel: 'Comprar no WhatsApp',
     secondaryCtaLabel: 'Ver no Instagram',
-    storeInfoSectionTitle: 'Sobre o atelier',
+    storeInfoSectionTitle: 'Sobre a loja',
     footerShortcutsTitle: 'Atalhos',
     footerSupportTitle: 'Atendimento',
     footerCopyrightText: 'Todos os direitos reservados.',
     searchButtonLabel: 'Buscar',
-    notFoundTitle: 'Esta joia nao esta disponivel na vitrine.',
-    notFoundDescription: 'A peca que voce tentou acessar nao foi encontrada. Volte para a curadoria e descubra outras joias.',
-    notFoundBrowseLabel: 'Explorar joias',
+    notFoundTitle: 'Este produto nao esta disponivel na vitrine.',
+    notFoundDescription:
+      'O item que voce tentou acessar nao foi encontrado. Volte para a vitrine e descubra outros produtos.',
+    notFoundBrowseLabel: 'Explorar produtos',
     filtersTitle: 'Filtros',
     filtersResetLabel: 'Limpar',
-    filterSearchPlaceholder: 'Buscar por nome, colecao ou material...',
+    filterSearchPlaceholder: 'Buscar por nome, categoria ou detalhe...',
     priceRangeTitle: 'Faixa de preco',
     priceRangeAriaLabel: 'Preco minimo',
     priceRangeCurrentPrefix: 'A partir de',
@@ -151,15 +155,15 @@ export const STOREFRONT_CONFIG: StorefrontConfig = {
     pricePresetHighLabel: 'Acima de R$ 5.000',
     categoriesTitle: 'Categorias',
     sortByLabel: 'Ordenar por:',
-    resultsCountSuffix: 'joias',
+    resultsCountSuffix: 'produtos',
     sortPopularLabel: 'Mais desejadas',
     sortLowestPriceLabel: 'Menor preco',
-    sortHighestRatedLabel: 'Melhor avaliadas',
+    sortHighestRatedLabel: 'Melhor avaliados',
     mobileFilterButtonLabel: 'Filtrar',
     mobileFilterApplyLabel: 'Aplicar',
     pageNotFoundEyebrow: 'Pagina nao encontrada',
     backToHomeLabel: 'Voltar ao inicio',
-    productNotFoundEyebrow: 'Joia nao encontrada',
+    productNotFoundEyebrow: 'Produto nao encontrado',
     productAriaPrefix: 'Abrir',
   },
   contactChannels: [
@@ -190,7 +194,7 @@ export const STOREFRONT_CONFIG: StorefrontConfig = {
   catalog: {
     currencyCode: 'BRL',
     baseProductUrl: 'https://atelieraurea.com/joias',
-    defaultWhatsAppMessage: 'Ola! Tenho interesse nesta joia:',
+    defaultWhatsAppMessage: 'Ola! Tenho interesse neste produto:',
     priceRangeMin: 0,
     priceRangeMax: 7000,
     pricePresetMidValue: 2500,

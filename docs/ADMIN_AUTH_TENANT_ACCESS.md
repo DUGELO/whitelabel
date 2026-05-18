@@ -115,3 +115,23 @@ Next step:
 - build Storefront Settings UI
 - persist controlled settings to `tenants/{tenantId}/settings/main`
 - keep using `AdminAuthService.tenantAccess()` to gate future write permissions by role
+
+## Sprint 5.7 Update
+
+Firebase rules now enforce the same tenant access model server-side.
+
+The UI role checks remain useful for UX, but writes must be authorized by:
+
+```txt
+tenants/{tenantId}/users/{request.auth.uid}
+```
+
+Server-side write roles:
+
+```txt
+owner
+admin
+editor
+```
+
+`viewer` remains read-only in both UI and Firestore/Storage rules.

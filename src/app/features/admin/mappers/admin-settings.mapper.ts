@@ -3,16 +3,18 @@ import {
   AdminStorefrontSettingsDocument,
   AdminTenantDocument,
 } from '../models/admin-firestore.models';
+import { normalizeWhatsappUrl } from '../../../core/storefront/storefront-runtime-config.mapper';
 
 export function mapLegacyTenantToAdminSettings(
   tenant: AdminTenantDocument,
 ): AdminStorefrontSettingsDocument {
+  const whatsappUrl = normalizeWhatsappUrl(tenant.whatsapp);
   const contactChannels = [
-    tenant.whatsapp
+    whatsappUrl
       ? {
           type: 'whatsapp' as const,
           label: 'Atendimento no WhatsApp',
-          url: tenant.whatsapp,
+          url: whatsappUrl,
         }
       : null,
     tenant.instagram
@@ -41,7 +43,7 @@ export function mapLegacyTenantToAdminSettings(
     contactChannels,
     socialLinks: {
       instagramUrl: tenant.instagram ?? '',
-      whatsappUrl: tenant.whatsapp ?? '',
+      whatsappUrl: whatsappUrl ?? '',
     },
     catalog: {
       currencyCode: 'BRL',

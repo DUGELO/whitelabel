@@ -204,9 +204,9 @@ $transition: var(--motion-medium) var(--motion-easing-standard);
   }
 
   &.active {
-    background: var(--color-secondary);
+    background-color: var(--color-secondary);
     border-color: var(--color-secondary);
-    color: var(--color-surface);
+    color: var(--color-text-inverse);
   }
 }
 
@@ -238,9 +238,9 @@ $transition: var(--motion-medium) var(--motion-easing-standard);
   }
 
   &.active {
-    background: var(--color-secondary);
+    background-color: var(--color-secondary);
     border-color: var(--color-secondary);
-    color: var(--color-surface);
+    color: var(--color-text-inverse);
   }
 }
 
@@ -408,7 +408,7 @@ app-product-card {
       border: 0;
       border-radius: var(--border-radius-pill);
       background: var(--color-secondary);
-      color: var(--color-surface);
+      color: var(--color-text-inverse);
       font-size: 0.92rem;
       font-weight: 700;
       cursor: pointer;
@@ -465,7 +465,7 @@ app-product-card {
     border: 0;
     border-radius: var(--border-radius-pill);
     background: var(--color-secondary);
-    color: var(--color-surface);
+    color: var(--color-text-inverse);
     font-size: 1rem;
     font-weight: 700;
     cursor: pointer;

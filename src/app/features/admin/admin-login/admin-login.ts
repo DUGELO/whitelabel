@@ -43,9 +43,9 @@ export class AdminLogin {
     const reason = this.route.snapshot.queryParamMap.get('reason');
 
     if (reason === 'access-denied') {
-      this.errorMessage.set('Seu usuario nao tem acesso a este tenant.');
+      this.errorMessage.set('Seu usuario nao tem acesso a esta loja.');
     } else if (reason === 'tenant-required') {
-      this.errorMessage.set('Informe o tenantId para continuar.');
+      this.errorMessage.set('Informe o ID da loja para continuar.');
     }
   }
 
@@ -73,6 +73,7 @@ export class AdminLogin {
     try {
       await this.adminAuth.signOutAdmin();
       this.tenantContext.clearTenantId();
+      this.tenantContext.clearStoredTenantId();
     } finally {
       this.isLoading.set(false);
     }
@@ -82,7 +83,7 @@ export class AdminLogin {
     const tenantId = this.tenantInput().trim();
 
     if (!tenantId) {
-      this.errorMessage.set('Informe o tenantId para continuar.');
+      this.errorMessage.set('Informe o ID da loja para continuar.');
       return;
     }
 
@@ -97,7 +98,7 @@ export class AdminLogin {
       const access = await this.adminAuth.validateTenantAccess(tenantId);
 
       if (!access) {
-        this.errorMessage.set('Seu usuario nao tem acesso a este tenant.');
+        this.errorMessage.set('Seu usuario nao tem acesso a esta loja.');
         return;
       }
 

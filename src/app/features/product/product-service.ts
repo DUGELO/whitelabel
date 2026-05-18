@@ -19,13 +19,13 @@ export class ProductCatalogService {
   readonly products = signal<Product[]>([]);
 
   constructor() {
-    this.loadProducts('whitelabel');
+    this.loadProducts(this.storefrontConfig().tenantId);
   }
 
   async loadProducts(tenantId: string) {
     const raw = await this.firebaseProductService.getProducts(tenantId);
 
-    const mapped = raw.map((p) => mapToProduct(p));
+    const mapped = raw.map((p) => mapToProduct(p, this.storefrontConfig()));
 
     this.products.set(mapped);
   }

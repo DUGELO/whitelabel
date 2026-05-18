@@ -1,0 +1,468 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function tenantUserPath(tenantId) {
+      return /databases/$(database)/documents/tenants/$(tenantId)/users/$(request.auth.uid);
+    }
+
+    function tenantUserData(tenantId) {
+      return get(tenantUserPath(tenantId)).data;
+    }
+
+    function isTenantMember(tenantId) {
+      return isSignedIn()
+        && exists(tenantUserPath(tenantId))
+        && tenantUserData(tenantId).get('active', true) == true
+        && tenantUserData(tenantId).role in ['admin', 'owner', 'editor', 'viewer'];
+    }
+
+    function canManageTenantContent(tenantId) {
+      return isTenantMember(tenantId)
+        && tenantUserData(tenantId).role in ['admin', 'owner', 'editor'];
+    }
+
+    function canManageTenantUsers(tenantId) {
+      return isTenantMember(tenantId)
+        && tenantUserData(tenantId).role in ['admin', 'owner'];
+    }
+
+    function isActivePublicProduct() {
+      return resource.data.active == true;
+    }
+
+    function isPublicTenantDocument() {
+      return resource.data.keys().hasOnly([
+          'name',
+          'slug',
+          'status',
+          'primaryColor',
+          'secondaryColor',
+          'instagram',
+          'whatsapp',
+          'createdAt',
+          'updatedAt'
+        ])
+        && (!('status' in resource.data) || resource.data.status == 'active');
+    }
+
+    function isValidSlug(slug) {
+      return slug is string && slug.matches('^[a-z0-9]+(-[a-z0-9]+)*$');
+    }
+
+    function isValidHttpUrl(url) {
+      return url is string && url.matches('^https?://.+');
+    }
+
+    function isValidAssetPath(path) {
+      return path is string
+        && path.size() > 0
+        && (
+          isValidHttpUrl(path)
+          || path.matches('^/?[A-Za-z0-9][A-Za-z0-9._/-]*$')
+        );
+    }
+
+    function isValidWhatsappUrl(url) {
+      return url is string && url.matches('^https://wa\\.me/[1-9][0-9]{7,14}$');
+    }
+
+    function isValidHexColor(color) {
+      return color is string && color.matches('^#[0-9a-fA-F]{6}$');
+    }
+
+    function hasOptionalString(data, field) {
+      return !(field in data) || data[field] is string;
+    }
+
+    function hasOptionalNumber(data, field) {
+      return !(field in data) || data[field] is number;
+    }
+
+    function hasOptionalHttpUrlOrEmpty(data, field) {
+      return !(field in data) || data[field] == '' || isValidHttpUrl(data[field]);
+    }
+
+    function hasOptionalWhatsappUrlOrEmpty(data, field) {
+      return !(field in data) || data[field] == '' || isValidWhatsappUrl(data[field]);
+    }
+
+    function hasOptionalAssetPathOrEmpty(data, field) {
+      return !(field in data) || data[field] == '' || isValidAssetPath(data[field]);
+    }
+
+    function hasValidThemeColors(theme) {
+      return !('colors' in theme)
+        || (
+          theme.colors is map
+          && theme.colors.keys().hasOnly(['brandPrimary', 'brandPrimaryStrong', 'brandSecondary', 'accent'])
+          &&
+          (!('brandPrimary' in theme.colors) || isValidHexColor(theme.colors.brandPrimary))
+          && (!('brandPrimaryStrong' in theme.colors) || isValidHexColor(theme.colors.brandPrimaryStrong))
+          && (!('brandSecondary' in theme.colors) || isValidHexColor(theme.colors.brandSecondary))
+          && (!('accent' in theme.colors) || isValidHexColor(theme.colors.accent))
+        );
+    }
+
+    function hasValidThemeVariants(theme) {
+      return !('variants' in theme)
+        || (
+          theme.variants is map
+          && theme.variants.keys().hasOnly(['hero', 'productCard', 'productGrid', 'cta'])
+          &&
+          (!('hero' in theme.variants) || theme.variants.hero in ['immersive', 'split-editorial', 'minimal-focus'])
+          && (!('productCard' in theme.variants) || theme.variants.productCard in ['editorial-minimal', 'quiet-luxury', 'soft-fashion-card', 'dark-elegance-card', 'boutique-clean'])
+          && (!('productGrid' in theme.variants) || theme.variants.productGrid in ['editorial-grid', 'minimal-grid', 'boutique-grid'])
+          && (!('cta' in theme.variants) || theme.variants.cta in ['solid-premium', 'soft-outline', 'quiet-link'])
+        );
+    }
+
+    function isValidContactChannel(channel) {
+      return channel is map
+        && channel.keys().hasAll(['type', 'label', 'url'])
+        && channel.keys().hasOnly(['type', 'label', 'url'])
+        && channel.type in ['whatsapp', 'instagram', 'support']
+        && channel.label is string
+        && channel.label.size() > 0
+        && (
+          (channel.type == 'whatsapp' && isValidWhatsappUrl(channel.url))
+          || (channel.type != 'whatsapp' && isValidHttpUrl(channel.url))
+        );
+    }
+
+    function hasValidContactChannels(channels) {
+      return channels is list
+        && channels.size() > 0
+        && channels.size() <= 4
+        && isValidContactChannel(channels[0])
+        && (channels.size() < 2 || isValidContactChannel(channels[1]))
+        && (channels.size() < 3 || isValidContactChannel(channels[2]))
+        && (channels.size() < 4 || isValidContactChannel(channels[3]));
+    }
+
+    function hasValidSocialLinks(socialLinks) {
+      return socialLinks is map
+        && socialLinks.keys().hasOnly(['instagramUrl', 'whatsappUrl', 'facebookUrl', 'youtubeUrl'])
+        && hasOptionalHttpUrlOrEmpty(socialLinks, 'instagramUrl')
+        && hasOptionalWhatsappUrlOrEmpty(socialLinks, 'whatsappUrl')
+        && hasOptionalHttpUrlOrEmpty(socialLinks, 'facebookUrl')
+        && hasOptionalHttpUrlOrEmpty(socialLinks, 'youtubeUrl')
+        && (
+          ('whatsappUrl' in socialLinks && isValidWhatsappUrl(socialLinks.whatsappUrl))
+          || ('instagramUrl' in socialLinks && isValidHttpUrl(socialLinks.instagramUrl))
+        );
+    }
+
+    function hasValidCatalog(catalog) {
+      return catalog is map
+        && catalog.keys().hasOnly([
+          'currencyCode',
+          'baseProductUrl',
+          'defaultWhatsAppMessage',
+          'priceRangeMin',
+          'priceRangeMax',
+          'pricePresetMidValue',
+          'pricePresetHighValue'
+        ])
+        && (!('currencyCode' in catalog) || (
+          catalog.currencyCode is string
+          && catalog.currencyCode.matches('^[A-Z]{3}$')
+        ))
+        && hasOptionalHttpUrlOrEmpty(catalog, 'baseProductUrl')
+        && hasOptionalString(catalog, 'defaultWhatsAppMessage')
+        && hasOptionalNumber(catalog, 'priceRangeMin')
+        && hasOptionalNumber(catalog, 'priceRangeMax')
+        && hasOptionalNumber(catalog, 'pricePresetMidValue')
+        && hasOptionalNumber(catalog, 'pricePresetHighValue');
+    }
+
+    function hasValidStorefrontContent(content) {
+      return content is map
+        && content.keys().hasOnly([
+          'searchPlaceholder',
+          'searchAriaLabel',
+          'heroEyebrow',
+          'heroCtaLabel',
+          'popularSectionTitle',
+          'emptyCatalogTitle',
+          'emptyCatalogDescription',
+          'detailTitle',
+          'detailHighlightsTitle',
+          'relatedSectionTitle',
+          'primaryCtaLabel',
+          'secondaryCtaLabel',
+          'storeInfoSectionTitle',
+          'footerShortcutsTitle',
+          'footerSupportTitle',
+          'footerCopyrightText',
+          'searchButtonLabel',
+          'notFoundTitle',
+          'notFoundDescription',
+          'notFoundBrowseLabel',
+          'filtersTitle',
+          'filtersResetLabel',
+          'filterSearchPlaceholder',
+          'priceRangeTitle',
+          'priceRangeAriaLabel',
+          'priceRangeCurrentPrefix',
+          'pricePresetAllLabel',
+          'pricePresetMidLabel',
+          'pricePresetHighLabel',
+          'categoriesTitle',
+          'sortByLabel',
+          'resultsCountSuffix',
+          'sortPopularLabel',
+          'sortLowestPriceLabel',
+          'sortHighestRatedLabel',
+          'mobileFilterButtonLabel',
+          'mobileFilterApplyLabel',
+          'pageNotFoundEyebrow',
+          'backToHomeLabel',
+          'productNotFoundEyebrow',
+          'productAriaPrefix'
+        ])
+        && hasOptionalString(content, 'searchPlaceholder')
+        && hasOptionalString(content, 'searchAriaLabel')
+        && hasOptionalString(content, 'heroEyebrow')
+        && hasOptionalString(content, 'heroCtaLabel')
+        && hasOptionalString(content, 'popularSectionTitle')
+        && hasOptionalString(content, 'emptyCatalogTitle')
+        && hasOptionalString(content, 'emptyCatalogDescription')
+        && hasOptionalString(content, 'detailTitle')
+        && hasOptionalString(content, 'detailHighlightsTitle')
+        && hasOptionalString(content, 'relatedSectionTitle')
+        && hasOptionalString(content, 'primaryCtaLabel')
+        && hasOptionalString(content, 'secondaryCtaLabel')
+        && hasOptionalString(content, 'storeInfoSectionTitle')
+        && hasOptionalString(content, 'footerShortcutsTitle')
+        && hasOptionalString(content, 'footerSupportTitle')
+        && hasOptionalString(content, 'footerCopyrightText')
+        && hasOptionalString(content, 'searchButtonLabel')
+        && hasOptionalString(content, 'notFoundTitle')
+        && hasOptionalString(content, 'notFoundDescription')
+        && hasOptionalString(content, 'notFoundBrowseLabel')
+        && hasOptionalString(content, 'filtersTitle')
+        && hasOptionalString(content, 'filtersResetLabel')
+        && hasOptionalString(content, 'filterSearchPlaceholder')
+        && hasOptionalString(content, 'priceRangeTitle')
+        && hasOptionalString(content, 'priceRangeAriaLabel')
+        && hasOptionalString(content, 'priceRangeCurrentPrefix')
+        && hasOptionalString(content, 'pricePresetAllLabel')
+        && hasOptionalString(content, 'pricePresetMidLabel')
+        && hasOptionalString(content, 'pricePresetHighLabel')
+        && hasOptionalString(content, 'categoriesTitle')
+        && hasOptionalString(content, 'sortByLabel')
+        && hasOptionalString(content, 'resultsCountSuffix')
+        && hasOptionalString(content, 'sortPopularLabel')
+        && hasOptionalString(content, 'sortLowestPriceLabel')
+        && hasOptionalString(content, 'sortHighestRatedLabel')
+        && hasOptionalString(content, 'mobileFilterButtonLabel')
+        && hasOptionalString(content, 'mobileFilterApplyLabel')
+        && hasOptionalString(content, 'pageNotFoundEyebrow')
+        && hasOptionalString(content, 'backToHomeLabel')
+        && hasOptionalString(content, 'productNotFoundEyebrow')
+        && hasOptionalString(content, 'productAriaPrefix');
+    }
+
+    function isValidNavigationLink(link) {
+      return link is map
+        && link.keys().hasAll(['label', 'route'])
+        && link.keys().hasOnly(['label', 'route'])
+        && link.label is string
+        && link.label.size() > 0
+        && link.route is string
+        && link.route.matches('^/.*');
+    }
+
+    function hasValidNavigationLinks(links) {
+      return links is list
+        && links.size() <= 6
+        && (links.size() < 1 || isValidNavigationLink(links[0]))
+        && (links.size() < 2 || isValidNavigationLink(links[1]))
+        && (links.size() < 3 || isValidNavigationLink(links[2]))
+        && (links.size() < 4 || isValidNavigationLink(links[3]))
+        && (links.size() < 5 || isValidNavigationLink(links[4]))
+        && (links.size() < 6 || isValidNavigationLink(links[5]));
+    }
+
+    function isValidSettingsData(data) {
+      return data.keys().hasAll(['brand', 'theme', 'contactChannels', 'socialLinks', 'catalog'])
+        && data.keys().hasOnly([
+          'brand',
+          'theme',
+          'content',
+          'contactChannels',
+          'navigationLinks',
+          'socialLinks',
+          'catalog',
+          'primaryContactChannel',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.brand is map
+        && data.brand.keys().hasOnly([
+          'name',
+          'slug',
+          'logoPath',
+          'logoAlt',
+          'homeAriaLabel',
+          'faviconPath',
+          'tagline',
+          'description',
+          'notFoundImagePath'
+        ])
+        && data.brand.name is string
+        && data.brand.name.size() > 0
+        && isValidSlug(data.brand.slug)
+        && hasOptionalAssetPathOrEmpty(data.brand, 'logoPath')
+        && hasOptionalString(data.brand, 'logoAlt')
+        && hasOptionalString(data.brand, 'homeAriaLabel')
+        && hasOptionalAssetPathOrEmpty(data.brand, 'faviconPath')
+        && hasOptionalString(data.brand, 'tagline')
+        && hasOptionalString(data.brand, 'description')
+        && hasOptionalAssetPathOrEmpty(data.brand, 'notFoundImagePath')
+        && data.theme is map
+        && data.theme.keys().hasOnly(['preset', 'colors', 'typographyPreset', 'variants'])
+        && data.theme.preset in ['editorial-luxury', 'minimal-premium', 'soft-fashion', 'dark-elegance', 'modern-boutique']
+        && (!('typographyPreset' in data.theme) || data.theme.typographyPreset in ['editorial-serif', 'modern-sans', 'soft-serif', 'cinematic-serif'])
+        && hasValidThemeColors(data.theme)
+        && hasValidThemeVariants(data.theme)
+        && (!('content' in data) || hasValidStorefrontContent(data.content))
+        && hasValidContactChannels(data.contactChannels)
+        && (!('navigationLinks' in data) || hasValidNavigationLinks(data.navigationLinks))
+        && hasValidSocialLinks(data.socialLinks)
+        && hasValidCatalog(data.catalog)
+        && (!('primaryContactChannel' in data) || data.primaryContactChannel in ['whatsapp', 'instagram']);
+    }
+
+    function isValidSettingsWrite() {
+      return isValidSettingsData(request.resource.data);
+    }
+
+    function isPublicStorefrontSettings() {
+      return isValidSettingsData(resource.data);
+    }
+
+    function isValidProductImage(image) {
+      return image is map
+        && image.keys().hasAll(['url'])
+        && image.keys().hasOnly(['url', 'alt', 'order', 'kind'])
+        && isValidHttpUrl(image.url)
+        && (!('alt' in image) || image.alt is string)
+        && (!('order' in image) || image.order is number)
+        && (!('kind' in image) || image.kind == 'image');
+    }
+
+    function isValidImageList(images) {
+      return images is list
+        && images.size() > 0
+        && images.size() <= 8
+        && isValidProductImage(images[0])
+        && (images.size() < 2 || isValidProductImage(images[1]))
+        && (images.size() < 3 || isValidProductImage(images[2]))
+        && (images.size() < 4 || isValidProductImage(images[3]))
+        && (images.size() < 5 || isValidProductImage(images[4]))
+        && (images.size() < 6 || isValidProductImage(images[5]))
+        && (images.size() < 7 || isValidProductImage(images[6]))
+        && (images.size() < 8 || isValidProductImage(images[7]));
+    }
+
+    function isValidProductWrite(tenantId) {
+      let data = request.resource.data;
+
+      return data.keys().hasAll([
+          'active',
+          'tenantId',
+          'title',
+          'slug',
+          'description',
+          'price',
+          'tags',
+          'highlights',
+          'images',
+          'rating',
+          'reviewCount'
+        ])
+        && data.keys().hasOnly([
+          'active',
+          'tenantId',
+          'title',
+          'slug',
+          'description',
+          'longDescription',
+          'price',
+          'compareAtPrice',
+          'category',
+          'tags',
+          'highlights',
+          'images',
+          'rating',
+          'reviewCount',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.tenantId == tenantId
+        && data.active is bool
+        && data.title is string
+        && data.title.size() > 0
+        && isValidSlug(data.slug)
+        && data.description is string
+        && data.description.size() > 0
+        && data.price is number
+        && data.price > 0
+        && hasOptionalString(data, 'longDescription')
+        && hasOptionalString(data, 'category')
+        && hasOptionalNumber(data, 'compareAtPrice')
+        && (!('compareAtPrice' in data) || data.compareAtPrice >= data.price)
+        && data.tags is list
+        && data.highlights is list
+        && isValidImageList(data.images)
+        && data.rating is number
+        && data.reviewCount is number;
+    }
+
+    match /tenants/{tenantId} {
+      allow get: if isTenantMember(tenantId) || isPublicTenantDocument();
+      allow list: if false;
+      allow create, update, delete: if false;
+
+      match /settings/{settingsId} {
+        allow get: if isTenantMember(tenantId)
+          || (settingsId == 'main' && isPublicStorefrontSettings());
+        allow list: if isTenantMember(tenantId);
+        allow create, update: if settingsId == 'main'
+          && canManageTenantContent(tenantId)
+          && isValidSettingsWrite();
+        allow delete: if false;
+      }
+
+      match /products/{productId} {
+        allow read: if isTenantMember(tenantId) || isActivePublicProduct();
+        allow create, update: if canManageTenantContent(tenantId)
+          && isValidProductWrite(tenantId);
+        allow delete: if false;
+      }
+
+      match /users/{uid} {
+        allow get: if isSignedIn()
+          && (request.auth.uid == uid || canManageTenantUsers(tenantId));
+        allow list: if canManageTenantUsers(tenantId);
+        allow create, update: if canManageTenantUsers(tenantId)
+          && request.resource.data.uid == uid
+          && request.resource.data.role in ['admin', 'owner', 'editor', 'viewer']
+          && request.resource.data.email is string
+          && request.resource.data.email.size() > 0
+          && (!('active' in request.resource.data) || request.resource.data.active is bool);
+        allow delete: if false;
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

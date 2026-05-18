@@ -95,7 +95,7 @@ $card-transition: var(--motion-fast) var(--motion-easing-standard);
                     align-items: center;
                     justify-content: center;
                     background: var(--color-primary);
-                    color: var(--color-surface);
+                    color: var(--color-text-inverse);
                     font-size: 0.96rem;
                     font-weight: 700;
                     transition: background-color $card-transition;

@@ -42,5 +42,6 @@ describe('ProductCatalogService', () => {
     expect(service.products().length).toBeGreaterThan(0);
     expect(service.products()[0].price.currencyCode).toBe('BRL');
     expect(service.products()[0].title.length).toBeGreaterThan(0);
+    expect(service.products()[0].actionLinks.whatsappUrl).toContain('https://wa.me/');
   });
 });

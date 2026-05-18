@@ -127,7 +127,7 @@ describe('AdminShell', () => {
 
     expect(firestoreService.getStorefrontSettings).not.toHaveBeenCalled();
     expect(firestoreService.getProducts).not.toHaveBeenCalled();
-    expect(fixture.nativeElement.textContent).toContain('Informe o tenantId');
+    expect(fixture.nativeElement.textContent).toContain('Informe o ID da loja');
   });
 
   it('should bootstrap tenant context from query param', async () => {
@@ -194,7 +194,7 @@ describe('AdminShell', () => {
 
     clickNavButton('Produtos');
 
-    expect(fixture.nativeElement.textContent).toContain('Produtos do tenant');
+    expect(fixture.nativeElement.textContent).toContain('Produtos da loja');
     expect(fixture.nativeElement.textContent).toContain('Produto');
   });
 

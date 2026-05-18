@@ -40,8 +40,7 @@ Sprint 5.4 edits:
 
 It does not edit:
 
-- image uploads
-- Storage assets
+- Storage asset metadata
 - product variants
 - inventory
 - checkout data
@@ -116,20 +115,52 @@ Before production, public reads should be tightened to published/active public p
 
 ## Image Handling
 
-Sprint 5.4 keeps images as URLs in the product document:
+Sprint 5.4 kept images as URLs in the product document:
 
 ```ts
-images: Array<{ url: string; alt?: string; order?: number; kind: 'image' }>
+images: Array<{ url: string; alt?: string; order?: number; kind: 'image' }>;
 ```
 
-Firebase Storage upload is deferred to Sprint 5.5.
+Sprint 5.5 adds product image upload through Firebase Storage, but the product document contract stays the same: uploaded download URLs are saved in `images`.
 
-## Sprint 5.5 Handoff
+Storage path:
+
+```txt
+tenants/{tenantId}/products/{productSlug}/{timestamp}-{fileName}
+```
+
+## Sprint 5.6 Handoff
 
 Next step:
 
-- Firebase Storage
-- upload logo/favicon/product images
-- save uploaded product URLs in `images`
-- keep assets tenant-scoped
-- avoid building a complex DAM
+- preview and validation before publishing
+- stronger empty/loading/error states
+- no DAM unless real admin workflows require it
+
+## Sprint 5.6 Update
+
+Product management now includes a compact editor preview and stronger pre-save validation.
+
+Save is blocked when required fields are missing, the slug is invalid or duplicated in the current tenant product list, price data is invalid, or image URLs are missing/invalid.
+
+This is still not a publish workflow. The current `active` flag remains the MVP visibility control.
+
+## Sprint 5.7 Update
+
+Public storefront reads are now expected to query only active products.
+
+The storefront Firestore service uses:
+
+```txt
+where active == true
+```
+
+Admin users with a valid tenant role can still read all products through the admin service.
+
+Server-side product writes require:
+
+```txt
+owner
+admin
+editor
+```

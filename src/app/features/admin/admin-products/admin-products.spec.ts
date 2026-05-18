@@ -4,6 +4,7 @@ import { vi } from 'vitest';
 
 import { AdminProductDocument, AdminProductWriteInput } from '../models/admin-firestore.models';
 import { AdminFirestoreService } from '../services/admin-firestore.service';
+import { AdminStorageService } from '../services/admin-storage.service';
 import { AdminProducts } from './admin-products';
 
 describe('AdminProducts', () => {
@@ -12,6 +13,9 @@ describe('AdminProducts', () => {
     createProduct: ReturnType<typeof vi.fn>;
     updateProduct: ReturnType<typeof vi.fn>;
     setProductActive: ReturnType<typeof vi.fn>;
+  };
+  let storageService: {
+    uploadProductImage: ReturnType<typeof vi.fn>;
   };
 
   const product: AdminProductDocument = {
@@ -34,28 +38,43 @@ describe('AdminProducts', () => {
 
   beforeEach(async () => {
     firestoreService = {
-      createProduct: vi.fn().mockImplementation(
-        (_tenantId: string, payload: AdminProductWriteInput) =>
+      createProduct: vi
+        .fn()
+        .mockImplementation((_tenantId: string, payload: AdminProductWriteInput) =>
           Promise.resolve({
             id: 'created-product',
             tenantId: 'atelier-aurea',
             ...payload,
           }),
-      ),
-      updateProduct: vi.fn().mockImplementation(
-        (_tenantId: string, productId: string, payload: AdminProductWriteInput) =>
-          Promise.resolve({
-            id: productId,
-            tenantId: 'atelier-aurea',
-            ...payload,
-          }),
-      ),
+        ),
+      updateProduct: vi
+        .fn()
+        .mockImplementation(
+          (_tenantId: string, productId: string, payload: AdminProductWriteInput) =>
+            Promise.resolve({
+              id: productId,
+              tenantId: 'atelier-aurea',
+              ...payload,
+            }),
+        ),
       setProductActive: vi.fn().mockResolvedValue({ ...product, active: false }),
+    };
+    storageService = {
+      uploadProductImage: vi.fn().mockResolvedValue({
+        url: 'https://storage.test/colar.jpg',
+        path: 'tenants/atelier-aurea/products/colar-aurora/colar.jpg',
+        fileName: 'colar.jpg',
+        contentType: 'image/jpeg',
+        size: 24,
+      }),
     };
 
     await TestBed.configureTestingModule({
       imports: [AdminProducts],
-      providers: [{ provide: AdminFirestoreService, useValue: firestoreService }],
+      providers: [
+        { provide: AdminFirestoreService, useValue: firestoreService },
+        { provide: AdminStorageService, useValue: storageService },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminProducts);
@@ -94,6 +113,108 @@ describe('AdminProducts', () => {
     );
   });
 
+  it('should upload product images and save the resulting URLs', async () => {
+    const image = new File(['image'], 'colar.jpg', { type: 'image/jpeg' });
+
+    clickButton('Novo produto');
+    updateInput('title', 'Colar Aurora');
+    updateInput('slug', 'colar-aurora');
+    updateTextarea('description', 'Colar com acabamento premium.');
+    updateInput('price', '180');
+    uploadFiles('imageUpload', [image]);
+
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+
+      const textarea = fixture.debugElement.query(By.css('textarea[name="imagesText"]'))
+        .nativeElement as HTMLTextAreaElement;
+
+      expect(textarea.value).toContain('https://storage.test/colar.jpg');
+    });
+
+    submitForm();
+
+    await fixture.whenStable();
+
+    expect(storageService.uploadProductImage).toHaveBeenCalledWith({
+      tenantId: 'atelier-aurea',
+      productSlug: 'colar-aurora',
+      file: image,
+    });
+    expect(firestoreService.createProduct).toHaveBeenCalledWith(
+      'atelier-aurea',
+      expect.objectContaining({
+        images: [
+          expect.objectContaining({
+            url: 'https://storage.test/colar.jpg',
+            kind: 'image',
+          }),
+        ],
+      }),
+    );
+  });
+
+  it('should render a product preview from the current form', () => {
+    clickButton('Novo produto');
+    updateInput('title', 'Colar Aurora');
+    updateInput('slug', 'colar-aurora');
+    updateTextarea('description', 'Colar com acabamento premium.');
+    updateInput('price', '180');
+    updateTextarea('imagesText', 'https://cdn.test/colar.jpg');
+
+    expect(fixture.nativeElement.textContent).toContain('Resumo do produto');
+    expect(fixture.nativeElement.textContent).toContain('Colar Aurora');
+    expect(fixture.nativeElement.textContent).toContain('R$');
+    expect(fixture.nativeElement.textContent).toContain('Produto pronto para salvar');
+  });
+
+  it('should format admin product prices with the storefront currency', () => {
+    fixture.componentRef.setInput('currencyCode', 'USD');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('US$');
+  });
+
+  it('should filter the product list by publication status', () => {
+    fixture.componentRef.setInput('products', [
+      product,
+      {
+        ...product,
+        id: 'product-2',
+        active: false,
+        title: 'Colar Pausa',
+        slug: 'colar-pausa',
+        price: 80,
+      },
+    ]);
+    fixture.detectChanges();
+
+    clickButton('Inativos');
+
+    expect(fixture.nativeElement.textContent).toContain('Colar Pausa');
+    expect(fixture.nativeElement.textContent).not.toContain('Anel Lumiere');
+
+    clickButton('Ativos');
+
+    expect(fixture.nativeElement.textContent).toContain('Anel Lumiere');
+    expect(fixture.nativeElement.textContent).not.toContain('Colar Pausa');
+  });
+
+  it('should block duplicate product slugs before saving', async () => {
+    clickButton('Novo produto');
+    updateInput('title', 'Outro Anel');
+    updateInput('slug', 'anel-lumiere');
+    updateTextarea('description', 'Produto com slug duplicado.');
+    updateInput('price', '180');
+    updateTextarea('imagesText', 'https://cdn.test/outro-anel.jpg');
+    submitForm();
+
+    await fixture.whenStable();
+
+    expect(firestoreService.createProduct).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.textContent).toContain('Ja existe um produto com este slug.');
+  });
+
   it('should update an existing product', async () => {
     clickByAttribute('data-product-edit', 'product-1');
     updateInput('title', 'Anel Lumiere Atualizado');
@@ -127,9 +248,15 @@ describe('AdminProducts', () => {
     fixture.componentRef.setInput('canEditProducts', false);
     fixture.detectChanges();
 
-    const saveButton = fixture.nativeElement.querySelector('button[type="submit"]') as HTMLButtonElement;
+    const saveButton = fixture.nativeElement.querySelector(
+      'button[type="submit"]',
+    ) as HTMLButtonElement;
+    const uploadInput = fixture.nativeElement.querySelector(
+      'input[name="imageUpload"]',
+    ) as HTMLInputElement;
 
     expect(saveButton.disabled).toBe(true);
+    expect(uploadInput.disabled).toBe(true);
     expect(fixture.nativeElement.textContent).toContain('apenas leitura');
   });
 
@@ -152,6 +279,17 @@ describe('AdminProducts', () => {
   function submitForm(): void {
     const form = fixture.debugElement.query(By.css('form')).nativeElement as HTMLFormElement;
     form.dispatchEvent(new Event('submit'));
+    fixture.detectChanges();
+  }
+
+  function uploadFiles(name: string, files: File[]): void {
+    const input = fixture.debugElement.query(By.css(`input[name="${name}"]`))
+      .nativeElement as HTMLInputElement;
+    Object.defineProperty(input, 'files', {
+      value: files,
+      configurable: true,
+    });
+    input.dispatchEvent(new Event('change'));
     fixture.detectChanges();
   }
 

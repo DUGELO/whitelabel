@@ -42,6 +42,7 @@ describe('AdminDashboard', () => {
     fixture.componentRef.setInput('tenantId', 'atelier-aurea');
     fixture.componentRef.setInput('settingsResult', settingsResult);
     fixture.componentRef.setInput('productsCount', 3);
+    fixture.componentRef.setInput('activeProductsCount', 2);
     fixture.detectChanges();
   });
 
@@ -50,7 +51,11 @@ describe('AdminDashboard', () => {
 
     expect(text).toContain('Atelier Aurea');
     expect(text).toContain('atelier-aurea');
-    expect(text).toContain('editorial-luxury');
     expect(text).toContain('3');
+    expect(text).toContain('2');
+    expect(text).toContain('Ativa');
+    expect(text).toContain('Pendente');
+    expect(text).toContain('3/5 passos');
+    expect(text).toContain('Checklist de publicacao');
   });
 });
